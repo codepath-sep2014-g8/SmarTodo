@@ -43,7 +43,7 @@ Notifications to all the assignees of a task when the task is completed.
 Creating a task list (e.g., shopping list, visiting clients list, apartments to see list, sightseeing list during a trip, etc.) such that it can tell us what can be done from our list when we are close to certain place (e.g. a grocery store, an apartment, an attraction, etc.).  A task list can be activated or deactivated or may be assigned an operating time (e.g., sightseeing task list may be activated when the trip actually starts). Essentially, it would be a time constrained and location constrained ToDo list which can remind us what task can be done when we are close to a place at a certain time. As and when a task is completed it can be checked off and recorded with some optional comments for future reference.
 
 # Pitch
-## Let’s Do It 
+## SmarTodo
 *It’s no longer about a list, it’s about getting sh!t done.*
 
 Struggling to keep your life organized? 

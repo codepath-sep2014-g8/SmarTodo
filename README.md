@@ -58,10 +58,7 @@ Imagine an app that reminds you to ...
 Core Concepts:
 
 1. **Focus on productivity.** Make a list. Let the app organize it in the most efficient way
-1. **Remind me right.** Configure smart Reminders - based on location / time / free-busy / day of week
+1. **Remind me right.** Configure smart Reminders - based on location / time / day of week
 1. **More the merrier.** Share an item or entire To Do list with your friends or family, so you can accomplish more together.. 
 1. **Creating a list should be simple and easy.** Use voice, pictures or other media to easily create ToDos.
-1. **Keep talking.** Have real time conversations around tasks and collaborate better
-1. **Keep them together.** Integration of ToDos with Mail and Calendar, so you can manage them together and efficiently. 
 
-Don’t miss out! Based on special events in your calendar or general events (like long weekends, back to school, black friday, christmas shopping etc.), relevant ToDos are suggested.

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.codepath.smartodo.model.Address;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -16,11 +17,7 @@ public class ListsViewerActivity extends Activity {
         
         setContentView(R.layout.activity_lists_viewer);
 
-        Parse.initialize(this, ParseConfig.APPLICATION_ID, ParseConfig.CLIENT_KEY);
-        
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+        ParseConfig.init(this);
     }
 
 

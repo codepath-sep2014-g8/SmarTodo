@@ -1,14 +1,21 @@
-package com.codepath.smartodo;
+package com.codepath.smartodo.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.codepath.smartodo.R;
+import com.codepath.smartodo.R.id;
+import com.codepath.smartodo.R.layout;
+import com.codepath.smartodo.R.menu;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 public class ListsViewerActivity extends Activity {
+	ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,13 +23,12 @@ public class ListsViewerActivity extends Activity {
         
         setContentView(R.layout.activity_lists_viewer);
 
-        Parse.initialize(this, ParseConfig.APPLICATION_ID, ParseConfig.CLIENT_KEY);
+        // Parse.initialize(this, ParseConfig.APPLICATION_ID, ParseConfig.CLIENT_KEY);
         
         ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar");
-        testObject.saveInBackground();
+        testObject.saveInBackground();      
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

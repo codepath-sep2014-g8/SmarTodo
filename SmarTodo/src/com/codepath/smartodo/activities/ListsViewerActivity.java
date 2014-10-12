@@ -15,7 +15,6 @@ public class ListsViewerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.activity_lists_viewer);
-    	ParseConfig.init(this);
     }
 
     @Override

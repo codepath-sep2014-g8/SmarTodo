@@ -4,5 +4,12 @@
     <string name="app_name">SmarTodo</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="parse_app_id">q1Xy6yMRQSGUHU581wZ91YxspkdLwYbRb1CFy1fH</string>
+    <string name="parse_client_key">fWs7vfkXICxUmcaKuXdKLi9ZMYNGDzhQDDTuQoHB</string>
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="twitter_consumer_key">YOUR_TWITTER_CONSUMER_KEY</string>
+    <string name="twitter_consumer_secret">YOUR_TWITTER_CONSUMER_SECRET</string>
+    <string name="title_activity_login">LoginActivity</string>
+     <string name="login_button_label">Login</string>
 
 </resources>

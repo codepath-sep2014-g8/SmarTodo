@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.smartodo.model.Address;
+import com.codepath.smartodo.model.ParseDbTest;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -18,6 +19,9 @@ public class ListsViewerActivity extends Activity {
         setContentView(R.layout.activity_lists_viewer);
 
         ParseConfig.init(this);
+        
+        // TODO For testing purposes only, DO NOT COMMIT when uncommented!
+        //ParseDbTest.test();
     }
 
 

@@ -5,7 +5,5 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="C:/android/adt-bundle-windows-x86_64-20140702/sdk/extras/android/support/v4/android-support-v4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Damodar/CodepathWorkspace/ParseUI-Android/facebook-sdk/libs/bolts.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -1,5 +1,8 @@
 package com.codepath.smartodo.model;
 
+import java.util.Arrays;
+import java.util.Date;
+
 import android.util.Log;
 
 import com.parse.ParseException;
@@ -14,11 +17,21 @@ import com.parse.SaveCallback;
  */
 public class ParseDbTest {
 	public static void test() {
+		final User u = createUser("notsure", "not@sure.com", "Not Sure");
+		
+		runNext(null, new Runnable() {
+			public void run() {
+				testAddress(u);
+			}
+		});
+	}
+
+	public static User createUser(String username, String email, String realname) {
 		final User u = new User();
-		u.setUsername("notsure");
-		u.setEmail("not@sure.com");
+		u.setUsername(username);
+		u.setEmail(email);
 		u.setPhoneNumber("4084084088");
-		u.setRealName("Not Sure");
+		u.setRealName(realname);
 		u.setPassword("certain");
 		
 		try {
@@ -27,29 +40,50 @@ public class ParseDbTest {
 			fail(e);
 		}
 		
-		runNext(null, new Runnable() {
-			public void run() {
-				testAddress(u);
-			}
-		});
+		return u;
 	}
 	
 	private static void testAddress(User u) {
-		Address a = new Address();
+		final Address a = new Address();
 		a.setLocation(new ParseGeoPoint(-10.22, +30.44));
 		a.setName("home");
 		a.setUser(u);
 		
 		runNext(a, new Runnable() {
 			public void run() {
-				testTodoList();
+				testTodoList(a);
 			}
 		});
 	}
 	
-	protected static void testTodoList() {
-		// TODO Auto-generated method stub
+	protected static void testTodoList(final Address a) {
+		final TodoList list = new TodoList();
+		list.setAddress(a);
+		list.setCompleted(true);
+		list.setName("testlist321");
+		list.setNotificationTime(new Date());
 		
+		User u2 = createUser("notsure1", "not2@sure.com", "Not Sure 2");
+		User u3 = createUser("notsure2", "not3@sure.com", "Not Sure 3");
+		
+		list.addToSharing(Arrays.asList(new User[]{u2, u3}));
+		
+		runNext(list, new Runnable() {
+			public void run() {
+				testTodoItem(list, a);
+			}
+		});
+	}
+
+	protected static void testTodoItem(TodoList list, Address a) {
+		TodoItem item = new TodoItem();
+		item.setAddress(a);
+		item.setCompleted(true);
+		item.setList(list);
+		item.setNotificationTime(new Date());
+		item.setText("testitem321");
+		
+		runNext(item, null);
 	}
 
 	private static void runNext(ParseObject obj, final Runnable runnable) {
@@ -60,26 +94,21 @@ public class ParseDbTest {
 					if(ex != null) {
 						fail(ex);
 					} else {
-						runnable.run();
+						if(runnable != null) {
+							runnable.run();
+						}
 					}
 				}
 			});
 		} else {
-			runnable.run();
+			if(runnable != null) {
+				runnable.run();
+			}
 		}
 
 	}
 
 	private static void fail(Throwable th) {
 		Log.e("test", th.getMessage(), th);
-	}
-	
-	private static void testNext() {
-
-//		runNext(u, new Runnable() { 
-//						public void run() {
-//							testNext();
-//						}
-//					});
 	}
 }

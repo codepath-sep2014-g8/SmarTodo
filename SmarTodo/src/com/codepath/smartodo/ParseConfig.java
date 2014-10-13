@@ -10,7 +10,14 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 public class ParseConfig {
-	public static void init(Context context) {
+	public static void init(Context context) {		
+		ParseObject.registerSubclass(Address.class);
+		ParseObject.registerSubclass(User.class);
+		ParseObject.registerSubclass(TodoList.class);
+		ParseObject.registerSubclass(TodoItem.class);
+		
+		Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
+		
 		Parse.initialize(context, context.getString(R.string.parse_app_id),
 				context.getString(R.string.parse_client_key));
 		
@@ -22,11 +29,6 @@ public class ParseConfig {
 	    // remove this line (and other related ParseTwitterUtils calls)
 	    //ParseTwitterUtils.initialize(getString(R.string.twitter_consumer_key),
 	    //   getString(R.string.twitter_consumer_secret));
-
-		Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
-		ParseObject.registerSubclass(Address.class);
-		ParseObject.registerSubclass(User.class);
-		ParseObject.registerSubclass(TodoList.class);
-		ParseObject.registerSubclass(TodoItem.class);
+		
 	}
 }

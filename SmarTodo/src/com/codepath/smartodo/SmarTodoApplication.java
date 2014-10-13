@@ -12,6 +12,6 @@ public class SmarTodoApplication extends Application {
 	ParseConfig.init(this);
 	
 	// TODO For testing purposes only, DO NOT COMMIT when uncommented!
-    ParseDbTest.test();
+//    ParseDbTest.test();
   }
 }

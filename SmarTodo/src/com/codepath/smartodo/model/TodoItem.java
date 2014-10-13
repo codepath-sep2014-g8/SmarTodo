@@ -7,7 +7,7 @@ import com.parse.ParseObject;
 
 @ParseClassName("TodoItem")
 public class TodoItem extends ParseObject {
-	private static final String TEXT_KEY = "text";
+	public static final String TEXT_KEY = "text";
 	private static final String COMPLETED_KEY = "completed";
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";

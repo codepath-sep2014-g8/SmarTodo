@@ -2,12 +2,14 @@ package com.codepath.smartodo.model;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import android.util.Log;
 
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 /**
@@ -46,7 +48,7 @@ public class ParseDbTest {
 	private static void testAddress(User u) {
 		final Address a = new Address();
 		a.setLocation(new ParseGeoPoint(-10.22, +30.44));
-		a.setName("home");
+		a.setName("testlocation123");
 		a.setUser(u);
 		
 		runNext(a, new Runnable() {
@@ -96,6 +98,8 @@ public class ParseDbTest {
 					} else {
 						if(runnable != null) {
 							runnable.run();
+						} else {
+							cleanup();
 						}
 					}
 				}
@@ -103,9 +107,41 @@ public class ParseDbTest {
 		} else {
 			if(runnable != null) {
 				runnable.run();
+			} else {
+				cleanup();
 			}
 		}
 
+	}
+
+	private static void cleanup() {
+		try {
+			deleteRows(TodoItem.class, TodoItem.TEXT_KEY, "testitem*", 1);
+			deleteRows(TodoList.class, TodoList.NAME_KEY, "testlist*", 1);
+			deleteRows(Address.class, Address.NAME_KEY, "testlocation*", 1);
+			deleteRows(User.class, User.REALNAME_KEY, "notsure*", 3);
+		} catch(Throwable th) {
+			Log.e("error", "Cleanup failed! Finish it manually at https://parse.com/apps/smartodo/collections", th);
+		}
+	}
+
+	public static <T extends ParseObject> void deleteRows(Class<T> modelClass, String columnName, String valuePattern, int expectedSize) throws ParseException {
+		ParseQuery<T> itemQuery = ParseQuery.getQuery(modelClass);
+		
+		itemQuery.whereMatches(columnName, valuePattern);
+		List<T> items = itemQuery.find();
+		
+		softAssertEquals(expectedSize, items.size());
+		
+		for(T item : items) {
+			item.delete();
+		}
+	}
+
+	private static void softAssertEquals(int i, int size) {
+		if(i != size) {
+			Log.w("assertion", i + " != " + size + " in " + new Exception().getStackTrace()[2]);
+		}
 	}
 
 	private static void fail(Throwable th) {

@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 @ParseClassName("TodoList")
 public class TodoList extends ParseObject {
@@ -79,5 +81,15 @@ public class TodoList extends ParseObject {
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
 		return (List<User>) super.getParseObject(SHARING_KEY);
+	}
+	
+	/**
+	 * @return an unmodifiable list of items that belong to this list. Do not add items to it! Instead create a new TodoItem and call setItem().
+	 * @throws ParseException
+	 */
+	public List<TodoItem> getAllItems() throws ParseException {
+		ParseQuery<TodoItem> itemQuery = ParseQuery.getQuery(TodoItem.class);
+		itemQuery.whereEqualTo(TodoItem.LIST_KEY, this);
+		return itemQuery.find();
 	}
 }

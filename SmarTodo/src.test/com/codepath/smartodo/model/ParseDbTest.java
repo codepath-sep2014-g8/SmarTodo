@@ -77,15 +77,32 @@ public class ParseDbTest {
 		});
 	}
 
-	protected static void testTodoItem(TodoList list, Address a) {
-		TodoItem item = new TodoItem();
+	protected static void testTodoItem(final TodoList list, Address a) {
+		final TodoItem item = new TodoItem();
 		item.setAddress(a);
 		item.setCompleted(true);
 		item.setList(list);
 		item.setNotificationTime(new Date());
 		item.setText("testitem321");
 		
-		runNext(item, null);
+		runNext(item, new Runnable() {
+			public void run() {
+				testGetAllItems(list, item);
+			}
+		});
+	}
+
+	protected static void testGetAllItems(TodoList list, TodoItem item) {
+		try {
+			List<TodoItem> items = list.getAllItems();
+			
+			softAssertEquals(1, items.size());
+			softAssertEquals(item, items.get(0));
+			
+			runNext(null, null); // Cleanup and exit
+		} catch (ParseException ex) {
+			fail(ex);
+		}
 	}
 
 	private static void runNext(ParseObject obj, final Runnable runnable) {
@@ -138,8 +155,8 @@ public class ParseDbTest {
 		}
 	}
 
-	private static void softAssertEquals(int i, int size) {
-		if(i != size) {
+	private static void softAssertEquals(Object i, Object size) {
+		if(!i.equals(size)) {
 			Log.w("assertion", i + " != " + size + " in " + new Exception().getStackTrace()[2]);
 		}
 	}

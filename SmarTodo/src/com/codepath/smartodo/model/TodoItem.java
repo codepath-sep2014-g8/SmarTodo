@@ -11,7 +11,7 @@ public class TodoItem extends ParseObject {
 	private static final String COMPLETED_KEY = "completed";
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
-	private static final String LIST_KEY = "list";
+	public static final String LIST_KEY = "list";
 
 	public boolean isCompleted() {
 		return getBoolean(COMPLETED_KEY);

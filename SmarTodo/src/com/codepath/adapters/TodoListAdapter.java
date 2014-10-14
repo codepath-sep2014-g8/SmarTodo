@@ -56,7 +56,14 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		// convertView.setBackgroundColor(todoList.getColor);
+	 //convertView.setBackgroundColor(todoList.getColor);
+		//?? Remove later
+		if(position % 2 == 0){
+		convertView.setBackgroundResource(R.color.blue);
+		}
+		else{
+			convertView.setBackgroundResource(R.color.orange);
+		}
 
 		// get all the to do item
 		// iterate through them

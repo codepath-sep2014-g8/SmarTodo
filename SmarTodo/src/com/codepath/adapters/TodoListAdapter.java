@@ -1,5 +1,6 @@
 package com.codepath.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.codepath.smartodo.R;
@@ -16,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.etsy.android.grid.util.DynamicHeightTextView;
+import com.etsy.android.grid.util.*;
 
 public class TodoListAdapter extends ArrayAdapter<TodoList> {
 	
@@ -57,7 +58,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		//get all the to do item
 		//iterate through them
 		//strike the one's which are completed
-		List<TodoItem> todoItems = todoList.getTodoItems();
+		List<TodoItem> todoItems = new ArrayList<TodoItem>();// todoList.getTodoItems();
 		for(TodoItem item : todoItems){
 			String str = item.getText();
 			if(item.isCompleted()){

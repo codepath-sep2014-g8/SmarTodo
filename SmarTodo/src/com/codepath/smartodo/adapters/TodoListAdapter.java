@@ -21,14 +21,16 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 	private static final StrikethroughSpan STRIKE_THROUGH_SPAN = new StrikethroughSpan();
 
 	private class ViewHolder {
-		TextView txtTitle;
+		TextView tvTitle;
+		TextView tvLocation;
 		ListView lvToDoItems;
 		TodoItemsAdapter adapter;
 		List<TodoItem> itemsList;
 		
 		void init(View convertView){
-			this.txtTitle = (TextView) convertView
-					.findViewById(R.id.txtTitle);
+			this.tvTitle = (TextView) convertView
+					.findViewById(R.id.tvTitle);
+			tvLocation = (TextView)convertView.findViewById(R.id.tvLocation);
 			itemsList = new ArrayList<TodoItem>();
 		
 			this.lvToDoItems = (ListView)convertView.findViewById(R.id.lvToDoItemsList_item_todo_list);
@@ -39,7 +41,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		
 		void populateData(TodoList todoList){
 			
-			txtTitle.setText(todoList.getName());
+			tvTitle.setText(todoList.getName());
 			
 			try {
 				

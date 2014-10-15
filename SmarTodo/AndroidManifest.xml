@@ -64,6 +64,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.codepath.smartodo.activities.ListsViewerActivity" />
         </activity>
+        <service android:name=".services.ModelManagerService" android:enabled="true"></service>
     </application>
 
 </manifest>

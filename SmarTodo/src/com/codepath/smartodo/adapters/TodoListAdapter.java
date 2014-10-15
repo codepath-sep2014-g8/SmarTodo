@@ -25,7 +25,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 	private static final StrikethroughSpan STRIKE_THROUGH_SPAN = new StrikethroughSpan();
 
 	private class ViewHolder {
-		DynamicHeightTextView txtItem;
+		TextView txtItem;
 		TextView txtTitle;
 	}
 
@@ -46,7 +46,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 					R.layout.item_todo_list, parent, false);
 
 			viewHolder = new ViewHolder();
-			viewHolder.txtItem = (DynamicHeightTextView) convertView
+			viewHolder.txtItem = (TextView) convertView
 					.findViewById(R.id.txtItemList);
 			viewHolder.txtTitle = (TextView) convertView
 					.findViewById(R.id.txtTitle);
@@ -94,6 +94,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		}
 
 		viewHolder.txtTitle.setText(todoList.getName());
+		
 
 		return convertView;
 	}

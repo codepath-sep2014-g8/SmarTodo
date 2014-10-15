@@ -11,28 +11,38 @@
         android:layout_height="24sp"
         android:text="Title"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
+        android:gravity="left"
         android:textColor="#000000"
         android:textSize="12sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"/>
     
     <ListView
         android:id="@+id/lvToDoItemsList_item_todo_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         >
     </ListView>
     
     <TextView
+        android:paddingTop="5dp"
         android:id="@+id/tvLocation"
         android:layout_width="match_parent"
         android:layout_height="24sp"
         android:text="Title"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
+        android:gravity="left|center_vertical"
         android:textColor="#000000"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="normal"
-        android:drawableRight="@drawable/ic_action_location"/>
+        android:drawableRight="@drawable/ic_action_location"
+        android:background="@drawable/top_border_style"
+        android:drawablePadding="4dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="5dp"
+        />
     
 </LinearLayout>

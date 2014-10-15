@@ -1,18 +1,21 @@
 package com.codepath.smartodo;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
-import com.codepath.smartodo.model.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 public class ParseConfig {
-	public static void init(Context context) {		
+	public static void init(Context context) {	
+		Log.i("info", "Initializing parse.com configuration");
+		ParseObject.registerSubclass(ParseUser.class);
 		ParseObject.registerSubclass(Address.class);
-		ParseObject.registerSubclass(User.class);
+//		ParseObject.registerSubclass(User.class);
 		ParseObject.registerSubclass(TodoList.class);
 		ParseObject.registerSubclass(TodoItem.class);
 		

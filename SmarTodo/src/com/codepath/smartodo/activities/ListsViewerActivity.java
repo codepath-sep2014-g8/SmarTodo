@@ -19,9 +19,9 @@ import android.widget.Button;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
+import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
-import com.codepath.snartodo.helpers.AppConstants;
 import com.etsy.android.grid.StaggeredGridView;
 
 

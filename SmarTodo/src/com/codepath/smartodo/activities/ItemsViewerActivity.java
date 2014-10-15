@@ -8,9 +8,9 @@ import com.codepath.smartodo.R.layout;
 import com.codepath.smartodo.R.menu;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
+import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
-import com.codepath.snartodo.helpers.AppConstants;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 

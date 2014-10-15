@@ -1,4 +1,4 @@
-package com.codepath.snartodo.helpers;
+package com.codepath.smartodo.helpers;
 
 public class AppConstants {
 	

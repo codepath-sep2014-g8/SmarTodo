@@ -3,14 +3,17 @@ package com.codepath.smartodo.activities;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 
@@ -28,6 +31,7 @@ public class ListsViewerActivity extends FragmentActivity {
 	private StaggeredGridView staggeredGridView;
 	private TodoListAdapter adapter;
 	private List<TodoList> list;
+	private ImageView ivAdd;
 	
 
     @Override
@@ -47,7 +51,39 @@ public class ListsViewerActivity extends FragmentActivity {
     	setupListeners();
     }
     
-    private void setupListeners() {
+    
+
+	private void initialize(){
+		
+		initializeActionBar();
+		
+    	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
+    	list = new ArrayList<TodoList>();
+    	populateTestData();
+    	adapter = new TodoListAdapter(getBaseContext(), list);
+    	
+    	staggeredGridView.setAdapter(adapter);
+    }
+	
+	private void initializeActionBar(){
+		ActionBar actionBar = getActionBar();
+		View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
+		
+		ivAdd = (ImageView)view.findViewById(R.id.ivAdd_todolist);
+		
+		ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+				ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+	
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setHomeButtonEnabled(false);
+		actionBar.setDisplayShowHomeEnabled(false);
+		
+		actionBar.setCustomView(view, params);
+	}
+	
+	
+private void setupListeners() {
 		
     	staggeredGridView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -65,15 +101,6 @@ public class ListsViewerActivity extends FragmentActivity {
 		});
 		
 	}
-
-	private void initialize(){
-    	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
-    	list = new ArrayList<TodoList>();
-    	populateTestData();
-    	adapter = new TodoListAdapter(getBaseContext(), list);
-    	
-    	staggeredGridView.setAdapter(adapter);
-    }
     
     private void populateTestData(){
     	

@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 
 import com.codepath.adapters.TodoListAdapter;
@@ -41,9 +43,29 @@ public class ListsViewerActivity extends FragmentActivity {
 //    	});
     	
     	initialize();
+    	setupListeners();
     }
     
-    private void initialize(){
+    private void setupListeners() {
+		
+    	staggeredGridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				TodoList todoList = adapter.getItem(position);
+				String name = todoList.getName();
+				System.out.println("name:" + name);
+				Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
+				i.putExtra("TODOLIST", name);
+				startActivity(i);
+			}
+    		
+		});
+		
+	}
+
+	private void initialize(){
     	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
     	list = new ArrayList<TodoList>();
     	populateTestData();
@@ -82,6 +104,15 @@ public class ListsViewerActivity extends FragmentActivity {
     	item4.setText("Item 5");
     	item4.setList(l1);
     	item4.save();
+    	
+    	
+    	TodoItem item5 = new TodoItem();
+    	item5.setText("Item 7");
+    	item5.setList(l1);
+    	item5.save();
+    	
+    	
+    	
     	l1.save();
     	
     	list.add(l);

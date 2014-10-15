@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.notifications.NotificationsSender;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
@@ -40,7 +42,7 @@ public class LoginActivity extends Activity {
 				
 		if (checkCurrentUserOK()) {
 			// Send the logged in user to our main class
-			startListsViewerActivity();
+			lauchMainApp();
 		} else {		
 			btnLogin.setVisibility(View.VISIBLE);		
 		}
@@ -79,8 +81,15 @@ public class LoginActivity extends Activity {
     	Log.d("DEBUG", message);
 	}
 
-	private void startListsViewerActivity() {		
-		// Log.d("DEBUG", "In LoginActivity.startListsViewerActivity");		
+	private void lauchMainApp() {		
+		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
+		// Register with ParseInstallation the current user under SHARED_USER_KEY 
+		// so that push notifications can be received on behalf of the current user 
+		// when they are sent by other users of the app.
+		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+		installation.put(NotificationsSender.SHAREDWITH_USER_KEY, ParseUser.getCurrentUser());
+		installation.saveInBackground();
+		
 		Intent intent = new Intent(LoginActivity.this,
 				ListsViewerActivity.class);
 		startActivity(intent);
@@ -105,7 +114,7 @@ public class LoginActivity extends Activity {
 		if (requestCode == LOGIN_REQUEST) {
 			loginInProgress = false;
 			if (resultCode == RESULT_OK && checkCurrentUserOK()) {
-			   startListsViewerActivity();
+			   lauchMainApp();
 			} else { // stay in the login screen
 			    // finish(); 
 			}

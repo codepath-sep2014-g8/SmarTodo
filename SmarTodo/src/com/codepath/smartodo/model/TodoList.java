@@ -15,6 +15,8 @@ public class TodoList extends ParseObject {
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
 	private static final String SHARING_KEY = "sharing";
+	private static final String OWNER_KEY = "owner";
+	private static final String COLOR_KEY = "color";
 
 	public boolean isCompleted() {
 		return getBoolean(COMPLETED_KEY);
@@ -81,6 +83,22 @@ public class TodoList extends ParseObject {
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
 		return (List<User>) super.getParseObject(SHARING_KEY);
+	}
+	
+	public User getOwner() {
+		return (User) super.getParseObject(OWNER_KEY);
+	}
+	
+	public void setOwner(User value) {
+		super.put(OWNER_KEY, value);
+	}
+	
+	public int getColor() {
+		return (Integer) super.getNumber(COLOR_KEY);
+	}
+	
+	public void setColor(int value) {
+		super.put(COLOR_KEY, value);
 	}
 	
 	/**

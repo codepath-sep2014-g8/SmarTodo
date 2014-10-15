@@ -2,14 +2,15 @@ package com.codepath.smartodo.activities;
 
 import java.util.List;
 
-import com.codepath.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.R.id;
 import com.codepath.smartodo.R.layout;
 import com.codepath.smartodo.R.menu;
+import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.snartodo.helpers.AppConstants;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
@@ -38,7 +39,7 @@ public class ItemsViewerActivity extends FragmentActivity {
 	}
 
 	private void initialize(){
-		String name = (String)getIntent().getStringExtra("TODOLIST");
+		String name = (String)getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, name);
 		//??? should be redone - to user TodoList directly when passed from parent activity

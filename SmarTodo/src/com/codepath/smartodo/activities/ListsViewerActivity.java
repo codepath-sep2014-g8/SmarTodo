@@ -14,10 +14,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 
-import com.codepath.adapters.TodoListAdapter;
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.snartodo.helpers.AppConstants;
 import com.etsy.android.grid.StaggeredGridView;
 
 
@@ -57,7 +58,7 @@ public class ListsViewerActivity extends FragmentActivity {
 				String name = todoList.getName();
 				System.out.println("name:" + name);
 				Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
-				i.putExtra("TODOLIST", name);
+				i.putExtra(AppConstants.KEY_TODOLIST, name);
 				startActivity(i);
 			}
     		

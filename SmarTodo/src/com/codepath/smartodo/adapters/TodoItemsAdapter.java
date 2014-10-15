@@ -1,4 +1,4 @@
-package com.codepath.adapters;
+package com.codepath.smartodo.adapters;
 
 import java.util.List;
 

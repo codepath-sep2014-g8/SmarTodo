@@ -40,6 +40,7 @@ public class ItemsViewerActivity extends FragmentActivity {
 
 	private void initialize(){
 		String name = (String)getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
+		setTitle(name);
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, name);
 		//??? should be redone - to user TodoList directly when passed from parent activity

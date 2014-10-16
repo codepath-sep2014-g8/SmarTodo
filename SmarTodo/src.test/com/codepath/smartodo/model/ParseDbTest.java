@@ -10,6 +10,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 /**
@@ -19,6 +20,7 @@ import com.parse.SaveCallback;
  */
 public class ParseDbTest {
 	public static void test() {
+		Log.i("test", "Running tests");
 		final User u = createUser("notsure", "not@sure.com", "Not Sure");
 		
 		runNext(null, new Runnable() {
@@ -29,7 +31,7 @@ public class ParseDbTest {
 	}
 
 	public static User createUser(String username, String email, String realname) {
-		final User u = new User();
+		final User u = new User(new ParseUser());
 		u.setUsername(username);
 		u.setEmail(email);
 		u.setPhoneNumber("4084084088");
@@ -49,7 +51,7 @@ public class ParseDbTest {
 		final Address a = new Address();
 		a.setLocation(new ParseGeoPoint(-10.22, +30.44));
 		a.setName("testlocation123");
-		a.setUser(u);
+		a.setUser(u.getParseUser());
 		
 		runNext(a, new Runnable() {
 			public void run() {
@@ -136,10 +138,11 @@ public class ParseDbTest {
 			deleteRows(TodoItem.class, TodoItem.TEXT_KEY, "testitem*", 1);
 			deleteRows(TodoList.class, TodoList.NAME_KEY, "testlist*", 1);
 			deleteRows(Address.class, Address.NAME_KEY, "testlocation*", 1);
-			deleteRows(User.class, User.REALNAME_KEY, "notsure*", 3);
+			deleteRows(ParseUser.class, User.REALNAME_KEY, "notsure*", 3);
 		} catch(Throwable th) {
 			Log.e("error", "Cleanup failed! Finish it manually at https://parse.com/apps/smartodo/collections", th);
 		}
+		Log.i("test", "Finished running tests");
 	}
 
 	public static <T extends ParseObject> void deleteRows(Class<T> modelClass, String columnName, String valuePattern, int expectedSize) throws ParseException {

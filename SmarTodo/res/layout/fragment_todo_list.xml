@@ -13,4 +13,12 @@
         <requestFocus />
     </EditText>
 
+    <ListView
+        android:id="@+id/lvToDoItemsList_ftdl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+    </ListView>
 </LinearLayout>

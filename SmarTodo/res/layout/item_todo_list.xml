@@ -32,7 +32,7 @@
         android:id="@+id/tvLocation"
         android:layout_width="match_parent"
         android:layout_height="24sp"
-        android:text="Title"
+        android:text="Location"
         android:layout_gravity="center_horizontal"
         android:gravity="left|center_vertical"
         android:textColor="#000000"
@@ -43,6 +43,7 @@
         android:drawablePadding="4dp"
         android:layout_marginTop="1dp"
         android:layout_marginLeft="5dp"
+        android:drawableLeft="@drawable/ic_action_reminder_time"
         />
     
 </LinearLayout>

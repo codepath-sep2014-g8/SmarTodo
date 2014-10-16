@@ -3,6 +3,8 @@ package com.codepath.smartodo.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.parse.ParseException;
@@ -20,6 +22,8 @@ public class NotificationsSender {
 	public static final String SHARING_LISTNAME_KEY = "sharing_listname";
 	public static final String TODOLIST_ID_KEY = "todolist_id";
 	public static final String ACTION_SHARE_TODOLIST_VALUE = "com.codepath.smartodo.notifications.SHARE_TODOLIST";
+	public static final String SHAREDBY_OBJECTID_KEY = "sharedby_objectid";
+	public static final String SHAREDWITH_OBJECTID_KEY = "sharedwith_objectid";
 
 	public NotificationsSender() {
 		// TODO Auto-generated constructor stub
@@ -31,7 +35,7 @@ public class NotificationsSender {
 	 * @param todoList The TodoList to be shared
 	 * @param targetUser The user with whom the TodoList should be shared
 	 */
-	public static void shareTodoList(TodoList todoList, User targetUser) {
+	public static void shareTodoList(TodoList todoList, ParseUser targetUser) {
 		
 		ParseUser currentUser = ParseUser.getCurrentUser();
 		
@@ -46,7 +50,7 @@ public class NotificationsSender {
 		push.setQuery(pushQuery); // Set our Installation query
 		
 		// Setup the data to be pushed
-		JSONObject data = new JSONObject();
+		final JSONObject data = new JSONObject();
 		try {
 			// Set the title for the notification layout
 			data.put("title", currentUser.getUsername()); 
@@ -57,6 +61,10 @@ public class NotificationsSender {
 			
 			data.put(SHAREDBY_USER_KEY, currentUser.getUsername());
 			data.put(SHAREDWITH_USER_KEY, targetUser.getUsername());
+			
+			data.put(SHAREDBY_OBJECTID_KEY, currentUser.getObjectId());
+			data.put(SHAREDWITH_OBJECTID_KEY, targetUser.getObjectId());
+			
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
@@ -68,7 +76,9 @@ public class NotificationsSender {
 			public void done(ParseException e) {
 				if (e != null) {
 					e.printStackTrace();
-				}			
+				} else {
+					Log.d("com.codepath.smartodo", "Sent: " + data.toString());
+				}
 			}
 		});		
 	}

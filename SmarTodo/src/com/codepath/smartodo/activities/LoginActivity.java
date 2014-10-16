@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
@@ -90,12 +93,29 @@ public class LoginActivity extends Activity {
 		installation.put(NotificationsSender.SHAREDWITH_USER_KEY, ParseUser.getCurrentUser());
 		installation.saveInBackground();
 		
+		// For testing
+		sendTestTodoList();
+		
 		Intent intent = new Intent(LoginActivity.this,
 				ListsViewerActivity.class);
 		startActivity(intent);
 		finish();
 	}
 	
+	// This is just for testing purpose. Notice that we are sharing a newly created 
+	// Todo list with the current user itself.
+	private void sendTestTodoList() {
+		TodoList todoList = new TodoList();
+		todoList.setName("Damodar's TodoList");
+		try {
+			todoList.save();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
+	}
+
 	// Send user to ParseLogin
 	private void doParseLogin() {
 		// Log.d("DEBUG", "In LoginActivity.doParseLogin");

@@ -1,5 +1,6 @@
 package com.codepath.smartodo.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 @ParseClassName("TodoList")
 public class TodoList extends ParseObject {
@@ -15,7 +17,7 @@ public class TodoList extends ParseObject {
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
 	private static final String SHARING_KEY = "sharing";
-	private static final String OWNER_KEY = "owner";
+	public static final String OWNER_KEY = "owner";
 	private static final String COLOR_KEY = "color";
 
 	public boolean isCompleted() {
@@ -57,7 +59,15 @@ public class TodoList extends ParseObject {
 	 * @param users
 	 */
 	public void addToSharing(List<User> users) {
-		super.addAll(SHARING_KEY, users);
+		super.addAll(SHARING_KEY, extractParseUsers(users));
+	}
+
+	public List<ParseUser> extractParseUsers(List<User> users) {
+		List<ParseUser> tmpList = new ArrayList<ParseUser>(users.size());
+		for(User u:users) {
+			tmpList.add(u.getParseUser());
+		}
+		return tmpList;
 	}
 	
 	/**
@@ -67,7 +77,7 @@ public class TodoList extends ParseObject {
 	 * @param user
 	 */
 	public void addToSharing(User user) {
-		super.add(SHARING_KEY, user);
+		super.add(SHARING_KEY, user.getParseUser());
 	}
 	
 	/**
@@ -77,16 +87,25 @@ public class TodoList extends ParseObject {
 	 * @param users
 	 */
 	public void removeAllFromSharing(List<User> users) {
-		super.removeAll(SHARING_KEY, users);
+		super.removeAll(SHARING_KEY, extractParseUsers(users));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
-		return (List<User>) super.getParseObject(SHARING_KEY);
+		return convertToUsers((List<ParseUser>) super.getParseObject(SHARING_KEY));
+	}
+
+	public List<User> convertToUsers(List<ParseUser> parseUsers) {
+		List<User> tmpList = new ArrayList<User>(parseUsers.size());
+		for(ParseUser u:parseUsers) {
+			tmpList.add(new User(u));
+		}
+		
+		return tmpList;
 	}
 	
 	public User getOwner() {
-		return (User) super.getParseObject(OWNER_KEY);
+		return new User(super.getParseUser(OWNER_KEY));
 	}
 	
 	public void setOwner(User value) {

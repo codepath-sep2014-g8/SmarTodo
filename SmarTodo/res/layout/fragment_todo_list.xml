@@ -16,9 +16,31 @@
     <ListView
         android:id="@+id/lvToDoItemsList_ftdl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_height="20dp"/>
 
-    </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:id="@+id/llAction_ftdl">
+
+        <ImageView
+            android:id="@+id/ivNotification_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_notification" />
+
+        <ImageView
+            android:id="@+id/ivSave_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save" />
+        
+        <ImageView
+            android:id="@+id/ivDelete_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete" />
+
+    </LinearLayout>
+
 </LinearLayout>

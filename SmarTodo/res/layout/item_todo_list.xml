@@ -3,6 +3,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" 
     android:id="@+id/contentPanel"
+    android:descendantFocusability="blocksDescendants"
     android:background="@drawable/todo_list_grid_view_style">
 
     <TextView

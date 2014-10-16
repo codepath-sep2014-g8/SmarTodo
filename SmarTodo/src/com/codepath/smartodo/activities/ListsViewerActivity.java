@@ -99,6 +99,19 @@ private void setupListeners() {
 			}
     		
 		});
+    	
+    	ivAdd.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+
+	private void showCreateListActivity(){
 		
 	}
     

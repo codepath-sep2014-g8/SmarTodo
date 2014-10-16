@@ -14,4 +14,7 @@
     <string name="login_button_label">Login</string>
     <string name="title_activity_items_viewer">ItemsViewerActivity</string>
 
+    
+    <string name="hint_title">Title</string>
+    <string name="hint_todo_item">Todo item</string>
 </resources>

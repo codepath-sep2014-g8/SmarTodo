@@ -15,6 +15,11 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
+import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.model.User;
+import com.codepath.smartodo.notifications.NotificationsSender;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
@@ -43,7 +48,7 @@ public class LoginActivity extends Activity {
 				
 		if (checkCurrentUserOK()) {
 			// Send the logged in user to our main class
-			startListsViewerActivity();
+			lauchMainApp();
 		} else {		
 			btnLogin.setVisibility(View.VISIBLE);		
 		}
@@ -81,8 +86,8 @@ public class LoginActivity extends Activity {
     	Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     	Log.d("DEBUG", message);
 	}
-
-	private void startListsViewerActivity() {
+	
+	private void lauchMainApp() {	
 		// Populate the model with the logged in user's data
 		// TODO Display progress bar, run outside of UI thread
 		try {
@@ -92,12 +97,36 @@ public class LoginActivity extends Activity {
 			Log.e("error", e.getMessage(), e);
 		}
 		
-		// Log.d("DEBUG", "In LoginActivity.startListsViewerActivity");		
+		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
+		// Register with ParseInstallation the current user under SHARED_USER_KEY 
+		// so that push notifications can be received on behalf of the current user 
+		// when they are sent by other users of the app.
+		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+		installation.put(NotificationsSender.SHAREDWITH_USER_KEY, ParseUser.getCurrentUser());
+		installation.saveInBackground();
+		
+		// For testing
+		sendTestTodoList();
+		
 		Intent intent = new Intent(LoginActivity.this, ListsViewerActivity.class);
 		startActivity(intent);
 		finish();
 	}
 	
+	// This is just for testing purpose. Notice that we are sharing a newly created 
+	// Todo list with the current user itself.
+	private void sendTestTodoList() {
+		TodoList todoList = new TodoList();
+		todoList.setName("Damodar's TodoList");
+		try {
+			todoList.save();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
+	}
+
 	// Send user to ParseLogin
 	private void doParseLogin() {
 		// Log.d("DEBUG", "In LoginActivity.doParseLogin");
@@ -117,8 +146,7 @@ public class LoginActivity extends Activity {
 		if (requestCode == LOGIN_REQUEST) {
 			loginInProgress = false;
 			if (resultCode == RESULT_OK && checkCurrentUserOK()) {
-				// Show the UI for the data
-				startListsViewerActivity();
+			   lauchMainApp();
 			} else { // stay in the login screen
 			    // finish(); 
 			}

@@ -4,14 +4,30 @@
     android:orientation="vertical" 
     android:id="@+id/contentPanel">
 
-    <CheckBox
-        android:id="@+id/cbTodoItemText"
+     <ImageView
+        android:id="@+id/ivCheckbox_ftl"
         android:layout_width="wrap_content"
         android:layout_height="20sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="CheckBox111111111111111111111111111111111111111111111111" 
+        android:src="@drawable/ic_checkbox_empty" 
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"/>
+    
+    <TextView
+        android:id="@+id/tvItemText_ftl"
+        android:layout_width="wrap_content"
+        android:layout_height="20sp"
+        android:layout_toRightOf="@+id/ivCheckbox_ftl"
+        android:hint="@string/hint_todo_item"
         android:textSize="10sp"
+        android:layout_marginLeft="5dp"
+        android:layout_centerVertical="true"
+        android:layout_alignBottom="@+id/ivCheckbox_ftl"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
         />
+
+   
     
 </RelativeLayout>

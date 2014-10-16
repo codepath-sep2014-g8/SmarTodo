@@ -17,12 +17,14 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 	private class ViewHolder {
-		CheckBox cbItemText;
+		ImageView ivImage;
+		TextView tvtemText;
 	}
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects) {
@@ -39,49 +41,68 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					R.layout.item_todo_item, parent, false);
 
 			viewHolder = new ViewHolder();
-			viewHolder.cbItemText = (CheckBox) convertView
-					.findViewById(R.id.cbTodoItemText);
+
+			viewHolder.tvtemText = (TextView) convertView
+					.findViewById(R.id.tvItemText_ftl);
+			viewHolder.ivImage = (ImageView) convertView
+					.findViewById(R.id.ivCheckbox_ftl);
+
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		viewHolder.cbItemText.setText(todoItem.getText());
-		viewHolder.cbItemText.setChecked(todoItem.isCompleted());
+		viewHolder.tvtemText.setText(todoItem.getText());
 
+		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
+		
+		viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
 
-		viewHolder.cbItemText
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onClick(View v) {
+				todoItem.setCompleted(!todoItem.isCompleted());
+				todoItem.saveInBackground(new SaveCallback() {
 
 					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						todoItem.setCompleted(isChecked);
-
-						todoItem.saveInBackground(new SaveCallback() {
-
-							@Override
-							public void done(ParseException arg0) {
-								// Show saving status somewhere
-								updateCompletedStatus(viewHolder, todoItem);
-							}
-						});
+					public void done(ParseException arg0) {
+						updateImage(viewHolder, todoItem);
+						// Show saving status somewhere
+						updateCompletedStatus(viewHolder, todoItem);
 					}
 				});
+			}
+
+		});
 
 		return convertView;
 	}
 
+	private void updateImage(ViewHolder viewHolder, TodoItem todoItem) {
+
+		if (todoItem.isCompleted()) {
+			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_full);
+		} else {
+
+			if (todoItem.getText() == null || todoItem.getText().isEmpty()) {
+				viewHolder.ivImage
+						.setImageResource(R.drawable.ic_content_new_hint);
+			} else {
+				viewHolder.ivImage
+						.setImageResource(R.drawable.ic_checkbox_empty);
+			}
+		}
+	}
+
 	private void updateCompletedStatus(ViewHolder viewHolder, TodoItem todoItem) {
 
-		viewHolder.cbItemText.setPaintFlags(viewHolder.cbItemText
-				.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		if (todoItem.isCompleted()) {
-			viewHolder.cbItemText.setPaintFlags(viewHolder.cbItemText
+			viewHolder.tvtemText.setPaintFlags(viewHolder.tvtemText
 					.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+		} else {
+			viewHolder.tvtemText.setPaintFlags(viewHolder.tvtemText
+					.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
-
 	}
 
 }

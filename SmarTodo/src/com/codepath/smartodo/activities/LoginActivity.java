@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.model.User;
+import com.codepath.smartodo.services.ModelManagerService;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
@@ -79,10 +82,18 @@ public class LoginActivity extends Activity {
     	Log.d("DEBUG", message);
 	}
 
-	private void startListsViewerActivity() {		
+	private void startListsViewerActivity() {
+		// Populate the model with the logged in user's data
+		// TODO Display progress bar, run outside of UI thread
+		try {
+			ModelManagerService.refreshFromUser(new User(currentUser));
+		} catch (ParseException e) {
+			// TODO Display in UI, add retry option
+			Log.e("error", e.getMessage(), e);
+		}
+		
 		// Log.d("DEBUG", "In LoginActivity.startListsViewerActivity");		
-		Intent intent = new Intent(LoginActivity.this,
-				ListsViewerActivity.class);
+		Intent intent = new Intent(LoginActivity.this, ListsViewerActivity.class);
 		startActivity(intent);
 		finish();
 	}
@@ -94,6 +105,7 @@ public class LoginActivity extends Activity {
 			return;
 		}
 		loginInProgress = true;
+		
 		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
 				LoginActivity.this);
 		startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);	
@@ -105,7 +117,8 @@ public class LoginActivity extends Activity {
 		if (requestCode == LOGIN_REQUEST) {
 			loginInProgress = false;
 			if (resultCode == RESULT_OK && checkCurrentUserOK()) {
-			   startListsViewerActivity();
+				// Show the UI for the data
+				startListsViewerActivity();
 			} else { // stay in the login screen
 			    // finish(); 
 			}

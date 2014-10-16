@@ -12,12 +12,12 @@ public class SmarTodoApplication extends Application {
   public void onCreate() {
     super.onCreate();
     
+ // Required - Initialize the Parse SDK
+ 	ParseConfig.init(this);
+    
     modelManagerServiceIntent = new Intent(this, ModelManagerService.class);
     startService(modelManagerServiceIntent);
     
-    // Required - Initialize the Parse SDK
-	ParseConfig.init(this);
-	
 	// TODO For testing purposes only, DO NOT COMMIT when uncommented!
 //    ParseDbTest.test();
   }

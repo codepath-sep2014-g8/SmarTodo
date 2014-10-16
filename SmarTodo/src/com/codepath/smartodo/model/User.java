@@ -1,11 +1,13 @@
 package com.codepath.smartodo.model;
 
 import java.util.Date;
+import java.util.List;
 
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.RefreshCallback;
 import com.parse.SaveCallback;
@@ -48,6 +50,12 @@ public class User {
 		return parseUser.isAuthenticated();
 	}
 
+	public List<TodoList> findAllLists() throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
+		return itemQuery.find();
+	}
+	
 	public boolean equals(Object o) {
 		return parseUser.equals(o);
 	}

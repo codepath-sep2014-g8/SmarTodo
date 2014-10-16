@@ -17,7 +17,7 @@ public class TodoList extends ParseObject {
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
 	private static final String SHARING_KEY = "sharing";
-	private static final String OWNER_KEY = "owner";
+	public static final String OWNER_KEY = "owner";
 	private static final String COLOR_KEY = "color";
 
 	public boolean isCompleted() {

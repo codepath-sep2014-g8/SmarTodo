@@ -3,21 +3,29 @@ package com.codepath.smartodo.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codepath.smartodo.R;
-import com.codepath.smartodo.adapters.TodoItemsAdapter;
-import com.codepath.smartodo.model.TodoItem;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.codepath.smartodo.R;
+import com.codepath.smartodo.adapters.TodoItemsAdapter;
+import com.codepath.smartodo.model.TodoItem;
+import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.services.ModelManagerService;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class TodoListFragment extends Fragment {
 
@@ -38,6 +46,8 @@ public class TodoListFragment extends Fragment {
 	
 	private TodoItemsAdapter adapter;
 	private List<TodoItem> todoItemsList;
+
+	private Button btnSave;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -78,6 +88,34 @@ public class TodoListFragment extends Fragment {
 		llFooter = (LinearLayout)view.findViewById(R.id.llfooter_ftdl);
 		ivFooterReminder = (ImageView)view.findViewById(R.id.ivFooterReminder_ftdl);
 		tvReminder = (TextView)view.findViewById(R.id.tvReminder_ftdl);
+		btnSave = (Button)view.findViewById(R.id.btnSave);
+		
+		btnSave.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final TodoList todoList = new TodoList();
+				todoList.setName(etTitle.getText().toString());
+				todoList.setOwner(ModelManagerService.getUser());
+				
+				// TODO Add more properties
+				
+				todoList.saveInBackground(new SaveCallback() {
+					@Override
+					public void done(ParseException arg0) {
+						for(TodoItem item : todoItemsList) {
+							item.setList(todoList);
+							
+							try {
+								item.save();
+							} catch (ParseException e) {
+								Log.e("error", e.getMessage(), e);
+							}
+						}
+						
+					}
+				});
+			}
+		});
 		
 		lvItems.setAdapter(adapter);
 	}

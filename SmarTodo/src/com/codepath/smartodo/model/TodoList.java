@@ -109,7 +109,7 @@ public class TodoList extends ParseObject {
 	}
 	
 	public void setOwner(User value) {
-		super.put(OWNER_KEY, value);
+		super.put(OWNER_KEY, value.getParseUser());
 	}
 	
 	public int getColor() {

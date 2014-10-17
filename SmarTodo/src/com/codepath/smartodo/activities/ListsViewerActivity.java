@@ -22,6 +22,7 @@ import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.services.ModelManagerService;
 import com.etsy.android.grid.StaggeredGridView;
 
 
@@ -50,9 +51,9 @@ public class ListsViewerActivity extends FragmentActivity {
 		initializeActionBar();
 		
     	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
-    	list = new ArrayList<TodoList>();
+//    	list = new ArrayList<TodoList>();
     	//populateTestData();
-    	adapter = new TodoListAdapter(getBaseContext(), list);
+    	adapter = new TodoListAdapter(getBaseContext(), ModelManagerService.getLists());
     	
     	staggeredGridView.setAdapter(adapter);
     }

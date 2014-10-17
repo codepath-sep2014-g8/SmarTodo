@@ -183,6 +183,7 @@ public class TodoListFragment extends Fragment {
 		if(isValidInput() == false){
 			//Show toast and dont update
 		}
+		//Create todoList if new list being created
 		todoList = new TodoList();
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
@@ -210,7 +211,6 @@ public class TodoListFragment extends Fragment {
 		this.todoItemsList = todoItems;
 		adapter.clear();
 		adapter.addAll(this.todoItemsList);
-		adapter.add(new TodoItem());
 	}
 	
 }

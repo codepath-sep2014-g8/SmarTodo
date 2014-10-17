@@ -14,10 +14,10 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"/>
     
-    <TextView
-        android:id="@+id/tvItemText_ftl"
-        android:layout_width="wrap_content"
-        android:layout_height="20sp"
+    <EditText
+        android:id="@+id/etItemText_ftl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_toRightOf="@+id/ivCheckbox_ftl"
         android:hint="@string/hint_todo_item"
         android:textSize="10sp"

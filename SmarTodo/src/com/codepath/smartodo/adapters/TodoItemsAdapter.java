@@ -10,6 +10,8 @@ import com.parse.SaveCallback;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,11 +27,15 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 	private class ViewHolder {
 		ImageView ivImage;
-		TextView tvtemText;
+		EditText etItemText;
 	}
+	
+	private TodoItem dummy;
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects) {
 		super(context, R.layout.item_todo_item, objects);
+		
+		dummy = new TodoItem();
 	}
 
 	@Override
@@ -42,8 +49,8 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder = new ViewHolder();
 
-			viewHolder.tvtemText = (TextView) convertView
-					.findViewById(R.id.tvItemText_ftl);
+			viewHolder.etItemText = (EditText) convertView
+					.findViewById(R.id.etItemText_ftl);
 			viewHolder.ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
 
@@ -52,7 +59,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		viewHolder.tvtemText.setText(todoItem.getText());
+		viewHolder.etItemText.setText(todoItem.getText());
 
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
@@ -73,6 +80,35 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 				});
 			}
 
+		});
+		
+		viewHolder.etItemText.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				String text = viewHolder.etItemText.getText().toString();
+				if(text == null || text.isEmpty()){
+					//Hide if any addition dummy was added
+				}
+				else{
+					//Show a dummy one
+				}
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 
 		return convertView;
@@ -97,10 +133,10 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private void updateCompletedStatus(ViewHolder viewHolder, TodoItem todoItem) {
 
 		if (todoItem.isCompleted()) {
-			viewHolder.tvtemText.setPaintFlags(viewHolder.tvtemText
+			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
 					.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
-			viewHolder.tvtemText.setPaintFlags(viewHolder.tvtemText
+			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
 					.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
 	}

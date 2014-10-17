@@ -8,6 +8,7 @@ import com.codepath.smartodo.R.layout;
 import com.codepath.smartodo.R.menu;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
+import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
@@ -17,6 +18,7 @@ import com.parse.ParseQuery;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,6 +36,7 @@ public class ItemsViewerActivity extends FragmentActivity {
 	private TodoList todoList;
 	private ImageView ivAdd;
 	private ImageView ivBack;
+	private TodoListFragment fragmentTodoList;
 	
 
 	@Override
@@ -67,12 +70,15 @@ public class ItemsViewerActivity extends FragmentActivity {
 			e1.printStackTrace();
 		}
 		
-		lvToDoItems = (ListView)findViewById(R.id.lvToDoItemsList);
+		fragmentTodoList = (TodoListFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentTodoList);
+		fragmentTodoList.setList(itemsList);
 		
-		
-		adapter = new TodoItemsAdapter(getBaseContext(), itemsList);
-		
-		lvToDoItems.setAdapter(adapter);
+//		lvToDoItems = (ListView)findViewById(R.id.lvToDoItemsList);
+//		
+//		
+//		adapter = new TodoItemsAdapter(getBaseContext(), itemsList);
+//		
+//		lvToDoItems.setAdapter(adapter);
 	}
 	
 	

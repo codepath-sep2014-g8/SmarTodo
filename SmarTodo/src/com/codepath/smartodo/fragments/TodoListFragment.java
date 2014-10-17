@@ -88,5 +88,11 @@ public class TodoListFragment extends Fragment {
 	}
 	
 	
+	public void setList(List<TodoItem> todoItems){
+		this.todoItemsList = todoItems;
+		adapter.clear();
+		adapter.addAll(this.todoItemsList);
+		adapter.add(new TodoItem());
+	}
 	
 }

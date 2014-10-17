@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/ic_checkbox_empty" 
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="15dp"/>
     
     <TextView
         android:id="@+id/tvItemText_ftl"

@@ -93,6 +93,7 @@ public class TodoListFragment extends Fragment {
 		btnSave.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.i("info", "Saving list");
 				final TodoList todoList = new TodoList();
 				todoList.setName(etTitle.getText().toString());
 				todoList.setOwner(ModelManagerService.getUser());
@@ -102,6 +103,7 @@ public class TodoListFragment extends Fragment {
 				todoList.saveInBackground(new SaveCallback() {
 					@Override
 					public void done(ParseException arg0) {
+						Log.i("info", "Saving " + todoItemsList.size() + " list items");
 						for(TodoItem item : todoItemsList) {
 							item.setList(todoList);
 							
@@ -112,8 +114,11 @@ public class TodoListFragment extends Fragment {
 							}
 						}
 						
+						Log.i("info", "Items saved");
 					}
 				});
+				
+				Log.i("info", "Initial list save complete");
 			}
 		});
 		

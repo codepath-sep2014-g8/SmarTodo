@@ -128,6 +128,58 @@ public class TodoListFragment extends Fragment {
 	
 	private void setupListeners(){
 		
+		ivNotifications.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// Show notification creation window	
+			}
+		});
+		
+		
+		ivShare.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// Show Share activity
+				
+			}
+		});
+		
+		
+		ivColorPicker.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// Show color picker	
+			}
+		});
+		
+		
+		ivSave.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// Validate and save the list
+				
+			}
+		});
+		
+		ivDelete.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// if owner of the list then only allow deletion
+			}
+		});
+	}
+	
+	
+	/*
+	 * Populate the TodoList object
+	 */
+	private void updateTodoList(){
+		
 	}
 	
 	

@@ -46,7 +46,7 @@ public class TodoListFragment extends Fragment {
 	
 	private TodoItemsAdapter adapter;
 	private List<TodoItem> todoItemsList;
-
+	private TodoList todoList;
 	private Button btnSave;
 	
 	@Override
@@ -180,6 +180,29 @@ public class TodoListFragment extends Fragment {
 	 */
 	private void updateTodoList(){
 		
+		if(isValidInput() == false){
+			//Show toast and dont update
+		}
+		todoList = new TodoList();
+		todoList.setName(etTitle.getText().toString());
+		todoList.setOwner(ModelManagerService.getUser());
+	}
+	
+	private boolean isValidInput(){
+		boolean isValid = false;
+		
+		String title = etTitle.getText().toString();
+		
+		if(title == null || title.isEmpty()){
+			return isValid;
+		}
+		
+		//Validate items
+		for(int i = 0; i < adapter.getCount(); i++){
+			
+		}
+		
+		return true;
 	}
 	
 	

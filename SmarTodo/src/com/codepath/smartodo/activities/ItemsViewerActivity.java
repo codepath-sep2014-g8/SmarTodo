@@ -1,5 +1,6 @@
 package com.codepath.smartodo.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.codepath.smartodo.R;
@@ -49,8 +50,23 @@ public class ItemsViewerActivity extends FragmentActivity {
 
 	private void initialize(){
 		initializeActionBar();
+		fragmentTodoList = (TodoListFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentTodoList);
+		
+		
+		if(getIntent().hasExtra(AppConstants.KEY_TODOLIST) == false){
+			itemsList = new ArrayList<TodoItem>();
+			fragmentTodoList.setList(itemsList);
+			return;
+		}
 		
 		String name = (String)getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
+		
+		if(name == null || name.isEmpty()){
+			itemsList = new ArrayList<TodoItem>();
+			fragmentTodoList.setList(itemsList);
+			return;
+		}
+		
 		setTitle(name);
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, name);
@@ -70,7 +86,7 @@ public class ItemsViewerActivity extends FragmentActivity {
 			e1.printStackTrace();
 		}
 		
-		fragmentTodoList = (TodoListFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentTodoList);
+		
 		fragmentTodoList.setList(itemsList);
 		
 //		lvToDoItems = (ListView)findViewById(R.id.lvToDoItemsList);

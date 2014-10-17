@@ -39,14 +39,6 @@ public class ListsViewerActivity extends FragmentActivity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.activity_lists_viewer);
     	
-//    	Button btnOpenItemsViewer = (Button) findViewById(R.id.btnOpenItemsViewer);
-//    	btnOpenItemsViewer.setOnClickListener(new OnClickListener() {
-//			@Override public void onClick(View v) {
-//				Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
-//				startActivity(i);
-//			}
-//    	});
-    	
     	initialize();
     	setupListeners();
     }
@@ -59,7 +51,7 @@ public class ListsViewerActivity extends FragmentActivity {
 		
     	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
     	list = new ArrayList<TodoList>();
-    	populateTestData();
+    	//populateTestData();
     	adapter = new TodoListAdapter(getBaseContext(), list);
     	
     	staggeredGridView.setAdapter(adapter);
@@ -104,15 +96,16 @@ private void setupListeners() {
 			
 			@Override
 			public void onClick(View v) {
-				
-				
+				showCreateListActivity();
 			}
 		});
 		
 	}
 
 	private void showCreateListActivity(){
+		Intent intent = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
 		
+		startActivity(intent);
 	}
     
     private void populateTestData(){

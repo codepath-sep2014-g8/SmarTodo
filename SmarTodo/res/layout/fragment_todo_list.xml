@@ -27,6 +27,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/item_todolist_actions_border_style"
+        android:orientation="horizontal"
         >
         
         <TextView
@@ -59,7 +60,7 @@
         android:text="Shared with ...."
         android:textSize="8dp"/>
         
-     </LinearLayout>
+        </LinearLayout>
         
     <LinearLayout
         android:layout_width="match_parent"
@@ -146,8 +147,9 @@
         android:layout_height="wrap_content"
         android:ems="10" 
         android:layout_marginLeft="6dp"
-        android:text="location ortime related info"
-        android:layout_gravity="center"/>
+        android:text="location or time related info"
+        android:textAlignment="center"
+        android:textSize="8dp"/>
         </LinearLayout>
         
     <LinearLayout

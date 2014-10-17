@@ -97,36 +97,11 @@ public class LoginActivity extends Activity {
 			Log.e("error", e.getMessage(), e);
 		}
 		
-		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
-		// Register with ParseInstallation the current user under SHARED_USER_KEY 
-		// so that push notifications can be received on behalf of the current user 
-		// when they are sent by other users of the app.
-		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put(NotificationsSender.SHAREDWITH_USER_KEY, ParseUser.getCurrentUser());
-		installation.saveInBackground();
-		
-		// For testing
-		sendTestTodoList();
-		
 		Intent intent = new Intent(LoginActivity.this, ListsViewerActivity.class);
 		startActivity(intent);
 		finish();
 	}
 	
-	// This is just for testing purpose. Notice that we are sharing a newly created 
-	// Todo list with the current user itself.
-	private void sendTestTodoList() {
-		TodoList todoList = new TodoList();
-		todoList.setName("Damodar's TodoList");
-		try {
-			todoList.save();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
-	}
-
 	// Send user to ParseLogin
 	private void doParseLogin() {
 		// Log.d("DEBUG", "In LoginActivity.doParseLogin");

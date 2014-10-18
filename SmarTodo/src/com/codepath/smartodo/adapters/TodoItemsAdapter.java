@@ -80,7 +80,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
 				String text = viewHolder.etItemText.getText().toString();
-				System.out.println("#### " + todoItem.getText());
 				todoItem.setText(text);
 				if(text == null || text.isEmpty()){
 					//Hide if any addition dummy was added

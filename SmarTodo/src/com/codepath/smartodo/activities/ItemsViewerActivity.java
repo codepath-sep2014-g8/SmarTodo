@@ -34,12 +34,10 @@ public class ItemsViewerActivity extends FragmentActivity {
 	private void initialize(){
 		initializeActionBar();
 
-		if (getIntent().hasExtra(AppConstants.KEY_TODOLIST) == false) {
-			return;
+		String name = null;
+		if (getIntent().hasExtra(AppConstants.KEY_TODOLIST)) {			
+			name = (String) getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
 		}
-
-		String name = (String) getIntent().getStringExtra(
-				AppConstants.KEY_TODOLIST);
 
 		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(name);
 		FragmentTransaction transaction = getSupportFragmentManager()

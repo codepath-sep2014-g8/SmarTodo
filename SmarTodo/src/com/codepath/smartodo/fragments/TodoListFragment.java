@@ -6,6 +6,8 @@ import java.util.List;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +22,13 @@ import android.widget.TextView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
+import com.codepath.smartodo.enums.TodoListDisplayMode;
+import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -33,6 +38,8 @@ public class TodoListFragment extends Fragment {
 	
 	//UI elements
 	private EditText etTitle;
+	private Button btnAdd;
+	private EditText etNewItem;
 	private ListView lvItems;
 	private LinearLayout llActions;
 	private ImageView ivNotifications;
@@ -46,8 +53,24 @@ public class TodoListFragment extends Fragment {
 	
 	private TodoItemsAdapter adapter;
 	private List<TodoItem> todoItemsList;
-	private TodoList todoList;
+	private TodoList todoList = null;
+	private String listName = null;
+	
+	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
+	
 	private Button btnSave;
+	
+	public static TodoListFragment newInstance(String todoListName)
+    {
+		TodoListFragment fragment = new TodoListFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putString(AppConstants.KEY_TODOLIST, todoListName);
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -56,6 +79,7 @@ public class TodoListFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_todo_list, container, false);
 		
 		initializeViews(view);
+		populateData();
 		setupListeners();
 		
 		return view;
@@ -71,13 +95,60 @@ public class TodoListFragment extends Fragment {
 
 
 	private void initialize(){
-		todoItemsList = new ArrayList<TodoItem>();
+		
+		initializeTodoList();
+		
 		adapter = new TodoItemsAdapter(getActivity(), todoItemsList);	
+	}
+	
+	private void initializeTodoList(){
+		
+		
+		if(getArguments() != null && getArguments().containsKey(AppConstants.KEY_TODOLIST)){
+			listName = getArguments().getString(AppConstants.KEY_TODOLIST);
+		}
+		
+		if(listName == null || listName.isEmpty()){	
+			todoList = new TodoList();
+			todoItemsList = new ArrayList<TodoItem>();
+			mode = TodoListDisplayMode.CREATE;
+			return;
+		}
+		
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
+		
+		try {
+			List<TodoList> list = itemQuery.find();
+			
+			todoList = list.get(0);
+			todoItemsList = todoList.getAllItems();
+		} catch (ParseException e1) {
+			
+			Log.d(TAG, "Excpetion while getting the todo list");
+			e1.printStackTrace();
+			
+			todoList = new TodoList();
+			todoItemsList = new ArrayList<TodoItem>();
+			mode = TodoListDisplayMode.CREATE;
+		}
+		
+		if(todoList == null){
+			todoList = new TodoList();
+			todoItemsList = new ArrayList<TodoItem>();
+			mode = TodoListDisplayMode.CREATE;
+		}
+		
+		if(todoItemsList == null){
+			todoItemsList = new ArrayList<TodoItem>();
+		}
 	}
 
 	private void initializeViews(View view){
 		
 		etTitle = (EditText)view.findViewById(R.id.etTitle_ftdl);
+		etNewItem = (EditText)view.findViewById(R.id.etNewItem_ftdl);
+		btnAdd = (Button)view.findViewById(R.id.btnAdd_ftdl);
 		lvItems = (ListView)view.findViewById(R.id.lvToDoItemsList_ftdl);
 		llActions = (LinearLayout)view.findViewById(R.id.llAction_ftdl);
 		ivNotifications = (ImageView)view.findViewById(R.id.ivNotification_ftdl);
@@ -125,8 +196,67 @@ public class TodoListFragment extends Fragment {
 		lvItems.setAdapter(adapter);
 	}
 	
+	private void populateData(){
+		
+		if(mode == TodoListDisplayMode.CREATE){
+			return;
+		}
+		
+		etTitle.setText(todoList.getName());
+		
+	}
 	
 	private void setupListeners(){
+		
+		etNewItem.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				
+				String itemText = etNewItem.getText().toString();
+				
+				if(itemText == null || itemText.isEmpty() || itemText.trim().isEmpty()){
+					btnAdd.setEnabled(false);
+				}
+				else{
+					btnAdd.setEnabled(true);
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		btnAdd.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				String itemText = etNewItem.getText().toString();
+						
+				if(itemText == null || itemText.isEmpty() || itemText.trim().isEmpty()){
+					return;
+				}
+				
+				TodoItem todoItem = new TodoItem();
+				todoItem.setText(itemText);
+				
+				adapter.add(todoItem);
+				
+				etNewItem.setText("");
+			}
+		});
+		
 		
 		ivNotifications.setOnClickListener(new View.OnClickListener() {
 			
@@ -160,7 +290,7 @@ public class TodoListFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				// Validate and save the list
+				updateTodoList();
 				
 			}
 		});
@@ -184,9 +314,33 @@ public class TodoListFragment extends Fragment {
 			//Show toast and dont update
 		}
 		//Create todoList if new list being created
-		todoList = new TodoList();
+		if(todoList == null){
+			todoList = new TodoList();
+		}
+		
+		Log.i("info", "Saving TODO List " + listName);
+		
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
+		
+		todoList.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException arg0) {
+				Log.i("info", "Saving " + todoItemsList.size() + " list items");
+				for(TodoItem item : todoItemsList) {
+					Log.i("info", "Saving " + item.getText() + "   ");
+					item.setList(todoList);
+					
+					try {
+						item.save();
+					} catch (ParseException e) {
+						Log.e("error", e.getMessage(), e);
+					}
+				}
+				
+				Log.i("info", "Items saved");
+			}
+		});
 	}
 	
 	private boolean isValidInput(){
@@ -204,13 +358,6 @@ public class TodoListFragment extends Fragment {
 		}
 		
 		return true;
-	}
-	
-	
-	public void setList(List<TodoItem> todoItems){
-		this.todoItemsList = todoItems;
-		adapter.clear();
-		adapter.addAll(this.todoItemsList);
 	}
 	
 }

@@ -14,13 +14,11 @@
 
     </ListView>
 
-    <fragment
-        android:id="@+id/fragmentTodoList"
-        android:name="com.codepath.smartodo.fragments.TodoListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        tools:layout="@layout/fragment_todo_list" />
+     <FrameLayout
+       android:id="@+id/fragmentContainer"
+       android:layout_height="match_parent"
+       android:layout_width="match_parent">
+  	</FrameLayout>
+    
 
 </RelativeLayout>

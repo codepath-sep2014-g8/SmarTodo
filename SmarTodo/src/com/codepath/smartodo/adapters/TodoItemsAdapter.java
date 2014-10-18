@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.model.TodoItem;
-import com.codepath.smartodo.model.TodoList;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
@@ -16,12 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
@@ -30,12 +25,9 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		EditText etItemText;
 	}
 	
-	private TodoItem dummy;
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects) {
 		super(context, R.layout.item_todo_item, objects);
-		
-		dummy = new TodoItem();
 	}
 
 	@Override
@@ -88,6 +80,8 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
 				String text = viewHolder.etItemText.getText().toString();
+				System.out.println("#### " + todoItem.getText());
+				todoItem.setText(text);
 				if(text == null || text.isEmpty()){
 					//Hide if any addition dummy was added
 				}

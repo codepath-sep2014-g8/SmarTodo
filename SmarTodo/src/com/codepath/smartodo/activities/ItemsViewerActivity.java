@@ -1,43 +1,26 @@
 package com.codepath.smartodo.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.codepath.smartodo.R;
-import com.codepath.smartodo.R.id;
-import com.codepath.smartodo.R.layout;
-import com.codepath.smartodo.R.menu;
-import com.codepath.smartodo.adapters.TodoItemsAdapter;
-import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
-import com.codepath.smartodo.fragments.TodoListFragment;
-import com.codepath.smartodo.helpers.AppConstants;
-import com.codepath.smartodo.model.TodoItem;
-import com.codepath.smartodo.model.TodoList;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-
 import android.app.ActionBar;
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
+
+import com.codepath.smartodo.R;
+import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
+import com.codepath.smartodo.fragments.TodoListFragment;
+import com.codepath.smartodo.helpers.AppConstants;
+
 
 public class ItemsViewerActivity extends FragmentActivity {
 	
-	private ListView lvToDoItems;
-	private TodoItemsAdapter adapter;
-	private List<TodoItem> itemsList;
-	private TodoList todoList;
 	private ImageView ivAdd;
 	private ImageView ivBack;
-	private TodoListFragment fragmentTodoList;
 	
 
 	@Override
@@ -50,51 +33,19 @@ public class ItemsViewerActivity extends FragmentActivity {
 
 	private void initialize(){
 		initializeActionBar();
-		fragmentTodoList = (TodoListFragment)getSupportFragmentManager().findFragmentById(R.id.fragmentTodoList);
-		
-		
-		if(getIntent().hasExtra(AppConstants.KEY_TODOLIST) == false){
-			itemsList = new ArrayList<TodoItem>();
-			fragmentTodoList.setList(itemsList);
+
+		if (getIntent().hasExtra(AppConstants.KEY_TODOLIST) == false) {
 			return;
 		}
-		
-		String name = (String)getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
-		
-		if(name == null || name.isEmpty()){
-			itemsList = new ArrayList<TodoItem>();
-			fragmentTodoList.setList(itemsList);
-			return;
-		}
-		
-		setTitle(name);
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, name);
-		//??? should be redone - to user TodoList directly when passed from parent activity
-		
-		try {
-			List<TodoList> list = itemQuery.find();
-			for(TodoList tdl : list){
-				itemsList = tdl.getAllItems();
-				if(itemsList.size() > 0){
-					break;
-				}
-			}
-			todoList = list.get(0);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		fragmentTodoList.setList(itemsList);
-		
-//		lvToDoItems = (ListView)findViewById(R.id.lvToDoItemsList);
-//		
-//		
-//		adapter = new TodoItemsAdapter(getBaseContext(), itemsList);
-//		
-//		lvToDoItems.setAdapter(adapter);
+
+		String name = (String) getIntent().getStringExtra(
+				AppConstants.KEY_TODOLIST);
+
+		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(name);
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.fragmentContainer, fragmentTodoList);
+		transaction.commit();
 	}
 	
 	
@@ -105,6 +56,8 @@ public class ItemsViewerActivity extends FragmentActivity {
         View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
         
         ivAdd = (ImageView)view.findViewById(R.id.ivAdd_todolist);
+        ivAdd.setVisibility(View.GONE);
+        
         ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
         ivBack.setVisibility(View.VISIBLE);
         

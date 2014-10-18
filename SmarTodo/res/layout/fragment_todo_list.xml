@@ -10,14 +10,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_title"
-        android:ems="10" >
+        android:ems="10" 
+        android:background="@drawable/title_selector">
         <requestFocus />
     </EditText>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/action_bar_color_grid_view"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/etNewItem_ftdl"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="0.57"
+            android:background="@drawable/item_selector"
+            android:ems="10"
+            android:hint="@string/hint_todo_item" 
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_content_new_hint">
+        </EditText>
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="10sp"
+            android:text="Add" 
+            android:layout_gravity="center"/>
+    </LinearLayout>
+    
     <ListView
         android:id="@+id/lvToDoItemsList_ftdl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="20dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

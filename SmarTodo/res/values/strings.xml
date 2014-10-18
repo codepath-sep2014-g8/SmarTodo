@@ -110,4 +110,7 @@
     <string name="radius_pattern">* #.0000</string>
     <!-- End: Geofencing related strings -->
 
+    
+    <string name="hint_title">Title</string>
+    <string name="hint_todo_item">Todo item</string>
 </resources>

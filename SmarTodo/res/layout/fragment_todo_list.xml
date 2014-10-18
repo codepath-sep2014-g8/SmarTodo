@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/action_bar_color_grid_view">
+
+    <EditText
+        android:id="@+id/etTitle_ftdl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_title"
+        android:ems="10" >
+        <requestFocus />
+    </EditText>
+
+    <ListView
+        android:id="@+id/lvToDoItemsList_ftdl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="20dp" 
+        android:id="@+id/llListInfo"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/item_todolist_actions_border_style"
+        android:orientation="horizontal"
+        >
+        
+        <TextView
+        android:id="@+id/tvOwner_ftdl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:layout_marginLeft="6dp"
+        android:layout_gravity="bottom"
+        android:text="Owner:You"
+        android:textSize="8dp"/>
+        
+        <TextView
+        android:id="@+id/tvEditedAt_ftdl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:layout_marginLeft="6dp"
+        android:layout_gravity="bottom"
+        android:text="Edited at 11:12:13PM"
+        android:textSize="8dp"/>
+        
+        <TextView
+        android:id="@+id/tvSharedWith_ftdl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:layout_marginLeft="6dp"
+        android:layout_gravity="bottom"
+        android:text="Shared with ...."
+        android:textSize="8dp"/>
+        
+        </LinearLayout>
+        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:id="@+id/llAction_ftdl"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/item_todolist_actions_border_style"
+        >
+
+        <ImageView
+            android:id="@+id/ivNotification_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_notification" 
+            android:layout_marginLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
+        
+        <ImageView
+            android:id="@+id/ivShare_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_social_share" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+
+        <ImageView
+            android:id="@+id/ivColorPicker_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_color_picker" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+        
+        <ImageView
+            android:id="@+id/ivSave_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+        
+        <ImageView
+            android:id="@+id/ivDelete_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+
+    </LinearLayout>
+    
+    
+        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:id="@+id/llfooter_ftdl"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/item_todolist_actions_border_style"
+        >
+
+        <ImageView
+            android:id="@+id/ivFooterReminder_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:src="@drawable/ic_action_reminder_time" />
+        
+        <TextView
+        android:id="@+id/tvReminder_ftdl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:layout_marginLeft="6dp"
+        android:text="location or time related info"
+        android:layout_gravity="center"
+        android:textSize="8dp"/>
+        </LinearLayout>
+        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:id="@+id/llShareInfo_ftdl"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/item_todolist_actions_border_style"
+        >
+
+        <ImageView
+            android:id="@+id/ivSharedWith_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:src="@drawable/ic_action_reminder_time" />
+        
+        </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+
+</LinearLayout>

@@ -27,7 +27,7 @@ public class NotificationsReciever extends BroadcastReceiver {
 				if (action.equals(NotificationsSender.ACTION_SHARE_TODOLIST_VALUE)) {
 					JSONObject data = new JSONObject(intent.getExtras().getString("com.parse.Data"));
 					
-					Log.d("com.codepath.smartodo", "Received: " + data.toString());
+					Log.d(TAG, "Received: " + data.toString());
 					
 					String todoListName = data.getString(NotificationsSender.SHARING_LISTNAME_KEY);
 					String todoListId = data.getString(NotificationsSender.TODOLIST_ID_KEY);

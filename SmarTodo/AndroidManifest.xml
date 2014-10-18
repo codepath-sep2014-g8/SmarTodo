@@ -15,6 +15,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    
+     <!--
+        Requests address-level location access, which is usually
+        necessary for geofencing
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
  
 <!--
   IMPORTANT: Change "com.parse.tutorials.pushnotifications.permission.C2D_MESSAGE" in the lines below
@@ -79,8 +85,14 @@
                 android:value="com.codepath.smartodo.activities.ListsViewerActivity" />
         </activity>
         
+        <activity android:name=".activities.GeofenceActivity" >
+           
+           
+        </activity>
+        
         <service android:name=".services.ModelManagerService" android:enabled="true"></service>>
         <service android:name="com.parse.PushService" />
+        <service android:name="com.codepath.smartodo.geofence.ReceiveTransitionsIntentService" android:exported="false"></service>
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
@@ -117,7 +129,9 @@
         </receiver>
         
         <!-- replace @drawable/push_icon with your push icon identifier -->
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/ic_action_warning"/>
+        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/ic_notification"/>
+       <!--  <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" > -->
+         <meta-data android:name="com.google.android.gms.version" android:value="6111000" />
 
     </application>
 

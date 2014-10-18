@@ -1,7 +1,13 @@
 package com.codepath.smartodo.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import android.util.Log;
 
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
@@ -54,6 +60,52 @@ public class User {
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
 		return itemQuery.find();
+	}
+	
+	/**
+	 * Supports only substring based search in the realname, email and username fields. Note that the search is case SENSITIVE.
+	 * 
+	 * @param substring
+	 * @return
+	 */
+	public static Collection<User> findAllLike(String substring) {
+		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
+		
+		String generousPattern = substring;//"*" + pattern + "*";
+		List<ParseUser> users = new ArrayList<ParseUser>();
+		
+		ParseQuery<ParseUser> itemQuery;
+		try {
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery.whereContains(REALNAME_KEY, generousPattern);
+			users.addAll(itemQuery.find());
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+		}
+		
+		try {
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery.whereContains("email", generousPattern);
+			users.addAll(itemQuery.find());
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+		}
+		
+		try {
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery.whereContains("username", generousPattern);
+			users.addAll(itemQuery.find());
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+		}
+		
+		Map<String, User> uniqueUsers = new HashMap<String, User>();
+		
+		for(ParseUser tmpUser : users) {
+			uniqueUsers.put(tmpUser.getUsername(), new User(tmpUser));
+		}
+		
+		return uniqueUsers.values();
 	}
 	
 	public boolean equals(Object o) {

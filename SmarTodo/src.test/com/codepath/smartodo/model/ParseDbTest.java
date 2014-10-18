@@ -1,6 +1,7 @@
 package com.codepath.smartodo.model;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +72,23 @@ public class ParseDbTest {
 		User u3 = createUser("notsure2", "not3@sure.com", "Not Sure 3");
 		
 		list.addToSharing(Arrays.asList(new User[]{u2, u3}));
+		
+		runNext(list, new Runnable() {
+			public void run() {
+				testFindAllLike(list, a);
+			}
+		});
+	}
+
+	protected static void testFindAllLike(final TodoList list, final Address a) {
+		Collection<User> users = User.findAllLike("sure.co");
+		softAssertEquals(3, users.size());
+		
+		users = User.findAllLike("notsu");
+		softAssertEquals(3, users.size());
+		
+		users = User.findAllLike(" Sure ");
+		softAssertEquals(3, users.size());
 		
 		runNext(list, new Runnable() {
 			public void run() {

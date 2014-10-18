@@ -45,6 +45,62 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					.findViewById(R.id.etItemText_ftl);
 			viewHolder.ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
+			
+			/*
+			 * 
+			 * 
+			 * Code below is temporary move to appropriate place
+			 * 
+			 * 
+			 */
+			
+			viewHolder.etItemText.addTextChangedListener(new TextWatcher() {
+				
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					// TODO Auto-generated method stub
+					String text = viewHolder.etItemText.getText().toString();
+					todoItem.setText(text);
+					if(text == null || text.isEmpty()){
+						//Hide if any addition dummy was added
+					}
+					else{
+						//Show a dummy one
+					}
+					
+				}
+				
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void afterTextChanged(Editable s) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					todoItem.setCompleted(!todoItem.isCompleted());
+					todoItem.saveInBackground(new SaveCallback() {
+
+						@Override
+						public void done(ParseException arg0) {
+							updateImage(viewHolder, todoItem);
+							// Show saving status somewhere
+							updateCompletedStatus(viewHolder, todoItem);
+						}
+					});
+				}
+
+			});
 
 			convertView.setTag(viewHolder);
 		} else {
@@ -56,54 +112,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
 		
-		viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				todoItem.setCompleted(!todoItem.isCompleted());
-				todoItem.saveInBackground(new SaveCallback() {
-
-					@Override
-					public void done(ParseException arg0) {
-						updateImage(viewHolder, todoItem);
-						// Show saving status somewhere
-						updateCompletedStatus(viewHolder, todoItem);
-					}
-				});
-			}
-
-		});
-		
-		viewHolder.etItemText.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				// TODO Auto-generated method stub
-				String text = viewHolder.etItemText.getText().toString();
-				todoItem.setText(text);
-				if(text == null || text.isEmpty()){
-					//Hide if any addition dummy was added
-				}
-				else{
-					//Show a dummy one
-				}
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-
 		return convertView;
 	}
 

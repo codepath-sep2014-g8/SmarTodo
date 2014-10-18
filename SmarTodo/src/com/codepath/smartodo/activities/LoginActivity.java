@@ -15,9 +15,11 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
+import com.codepath.smartodo.model.TodoGeofence;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
+import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
@@ -106,13 +108,18 @@ public class LoginActivity extends Activity {
 		installation.saveInBackground();
 		
 		// For testing
-		sendTestTodoList();
+		someTestCode();
 		
 		Intent intent = new Intent(LoginActivity.this, ListsViewerActivity.class);
 		startActivity(intent);
 		finish();
 	}
 	
+	private void someTestCode() {
+		sendTestTodoList();	
+		// setupTestGeofences();	
+	}
+
 	// This is just for testing purpose. Notice that we are sharing a newly created 
 	// Todo list with the current user itself.
 	private void sendTestTodoList() {
@@ -125,6 +132,17 @@ public class LoginActivity extends Activity {
 			e.printStackTrace();
 		}
 		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
+	}
+	
+	private void setupTestGeofences() {
+		TodoGeofence todoGeofence1= new TodoGeofence(null, 37.288007, 121.97236700000002, 20,
+				GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS, 
+				Geofence.GEOFENCE_TRANSITION_ENTER, 
+				"Geofencing message for Home at 1274 Colleen Way",
+            		 currentUser.getObjectId(), "TodoList1234", "TodoItem1");
+		Intent intent = new Intent(LoginActivity.this, GeofenceActivity.class);
+		intent.putExtra(GeofenceActivity.TODO_GEOFENCE_KEY, todoGeofence1);
+		startActivity(intent);		
 	}
 
 	// Send user to ParseLogin

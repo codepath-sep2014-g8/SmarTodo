@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -15,19 +15,20 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    
-     <!--
+
+    <!--
         Requests address-level location access, which is usually
-        necessary for geofencing
+        necessary for geofencing
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
- 
-<!--
+
+    <!--
   IMPORTANT: Change "com.parse.tutorials.pushnotifications.permission.C2D_MESSAGE" in the lines below
-  to match your app's package name + ".permission.C2D_MESSAGE".
--->
-    <permission android:protectionLevel="signature"
-        android:name="com.codepath.smartodo.permission.C2D_MESSAGE" />
+  to match your app's package name + ".permission.C2D_MESSAGE".
+    -->
+    <permission
+        android:name="com.codepath.smartodo.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
 
     <uses-permission android:name="com.codepath.smartodo.permission.C2D_MESSAGE" />
 
@@ -77,22 +78,27 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="com.codepath.smartodo.activities.ItemsViewerActivity"
+            android:name=".activities.ItemsViewerActivity"
             android:label="@string/title_activity_items_viewer"
             android:parentActivityName=".activities.ListsViewerActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.codepath.smartodo.activities.ListsViewerActivity" />
         </activity>
-        
         <activity android:name=".activities.GeofenceActivity" >
-           
-           
         </activity>
-        
-        <service android:name=".services.ModelManagerService" android:enabled="true"></service>>
+
+        <service
+            android:name=".services.ModelManagerService"
+            android:enabled="true" >
+        </service>
+>
         <service android:name="com.parse.PushService" />
-        <service android:name="com.codepath.smartodo.geofence.ReceiveTransitionsIntentService" android:exported="false"></service>
+        <service
+            android:name=".geofence.ReceiveTransitionsIntentService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
@@ -107,12 +113,12 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-<!--       IMPORTANT: Change "com.parse.tutorials.pushnotifications" to match your app's package name. -->
+                <!-- IMPORTANT: Change "com.parse.tutorials.pushnotifications" to match your app's package name. -->
                 <category android:name="com.codepath.smartodo" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:name=".notifications.ModifiedParsePushBroadcastReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -120,19 +126,27 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.codepath.smartodo.notifications.NotificationsReciever" >
+        <receiver android:name=".notifications.NotificationsReciever" >
             <intent-filter>
                 <action android:name="com.codepath.smartodo.notifications.SHARE_TODOLIST" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        
-        <!-- replace @drawable/push_icon with your push icon identifier -->
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/ic_notification"/>
-       <!--  <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" > -->
-         <meta-data android:name="com.google.android.gms.version" android:value="6111000" />
 
+        <!-- replace @drawable/push_icon with your push icon identifier -->
+        <meta-data
+            android:name="com.parse.push.notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <!-- <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" > -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="6111000" />
+
+        <activity
+            android:name="com.codepath.smartodo.activities.ShowGeoNotificationActivity"
+            android:label="@string/title_activity_show_geo_notification" >
+        </activity>
     </application>
 
 </manifest>

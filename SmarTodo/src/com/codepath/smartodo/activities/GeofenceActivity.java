@@ -69,6 +69,7 @@ public class GeofenceActivity extends FragmentActivity {
     static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
 	static final String TODO_GEOFENCE_KEY = "Todo_Geofence";
+	public static final String TODO_GEOFENCES_KEY = "Todo_Geofences";
 
     // Store the current request
     private REQUEST_TYPE mRequestType;
@@ -100,7 +101,7 @@ public class GeofenceActivity extends FragmentActivity {
     // Store the list of geofences to remove
     private List<String> mGeofenceIdsToRemove;
     
-    private TodoGeofence todoGeoFence;
+    private List<TodoGeofence> mTodoGeoFences;
 
 
     @Override
@@ -108,19 +109,26 @@ public class GeofenceActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
    
         // Get the geofencing parameters passed in the intent.
-        todoGeoFence = (TodoGeofence) getIntent().getSerializableExtra(GeofenceActivity.TODO_GEOFENCE_KEY);
-        if (todoGeoFence == null) {
-        	 Toast.makeText(this, "Error: A null todoGeoFence object is passed in the intent for GeofenceActivity",
+        mTodoGeoFences = (List<TodoGeofence>) getIntent().getSerializableExtra(GeofenceActivity.TODO_GEOFENCES_KEY);
+        if (mTodoGeoFences == null) {
+        	 Toast.makeText(this, "Error: A null todoGeoFences object is passed in the intent for GeofenceActivity",
                      Toast.LENGTH_LONG).show();
         	 finish();	
         }
         
         doGeofencingSetup();
         
-        if (todoGeoFence.getGeofenceId() == null) {
-        	todoGeoFence.setGeofenceId(UUID.randomUUID().toString());
-        }
-        registerGeofence(todoGeoFence);   
+        initTodoGeofences();
+        
+        registerGeofence(mTodoGeoFences);   
+    }
+    
+    private void initTodoGeofences() {
+    	for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+    		if (todoGeoFence.getGeofenceId() == null) {
+            	todoGeoFence.setGeofenceId(UUID.randomUUID().toString());
+            }		
+    	} 	
     }
 
     private void doGeofencingSetup() {
@@ -257,9 +265,9 @@ public class GeofenceActivity extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (todoGeoFence != null) {
-            mPrefs.setGeofence(todoGeoFence.getGeofenceId(), todoGeoFence);
-        }
+        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        	mPrefs.setGeofence(todoGeoFence.getGeofenceId(), todoGeoFence);
+    	} 
     }
 
     /**
@@ -346,7 +354,7 @@ public class GeofenceActivity extends FragmentActivity {
         }
     }
 
-    private void registerGeofence(TodoGeofence todoGeoFence) {
+    private void registerGeofence(List<TodoGeofence> todoGeoFences) {
         mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
 
         /*
@@ -363,21 +371,30 @@ public class GeofenceActivity extends FragmentActivity {
          * Check that the input fields have values and that the values are with the
          * permitted range
          */
-        if (!checkGeofenceParameters(todoGeoFence.getLatitude(), todoGeoFence.getLongitude(),
-        		todoGeoFence.getRadius())) {
-        	Toast.makeText(this, "One of the lang,  lat, or radius values is invalid", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        
+        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        	 if (!checkGeofenceParameters(todoGeoFence.getLatitude(), todoGeoFence.getLongitude(),
+        			 todoGeoFence.getRadius())) {
+             	Toast.makeText(this, "One of the lang,  lat, or radius values is invalid", Toast.LENGTH_SHORT).show();
+                return;
+             }
+    	} 
+       
 
         // Store this flat version in SharedPreferences
-        mPrefs.setGeofence(todoGeoFence.getGeofenceId(), todoGeoFence);
+        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        	mPrefs.setGeofence(todoGeoFence.getGeofenceId(), todoGeoFence);
+    	} 
 
         /*
          * Add Geofence objects to a List. toGeofence()
          * creates a Location Services Geofence object from a
          * flat object
          */
-        mCurrentGeofences.add(todoGeoFence.toGeofence());
+        
+        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        	mCurrentGeofences.add(todoGeoFence.toGeofence());
+    	} 
 
         // Start the request. Fail if there's already a request in progress
         try {

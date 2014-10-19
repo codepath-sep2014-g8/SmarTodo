@@ -1,5 +1,7 @@
 package com.codepath.smartodo.activities;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +14,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
-import com.codepath.smartodo.model.User;
-import com.codepath.smartodo.services.ModelManagerService;
-import com.parse.ParseException;
 import com.codepath.smartodo.model.TodoGeofence;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
+import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
@@ -116,8 +116,8 @@ public class LoginActivity extends Activity {
 	}
 	
 	private void someTestCode() {
-		sendTestTodoList();	
-		// setupTestGeofences();	
+		// sendTestTodoList();	
+		 setupTestGeofences();	
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 
@@ -135,13 +135,23 @@ public class LoginActivity extends Activity {
 	}
 	
 	private void setupTestGeofences() {
-		TodoGeofence todoGeofence1= new TodoGeofence(null, 37.288007, 121.97236700000002, 20,
+		TodoGeofence todoGeofence1= new TodoGeofence(null, 37.2880618, -121.972204, 15,
 				GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS, 
 				Geofence.GEOFENCE_TRANSITION_ENTER, 
-				"Geofencing message for Home at 1274 Colleen Way",
+				"Geofencing message for entering Home at 1274 Colleen Way",
             		 currentUser.getObjectId(), "TodoList1234", "TodoItem1");
+		
+		TodoGeofence todoGeofence2= new TodoGeofence(null, 37.2880618, -121.972204, 15,
+				GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS, 
+				Geofence.GEOFENCE_TRANSITION_EXIT, 
+				"Geofencing message for exiting Home at 1274 Colleen Way",
+            		 currentUser.getObjectId(), "TodoList1234", "TodoItem1");
+		ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
+		todoGeofences.add(todoGeofence1);
+		todoGeofences.add(todoGeofence2);
+				
 		Intent intent = new Intent(LoginActivity.this, GeofenceActivity.class);
-		intent.putExtra(GeofenceActivity.TODO_GEOFENCE_KEY, todoGeofence1);
+		intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
 		startActivity(intent);		
 	}
 

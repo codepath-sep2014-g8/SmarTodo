@@ -178,5 +178,14 @@ public class TodoGeofence implements Serializable {
 				.setCircularRegion(getLatitude(), getLongitude(), getRadius())
 				.setExpirationDuration(expirationDuration).build();
 	}
+	
+	@Override
+	public String toString() {
+		return ("geofenceId=" + geofenceId
+				+ ", transitionType=" + transitionType 
+				+ ", alertMessage=" + alertMessage 
+				+ ", todoListId=" + todoListId 
+				+ ", todoItemId=" + todoItemId);
+	}
 }
 

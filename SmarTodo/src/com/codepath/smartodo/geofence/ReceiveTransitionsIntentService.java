@@ -1,5 +1,6 @@
 package com.codepath.smartodo.geofence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.IntentService;
@@ -12,9 +13,12 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.GeofenceActivity;
+import com.codepath.smartodo.activities.ShowGeoNotificationActivity;
+import com.codepath.smartodo.model.TodoGeofence;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 
@@ -30,6 +34,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
      */
     public ReceiveTransitionsIntentService() {
         super("ReceiveTransitionsIntentService");
+        // Log.d("Debug", "In ReceiveTransitionsIntentService()");
     }
 
     /**
@@ -71,6 +76,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
             // Get the type of transition (entry or exit)
             int transition = LocationClient.getGeofenceTransition(intent);
+            Log.d("Debug", "In ReceiveTransitionsIntentService:onHandleIntent, transition is " + transition);
 
             // Test that a valid transition was reported
             if (
@@ -103,7 +109,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
             } else {
                 // Always log as an error
                 Log.e(GeofenceUtils.APPTAG,
-                        getString(R.string.geofence_transition_invalid_type, transition));
+                        getString(R.string.geofence_transition_invalid_type, transition, intent.getAction()));
             }
         }
     }
@@ -117,15 +123,29 @@ public class ReceiveTransitionsIntentService extends IntentService {
     private void sendNotification(String transitionType, String ids) {
 
     	Log.d("Debug", "In sendNotification: ids are " + ids.toString());
-        // Create an explicit content Intent that starts the main Activity
+    	TodoGeofenceStore mPrefs = new TodoGeofenceStore(this);
+    	String[] idArray = TextUtils.split(ids, GeofenceUtils.GEOFENCE_ID_DELIMITER.toString());
+    	
+    	ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
+    	for (int i = 0; i <  idArray.length; i++) {
+    		String geofenceId = idArray[i];
+        	// Log.d("Debug", "In sendNotification: geofenceId is " + geofenceId);
+        	TodoGeofence todoGeofence = mPrefs.getGeofence(geofenceId);
+        	todoGeofences.add(todoGeofence);
+        	// Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
+        	// Toast.makeText(this, todoGeofence.getAlertMessage(), Toast.LENGTH_LONG).show();
+    	}
+    		
+        // Create an explicit content Intent that starts the ShowGeoNotificationActivity Activity
         Intent notificationIntent =
-                new Intent(getApplicationContext(),GeofenceActivity.class);
+                new Intent(getApplicationContext(), ShowGeoNotificationActivity.class);
+        notificationIntent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);		
 
         // Construct a task stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
-        // Adds the main Activity to the task stack as the parent
-        stackBuilder.addParentStack(GeofenceActivity.class);
+        // Adds the ShowGeoNotificationActivity Activity to the task stack as the parent
+        stackBuilder.addParentStack(ShowGeoNotificationActivity.class);
 
         // Push the content Intent onto the stack
         stackBuilder.addNextIntent(notificationIntent);

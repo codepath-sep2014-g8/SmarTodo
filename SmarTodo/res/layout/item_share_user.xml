@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/contentPanel">
+
+     <CheckBox
+        android:id="@+id/cbSelectUser_isu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="2dp"
+        />
+    
+    <TextView
+        android:id="@+id/tvUserName_isu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/cbSelectUser_isu"
+        android:hint="@string/hint_todo_item"
+        android:textSize="12sp"
+        android:layout_marginLeft="5dp"     
+        android:gravity="center_vertical"
+        android:text="User Name"
+        />
+    
+    <TextView
+        android:id="@+id/tvUserEmial_isu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvUserName_isu"
+        android:layout_toRightOf="@+id/cbSelectUser_isu"
+        android:hint="@string/hint_todo_item"
+        android:textSize="12sp"
+        android:layout_marginLeft="5dp"
+        android:layout_centerVertical="true"       
+        android:gravity="center_vertical" 
+        android:text="Email"
+        />
+
+   
+    
+</RelativeLayout>

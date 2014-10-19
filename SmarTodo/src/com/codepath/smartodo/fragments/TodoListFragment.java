@@ -117,13 +117,8 @@ public class TodoListFragment extends Fragment {
 			return;
 		}
 		
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
-		
 		try {
-			List<TodoList> list = itemQuery.find();
-			
-			todoList = list.get(0);
+			todoList = TodoList.findTodoListByName(listName);
 			todoItemsList = todoList.getAllItems();
 		} catch (ParseException e1) {
 			
@@ -166,32 +161,7 @@ public class TodoListFragment extends Fragment {
 		btnSave.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("info", "Saving list");
-				final TodoList todoList = new TodoList();
-				todoList.setName(etTitle.getText().toString());
-				todoList.setOwner(ModelManagerService.getUser());
-				
-				// TODO Add more properties
-				
-				todoList.saveInBackground(new SaveCallback() {
-					@Override
-					public void done(ParseException arg0) {
-						Log.i("info", "Saving " + todoItemsList.size() + " list items");
-						for(TodoItem item : todoItemsList) {
-							item.setList(todoList);
-							
-							try {
-								item.save();
-							} catch (ParseException e) {
-								Log.e("error", e.getMessage(), e);
-							}
-						}
-						
-						Log.i("info", "Items saved");
-					}
-				});
-				
-				Log.i("info", "Initial list save complete");
+				ModelManagerService.saveList(etTitle.getText().toString(), ModelManagerService.getUser(), todoItemsList);
 			}
 		});
 		

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -128,5 +130,22 @@ public class TodoList extends ParseObject {
 		ParseQuery<TodoItem> itemQuery = ParseQuery.getQuery(TodoItem.class);
 		itemQuery.whereEqualTo(TodoItem.LIST_KEY, this);
 		return itemQuery.find();
+	}
+	
+	public static TodoList findTodoListByName(String listName) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
+		
+		List<TodoList> list = itemQuery.find();
+		
+		if(list.isEmpty()) {
+			return null;
+		} else { 
+			if(list.size() > 1) {
+				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
+			}
+			
+			return list.get(0);
+		}
 	}
 }

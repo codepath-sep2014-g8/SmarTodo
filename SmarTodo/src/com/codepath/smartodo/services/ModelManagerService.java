@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
@@ -100,6 +101,35 @@ public class ModelManagerService extends Service {
 	 */
 	public void unregisterUser() {
 		// TODO
+	}
+	
+	public static void saveList(String name, User owner, final List<TodoItem> todoItemsList) {
+		Log.i("info", "Saving list");
+		final TodoList todoList = new TodoList();
+		todoList.setName(name);
+		todoList.setOwner(owner);
+		
+		// TODO Add more properties
+		
+		todoList.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException arg0) {
+				Log.i("info", "Saving " + todoItemsList.size() + " list items");
+				for(TodoItem item : todoItemsList) {
+					item.setList(todoList);
+					
+					try {
+						item.save();
+					} catch (ParseException e) {
+						Log.e("error", e.getMessage(), e);
+					}
+				}
+				
+				Log.i("info", "Items saved");
+			}
+		});
+		
+		Log.i("info", "List save started in background");
 	}
 	
 	private static boolean running = false;

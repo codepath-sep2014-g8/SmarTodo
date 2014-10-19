@@ -48,9 +48,6 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 				adapter.clear();
 				adapter.addAll(todoList.getAllItems());	
 				
-				//??? Revisit tomake it cool :)
-				adapter.add(new TodoItem());
-				
 				setListViewHeight();
 			
 			} catch (com.parse.ParseException e) {

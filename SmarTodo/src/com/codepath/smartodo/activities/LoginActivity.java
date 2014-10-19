@@ -117,7 +117,7 @@ public class LoginActivity extends Activity {
 	
 	private void someTestCode() {
 		// sendTestTodoList();	
-		 setupTestGeofences();	
+		// setupTestGeofences();	
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 

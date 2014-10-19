@@ -3,6 +3,7 @@ package com.codepath.smartodo.activities;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.geofence.GeofenceUtils;
+import com.codepath.smartodo.geofence.GeofenceUtils.GeoPoint;
 import com.codepath.smartodo.model.TodoGeofence;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
@@ -117,7 +120,8 @@ public class LoginActivity extends Activity {
 	
 	private void someTestCode() {
 		// sendTestTodoList();	
-		// setupTestGeofences();	
+		String address = "1274 colleen Way, Campbell, CA 95008";
+		// setupTestGeofences(this, currentUser.getObjectId(), address, 10, "MyTodoList1", "MyTodoItem3");	
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 
@@ -134,22 +138,40 @@ public class LoginActivity extends Activity {
 		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
 	}
 	
-	private void setupTestGeofences() {
-		TodoGeofence todoGeofence1= new TodoGeofence(null, 37.2880618, -121.972204, 15,
-				GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS, 
-				Geofence.GEOFENCE_TRANSITION_ENTER, 
-				"Geofencing message for entering Home at 1274 Colleen Way",
-            		 currentUser.getObjectId(), "TodoList1234", "TodoItem1");
-		
-		TodoGeofence todoGeofence2= new TodoGeofence(null, 37.2880618, -121.972204, 15,
-				GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS, 
-				Geofence.GEOFENCE_TRANSITION_EXIT, 
-				"Geofencing message for exiting Home at 1274 Colleen Way",
-            		 currentUser.getObjectId(), "TodoList1234", "TodoItem1");
+	private void setupTestGeofences(Context context, String userId, String streetAddress, 
+			int radius, String todoListName, String todoItemName) {
 		ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
-		todoGeofences.add(todoGeofence1);
-		todoGeofences.add(todoGeofence2);
-				
+		double latitude, longitude;	
+		
+		GeoPoint geoPoint = GeofenceUtils.getGeoPointFromSreetAddress(context, streetAddress);
+		if (geoPoint != null) {
+			latitude = geoPoint.getLatitude();
+			longitude = geoPoint.getLongitude();
+			//Override for testing
+			latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
+			longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
+			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude + ", longitude=" + longitude);
+
+			TodoGeofence todoGeofence = new TodoGeofence(null, latitude, longitude,
+					radius,
+					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+					Geofence.GEOFENCE_TRANSITION_ENTER,
+					("Entering " + streetAddress), userId, todoListName, todoItemName);
+			todoGeofences.add(todoGeofence);
+
+			todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
+					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+					Geofence.GEOFENCE_TRANSITION_EXIT,
+					("Leaving " + streetAddress), userId, todoListName, todoItemName);
+			todoGeofences.add(todoGeofence);
+			
+/*			todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
+					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+					Geofence.GEOFENCE_TRANSITION_DWELL,
+					("At " + streetAddress), userId, todoListName, todoItemName);
+			todoGeofences.add(todoGeofence);*/
+		}
+			
 		Intent intent = new Intent(LoginActivity.this, GeofenceActivity.class);
 		intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
 		startActivity(intent);		

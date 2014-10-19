@@ -116,7 +116,7 @@ public class TodoGeofenceStore {
          * id, or GeofenceUtils.INVALID_VALUE if it doesn't exist
          */
         String todoListId = mPrefs.getString(
-                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_ID_TYPE),
+                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_NAME_TYPE),
                 GeofenceUtils.INVALID_STRING_VALUE);
         
         /*
@@ -124,7 +124,7 @@ public class TodoGeofenceStore {
          * id, or GeofenceUtils.INVALID_VALUE if it doesn't exist
          */
         String todoItemId = mPrefs.getString(
-                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_ID_TYPE),
+                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_NAME_TYPE),
                 GeofenceUtils.INVALID_STRING_VALUE);
 
         // If none of the values is incorrect, return the object
@@ -195,12 +195,12 @@ public class TodoGeofenceStore {
                 geofence.getUserId());
         
         editor.putString(
-                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_ID_TYPE),
-                geofence.getTodoListId());
+                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_NAME_TYPE),
+                geofence.getTodoListName());
         
         editor.putString(
-                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_ID_TYPE),
-                geofence.getTodoItemId());
+                getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_NAME_TYPE),
+                geofence.getTodoItemName());
 
         // Commit the changes
         editor.commit();
@@ -217,8 +217,8 @@ public class TodoGeofenceStore {
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE));
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_ALERT_MESSAGE_TYPE));
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_USER_ID_TYPE));
-        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_ID_TYPE));
-        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_ID_TYPE));
+        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_NAME_TYPE));
+        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_NAME_TYPE));
         editor.commit();
     }
 

@@ -50,11 +50,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
 
 /**
- * UI handler for the Location Services Geofence sample app.
- * Allow input of latitude, longitude, and radius for two geofences.
- * When registering geofences, check input and then send the geofences to Location Services.
- * Also allow removing either one of or both of the geofences.
- * The menu allows you to clear the screen or delete the geofences stored in persistent memory.
+ * Shell activity to register Geofences
  */
 public class GeofenceActivity extends FragmentActivity {
     /*
@@ -107,6 +103,7 @@ public class GeofenceActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().setTitle("GeofenceActivity");
    
         // Get the geofencing parameters passed in the intent.
         mTodoGeoFences = (List<TodoGeofence>) getIntent().getSerializableExtra(GeofenceActivity.TODO_GEOFENCES_KEY);
@@ -174,6 +171,8 @@ public class GeofenceActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         // Choose what to do based on the request code
+    	
+    	Log.d(GeofenceUtils.APPTAG, "In GeofenceActivity:onActivityResult, got request code " + requestCode);
         switch (requestCode) {
 
             // If the request code matches the code sent in onConnectionFailed

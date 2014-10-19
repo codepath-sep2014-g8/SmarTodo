@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationClient;
  * the event.
  */
 public class ReceiveTransitionsIntentService extends IntentService {
+	private String TAG = "ReceiveTransitionsIntentService";
 
     /**
      * Sets an identifier for this class' background thread
@@ -76,13 +77,15 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
             // Get the type of transition (entry or exit)
             int transition = LocationClient.getGeofenceTransition(intent);
-            Log.d("Debug", "In ReceiveTransitionsIntentService:onHandleIntent, transition is " + transition);
+            Log.d(TAG, "In ReceiveTransitionsIntentService:onHandleIntent, transition is " + transition);
 
             // Test that a valid transition was reported
             if (
                     (transition == Geofence.GEOFENCE_TRANSITION_ENTER)
                     ||
                     (transition == Geofence.GEOFENCE_TRANSITION_EXIT)
+                    ||
+                    (transition == Geofence.GEOFENCE_TRANSITION_DWELL)
                ) {
 
                 // Post a notification
@@ -122,15 +125,15 @@ public class ReceiveTransitionsIntentService extends IntentService {
      */
     private void sendNotification(String transitionType, String ids) {
 
-    	Log.d("Debug", "In sendNotification: ids are " + ids.toString());
+    	Log.d(TAG, "In sendNotification: ids are " + ids.toString());
     	TodoGeofenceStore mPrefs = new TodoGeofenceStore(this);
     	String[] idArray = TextUtils.split(ids, GeofenceUtils.GEOFENCE_ID_DELIMITER.toString());
     	
     	ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
     	for (int i = 0; i <  idArray.length; i++) {
     		String geofenceId = idArray[i];
-        	// Log.d("Debug", "In sendNotification: geofenceId is " + geofenceId);
         	TodoGeofence todoGeofence = mPrefs.getGeofence(geofenceId);
+        	Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
         	todoGeofences.add(todoGeofence);
         	// Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
         	// Toast.makeText(this, todoGeofence.getAlertMessage(), Toast.LENGTH_LONG).show();
@@ -186,6 +189,9 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
             case Geofence.GEOFENCE_TRANSITION_EXIT:
                 return getString(R.string.geofence_transition_exited);
+                
+            case Geofence.GEOFENCE_TRANSITION_DWELL:
+                return getString(R.string.geofence_transition_dwell);
 
             default:
                 return getString(R.string.geofence_transition_unknown);

@@ -98,11 +98,11 @@ public final class GeofenceUtils {
     public static final String KEY_USER_ID_TYPE =
             "com.codepath.smartodo.geofence.KEY_USER_ID_TYPE";
     
-    public static final String KEY_TODO_LIST_ID_TYPE =
-            "com.codepath.smartodo.geofence.KEY_TODO_LIST_ID_TYPE";
+    public static final String KEY_TODO_LIST_NAME_TYPE =
+            "com.codepath.smartodo.geofence.KEY_TODO_LIST_NAME_TYPE";
     
-    public static final String KEY_TODO_ITEM_ID_TYPE =
-            "com.codepath.smartodo.geofence.KEY_TODO_ITEM_ID_TYPE";
+    public static final String KEY_TODO_ITEM_NAME_TYPE =
+            "com.codepath.smartodo.geofence.KEY_TODO_ITEM_NAME_TYPE";
 
     // The prefix for flattened geofence keys
     public static final String KEY_PREFIX =

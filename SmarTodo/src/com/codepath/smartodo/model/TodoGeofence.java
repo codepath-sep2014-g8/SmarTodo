@@ -24,6 +24,11 @@ Latitude : 37.4151756
 Longitude: -122.02449409999997
  */
 public class TodoGeofence implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final int DEFAULT_LOITERING_DELAY_MS = 120000;  // 2 minutes
 	// Instance variables
 	private String geofenceId;
 	private double latitude; // between -90 and +90 inclusive
@@ -33,8 +38,8 @@ public class TodoGeofence implements Serializable {
 	private int transitionType;
 	private String alertMessage;
 	private String userId;
-	private String todoListId;
-	private String todoItemId;
+	private String todoListName;
+	private String todoItemName;
 	
 	/**
 	 * @param geofenceId
@@ -54,14 +59,14 @@ public class TodoGeofence implements Serializable {
 	 * @param transition
 	 *            Type of Geofence transition. The value is not checked for
 	 *            validity.
-	 * @param todoItemId 
-	 * @param todoListId 
+	 * @param todoItemName 
+	 * @param todoListName 
 	 * @param userId 
 	 * @param alertMessage 
 	 */
 	public TodoGeofence(String geofenceId, double latitude,
 			double longitude, float radius, long expiration, int transition, 
-			String alertMessage, String userId, String todoListId, String todoItemId) {
+			String alertMessage, String userId, String todoListName, String todoItemName) {
 		// Set the instance fields from the constructor
 
 		// An identifier for the geofence
@@ -82,8 +87,8 @@ public class TodoGeofence implements Serializable {
 		
 		this.alertMessage = alertMessage;
 		this.userId = userId;
-		this.todoListId = todoListId;
-		this.todoItemId = todoItemId;
+		this.todoListName = todoListName;
+		this.todoItemName = todoItemName;
 	}
 
 	public String getGeofenceId() {
@@ -150,20 +155,21 @@ public class TodoGeofence implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getTodoListId() {
-		return todoListId;
+	public String getTodoListName() {
+		return todoListName;
 	}
 
-	public void setTodoListId(String todoListId) {
-		this.todoListId = todoListId;
+	public void setTodoListName(String todoListId) {
+		this.todoListName = todoListId;
 	}
 
-	public String getTodoItemId() {
-		return todoItemId;
+	
+	public String getTodoItemName() {
+		return todoItemName;
 	}
 
-	public void setTodoItemId(String todoItemId) {
-		this.todoItemId = todoItemId;
+	public void setTodoItemName(String todoItemId) {
+		this.todoItemName = todoItemId;
 	}
 
 	/**
@@ -176,7 +182,9 @@ public class TodoGeofence implements Serializable {
 		return new Geofence.Builder().setRequestId(getGeofenceId())
 				.setTransitionTypes(transitionType)
 				.setCircularRegion(getLatitude(), getLongitude(), getRadius())
-				.setExpirationDuration(expirationDuration).build();
+				.setExpirationDuration(expirationDuration)
+	//			.setLoiteringDelay(DEFAULT_LOITERING_DELAY_MS)
+				.build();
 	}
 	
 	@Override
@@ -184,8 +192,8 @@ public class TodoGeofence implements Serializable {
 		return ("geofenceId=" + geofenceId
 				+ ", transitionType=" + transitionType 
 				+ ", alertMessage=" + alertMessage 
-				+ ", todoListId=" + todoListId 
-				+ ", todoItemId=" + todoItemId);
+				+ ", todoListId=" + todoListName 
+				+ ", todoItemId=" + todoItemName);
 	}
 }
 

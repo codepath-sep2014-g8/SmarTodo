@@ -111,6 +111,8 @@ public class GeofenceRequester
          * connection is available.
          */
         mCurrentGeofences = (ArrayList<Geofence>) geofences;
+        
+        Log.d(GeofenceUtils.APPTAG, "In addGeofences: geofence size is " + mCurrentGeofences.size());
 
         // If a request is not already in progress
         if (!mInProgress) {
@@ -128,7 +130,7 @@ public class GeofenceRequester
             throw new UnsupportedOperationException();
         }
         
-        Log.d("Debug", "Returning from GeofenceRequester:addGeofences.");
+        Log.d(GeofenceUtils.APPTAG, "Returning from GeofenceRequester:addGeofences.");
     }
 
     /**

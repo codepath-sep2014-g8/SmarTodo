@@ -16,6 +16,12 @@
 
 package com.codepath.smartodo.geofence;
 
+import java.util.List;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
 /**
  * This class defines constants used by location sample apps.
  */
@@ -134,5 +140,46 @@ public final class GeofenceUtils {
     public static final String EMPTY_STRING = new String();
 
     public static final CharSequence GEOFENCE_ID_DELIMITER = ",";
+     
+    public static GeoPoint getGeoPointFromSreetAddress(Context context, String streetAddress){
+    	Geocoder geocoder = new Geocoder(context);
+    	List<Address> addresses;
+        try {
+    	    addresses = geocoder.getFromLocationName(streetAddress, 1);
+    	    if (addresses == null) {
+    	        return null;
+    	    }
+    	    Address location = addresses.get(0);
+    	    ;
+
+    	    return new GeoPoint(location.getLatitude(), location.getLongitude());	                  
+
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+        return null;
+    }
+    
+    public static class GeoPoint {
+    	double latitude;
+    	double longitude;
+		public GeoPoint(double latitude, double longitude) {
+			super();
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+		public double getLatitude() {
+			return latitude;
+		}
+		public void setLatitude(double latitude) {
+			this.latitude = latitude;
+		}
+		public double getLongitude() {
+			return longitude;
+		}
+		public void setLongitude(double longitude) {
+			this.longitude = longitude;
+		}
+    }
 
 }

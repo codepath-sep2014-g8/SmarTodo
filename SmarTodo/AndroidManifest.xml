@@ -117,7 +117,6 @@
                 <category android:name="com.codepath.smartodo" />
             </intent-filter>
         </receiver>
-        
         <receiver
             android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false" >
@@ -128,7 +127,8 @@
             </intent-filter>
         </receiver>
 
-<!--          <receiver
+        <!--
+              <receiver
             android:name=".notifications.ModifiedParsePushBroadcastReceiver"
             android:exported="false" >
             <intent-filter>
@@ -136,8 +136,9 @@
                 <action android:name="com.parse.push.intent.DELETE" />
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
-        </receiver> -->
-        
+        </receiver>
+        -->
+
         <receiver android:name=".notifications.NotificationsReciever" >
             <intent-filter>
                 <action android:name="com.codepath.smartodo.notifications.SHARE_TODOLIST" />
@@ -156,8 +157,12 @@
             android:value="6111000" />
 
         <activity
-            android:name="com.codepath.smartodo.activities.ShowGeoNotificationActivity"
+            android:name=".activities.ShowGeoNotificationActivity"
             android:label="@string/title_activity_show_geo_notification" >
+        </activity>
+        <activity
+            android:name="com.codepath.smartodo.activities.ShareActivity"
+            android:label="@string/title_activity_share" >
         </activity>
     </application>
 

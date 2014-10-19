@@ -3,6 +3,7 @@ package com.codepath.smartodo.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.helpers.AppConstants;
@@ -272,6 +274,9 @@ public class TodoListFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// Show Share activity
+				Intent intent = new Intent(getActivity(), ShareActivity.class);
+				intent.putExtra(AppConstants.KEY_TODOLIST, listName);
+				startActivity(intent);
 				
 			}
 		});

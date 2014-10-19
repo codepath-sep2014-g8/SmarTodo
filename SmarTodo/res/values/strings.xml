@@ -81,5 +81,6 @@
     <string name="location_reminder_label">Location Reminder</string>
     <string name="todo_list_name_text">Todo List Name</string>
     <string name="notification_acknowledgement_text">Got it!</string>
+    <string name="title_activity_share">ShareActivity</string>
 
 </resources>

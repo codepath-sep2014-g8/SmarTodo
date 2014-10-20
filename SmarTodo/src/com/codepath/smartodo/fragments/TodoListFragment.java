@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ShareActivity;
@@ -340,7 +341,6 @@ public class TodoListFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				updateTodoList();
-				
 			}
 		});
 		
@@ -358,9 +358,11 @@ public class TodoListFragment extends Fragment {
 	 * Populate the TodoList object
 	 */
 	private void updateTodoList(){
-		
-		if(isValidInput() == false){
+		String validationString = validateInput();
+		if(validateInput() != null){
 			//Show toast and dont update
+			Toast.makeText(getActivity(), validationString, Toast.LENGTH_LONG).show();
+			return;
 		}
 		//Create todoList if new list being created
 		if(todoList == null){
@@ -375,33 +377,15 @@ public class TodoListFragment extends Fragment {
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
 		
-		todoList.saveInBackground(new SaveCallback() {
-			@Override
-			public void done(ParseException arg0) {
-				Log.i("info", "Saving " + todoItemsList.size() + " list items");
-				for(TodoItem item : todoItemsList) {
-					Log.i("info", "Saving " + item.getText() + "   ");
-					item.setList(todoList);
-					
-					try {
-						item.save();
-					} catch (ParseException e) {
-						Log.e("error", e.getMessage(), e);
-					}
-				}
-				
-				Log.i("info", "Items saved");
-			}
-		});
+		ModelManagerService.saveList(todoList, todoItemsList);
+		Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
 	}
 	
-	private boolean isValidInput(){
-		boolean isValid = false;
-		
+	private String validateInput(){
 		String title = etTitle.getText().toString();
 		
 		if(title == null || title.isEmpty()){
-			return isValid;
+			return "Please specify a non-empty name";
 		}
 		
 		//Validate items
@@ -409,7 +393,16 @@ public class TodoListFragment extends Fragment {
 			
 		}
 		
-		return true;
+		try {
+			if(TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
+				return "The list name is not unique!";
+			}
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+			return e.getMessage();
+		}
+		
+		return null;
 	}
 	
 	@Override

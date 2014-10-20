@@ -180,14 +180,9 @@ public class ModelManagerService extends Service {
 		// TODO
 	}
 	
-	public static void saveList(String name, User owner, final List<TodoItem> todoItemsList) {
+	public static void saveList(final TodoList todoList, final List<TodoItem> todoItemsList) {
 		Log.i("info", "Saving list");
-		final TodoList todoList = new TodoList();
-		todoList.setName(name);
-		todoList.setOwner(owner);
-		
-		// TODO Add more properties
-		
+
 		todoList.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException arg0) {

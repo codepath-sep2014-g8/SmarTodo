@@ -143,6 +143,25 @@ public class TodoList extends ParseObject {
 		return itemQuery.find();
 	}
 	
+	// TODO Merge the implementation with findTodoListByName
+	public static TodoList findTodoListByNameAndUser(String listName, User user) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
+		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
+		
+		List<TodoList> list = itemQuery.find();
+		
+		if(list.isEmpty()) {
+			return null;
+		} else { 
+			if(list.size() > 1) {
+				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
+			}
+			
+			return list.get(0);
+		}
+	}
+	
 	public static TodoList findTodoListByName(String listName) throws ParseException {
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
@@ -179,6 +198,4 @@ public class TodoList extends ParseObject {
 			return false;
 		}
 	}
-	
-	
 }

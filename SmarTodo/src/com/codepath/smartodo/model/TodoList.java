@@ -156,7 +156,14 @@ public class TodoList extends ParseObject {
 	}
 
 	public int getUniqueId() {
-		return getObjectId().hashCode();
+		String objectId = getObjectId();
+		
+		if(objectId != null) {
+		return objectId.hashCode();
+		} else {
+			Log.w("warning", "ObjectId is null for " + getName() + ". Object unsaved?");
+			return -1;
+		}
 	}
 
 	@Override

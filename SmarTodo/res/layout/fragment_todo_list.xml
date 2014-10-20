@@ -48,15 +48,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="20dp" 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
         android:id="@+id/llListInfo"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/item_todolist_actions_border_style"
-        android:orientation="horizontal"
+       
         >
         
         <TextView
@@ -65,31 +65,33 @@
         android:layout_height="wrap_content"
         android:ems="10" 
         android:layout_marginLeft="6dp"
-        android:layout_gravity="bottom"
+        android:layout_alignParentLeft="true"
         android:text="Owner:You"
-        android:textSize="8dp"/>
+        android:textSize="12sp"/>
         
         <TextView
         android:id="@+id/tvEditedAt_ftdl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10" 
-        android:layout_marginLeft="6dp"
-        android:layout_gravity="bottom"
-        android:text="Edited at 11:12:13PM"
-        android:textSize="8dp"/>
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="true"
+        android:text="Edited: 11:12:13PM"
+        android:textSize="10sp"
+        android:textStyle="italic"/>
         
         <TextView
         android:id="@+id/tvSharedWith_ftdl"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" 
         android:layout_marginLeft="6dp"
-        android:layout_gravity="bottom"
+        android:layout_below="@+id/tvOwner_ftdl"
         android:text="Shared with ...."
-        android:textSize="8dp"/>
+        android:layout_alignParentLeft="true"
+        android:textSize="12sp"/>
         
-        </LinearLayout>
+        </RelativeLayout>
         
     <LinearLayout
         android:layout_width="match_parent"

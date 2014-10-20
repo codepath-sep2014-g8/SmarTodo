@@ -13,7 +13,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.GeofenceActivity;
@@ -125,7 +124,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
      */
     private void sendNotification(String transitionType, String ids) {
 
-    	Log.d(TAG, "In sendNotification: ids are " + ids.toString());
+    	// Log.d(TAG, "In sendNotification: ids are " + ids.toString());
     	TodoGeofenceStore mPrefs = new TodoGeofenceStore(this);
     	String[] idArray = TextUtils.split(ids, GeofenceUtils.GEOFENCE_ID_DELIMITER.toString());
     	
@@ -133,7 +132,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	for (int i = 0; i <  idArray.length; i++) {
     		String geofenceId = idArray[i];
         	TodoGeofence todoGeofence = mPrefs.getGeofence(geofenceId);
-        	Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
+        	// Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
         	todoGeofences.add(todoGeofence);
         	// Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
         	// Toast.makeText(this, todoGeofence.getAlertMessage(), Toast.LENGTH_LONG).show();
@@ -161,12 +160,38 @@ public class ReceiveTransitionsIntentService extends IntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Set the notification contents
-        builder.setSmallIcon(R.drawable.ic_notification)
+/*        builder.setSmallIcon(R.drawable.ic_notification)
                .setContentTitle(
                        getString(R.string.geofence_transition_notification_title,
                                transitionType, ids))
                .setContentText(getString(R.string.geofence_transition_notification_text))
-               .setContentIntent(notificationPendingIntent);
+               .setContentIntent(notificationPendingIntent)  // Todo: remove this comment after understanding why it may cause problem.
+               ;*/
+        
+        String title =  getString(R.string.geofence_transition_alert_title);
+        String contentText = getString(R.string.geofence_transition_alert_text);
+        
+        int numGeoFencesHit = todoGeofences.size();
+        if (numGeoFencesHit > 0) {
+        	StringBuffer titleBuffer = new StringBuffer();
+        	StringBuffer contentTextBuffer  = new StringBuffer();
+        	int i = 0;
+        	for (TodoGeofence todoGeofence : todoGeofences) {
+        		titleBuffer.append(todoGeofence.getAlertMessage());
+        		contentTextBuffer.append(todoGeofence.getTodoListName());
+        		i++;
+        		if (i < numGeoFencesHit) {			
+        			titleBuffer.append(", ");
+        			contentTextBuffer.append(", ");
+        		}
+        	}
+        	title = titleBuffer.toString();
+        	contentText = contentTextBuffer.toString();
+        }
+        
+		builder.setSmallIcon(R.drawable.ic_notification)
+			.setContentTitle(title)
+			.setContentText(contentText);
 
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =

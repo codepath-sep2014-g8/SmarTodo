@@ -192,8 +192,9 @@ public class TodoGeofence implements Serializable {
 		return ("geofenceId=" + geofenceId
 				+ ", transitionType=" + transitionType 
 				+ ", alertMessage=" + alertMessage 
-				+ ", todoListId=" + todoListName 
-				+ ", todoItemId=" + todoItemName);
+				+ ", usrId=" + userId 
+				+ ", todoListName=" + todoListName 
+				+ ", todoItemName=" + todoItemName);
 	}
 }
 

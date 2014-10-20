@@ -22,6 +22,7 @@ import com.codepath.smartodo.model.TodoGeofence;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 /**
  * Storage for geofence values, implemented in SharedPreferences.
@@ -29,6 +30,8 @@ import android.content.SharedPreferences.Editor;
  * web or loads geofence data based on current location.
  */
 public class TodoGeofenceStore {
+	
+	private String TAG = "TodoGeofenceStore";
 
     // The SharedPreferences object in which geofences are stored
     private final SharedPreferences mPrefs;
@@ -115,7 +118,7 @@ public class TodoGeofenceStore {
          * Get the TodoList id for the geofence identified by
          * id, or GeofenceUtils.INVALID_VALUE if it doesn't exist
          */
-        String todoListId = mPrefs.getString(
+        String todoListName = mPrefs.getString(
                 getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_LIST_NAME_TYPE),
                 GeofenceUtils.INVALID_STRING_VALUE);
         
@@ -123,29 +126,31 @@ public class TodoGeofenceStore {
          * Get the TodoItem id for the geofence identified by
          * id, or GeofenceUtils.INVALID_VALUE if it doesn't exist
          */
-        String todoItemId = mPrefs.getString(
+        String todoItemName = mPrefs.getString(
                 getGeofenceFieldKey(id, GeofenceUtils.KEY_TODO_ITEM_NAME_TYPE),
                 GeofenceUtils.INVALID_STRING_VALUE);
 
         // If none of the values is incorrect, return the object
         if (
             lat != GeofenceUtils.INVALID_FLOAT_VALUE &&
+            
             lng != GeofenceUtils.INVALID_FLOAT_VALUE &&
             radius != GeofenceUtils.INVALID_FLOAT_VALUE &&
             expirationDuration != GeofenceUtils.INVALID_LONG_VALUE &&
             transitionType != GeofenceUtils.INVALID_INT_VALUE &&
             !alertMessage.equals(GeofenceUtils.INVALID_STRING_VALUE) &&
             !userId.equals(GeofenceUtils.INVALID_STRING_VALUE) &&
-            !todoListId.equals(GeofenceUtils.INVALID_STRING_VALUE) &&
-            !alertMessage.equals(GeofenceUtils.INVALID_STRING_VALUE)       
+            !todoListName.equals(GeofenceUtils.INVALID_STRING_VALUE) &&
+            !todoItemName.equals(GeofenceUtils.INVALID_STRING_VALUE)       
             ) {
+        	    // Log.d(TAG, "Returning a good object from getGeofence for id=" + id);
 
-            // Return a true Geofence object
-            return new TodoGeofence(id, lat, lng, radius, expirationDuration, transitionType,
-            		alertMessage, userId, todoListId, todoItemId);
-
+                // Return a good Geofence object
+                return new TodoGeofence(id, lat, lng, radius, expirationDuration, transitionType,
+            		alertMessage, userId, todoListName, todoItemName);
         // Otherwise, return null.
         } else {
+        	// Log.d(TAG, "Returning null from getGeofence for id=" + id);
             return null;
         }
     }
@@ -164,6 +169,8 @@ public class TodoGeofenceStore {
          * and non-concurrent
          */
         Editor editor = mPrefs.edit();
+        
+        // Log.d(TAG, "In setGeofence:, TodoGeofence is: " + geofence.toString());
 
         // Write the Geofence values to SharedPreferences
         editor.putFloat(
@@ -204,6 +211,15 @@ public class TodoGeofenceStore {
 
         // Commit the changes
         editor.commit();
+        
+        // Test weather the item was stored properly.
+        /* TodoGeofence newTodoGeofence = getGeofence(id);
+        if (newTodoGeofence != null) {
+        	Log.d(TAG, "getGeofence returned a good object in setGeofence for id=" + id);
+        } else {
+        	Log.d(TAG, "getGeofence returned null in setGeofence for id=" + id);
+        }*/
+        
     }
 
     public void clearGeofence(String id) {

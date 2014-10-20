@@ -141,7 +141,7 @@ public final class GeofenceUtils {
 
     public static final CharSequence GEOFENCE_ID_DELIMITER = ",";
      
-    public static GeoPoint getGeoPointFromSreetAddress(Context context, String streetAddress){
+    public static GeoPoint getGeoPointFromSreetAddress(Context context, String streetAddress) {
     	Geocoder geocoder = new Geocoder(context);
     	List<Address> addresses;
         try {

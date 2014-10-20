@@ -120,8 +120,8 @@ public class LoginActivity extends Activity {
 	
 	private void someTestCode() {
 		// sendTestTodoList();	
-		String address = "1274 colleen Way, Campbell, CA 95008";
-		// setupTestGeofences(this, currentUser.getObjectId(), address, 10, "MyTodoList1", "MyTodoItem3");	
+		String address = "1274 Colleen Way, Campbell, CA 95008";
+	    // setupTestGeofences(this, currentUser.getObjectId(), address, 10, "MyTodoList1", "MyTodoItem3");	
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 
@@ -148,15 +148,15 @@ public class LoginActivity extends Activity {
 			latitude = geoPoint.getLatitude();
 			longitude = geoPoint.getLongitude();
 			//Override for testing
-			latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
-			longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
+			//latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
+			//longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
 			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude + ", longitude=" + longitude);
 
 			TodoGeofence todoGeofence = new TodoGeofence(null, latitude, longitude,
 					radius,
 					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
 					Geofence.GEOFENCE_TRANSITION_ENTER,
-					("Entering " + streetAddress), userId, todoListName, todoItemName);
+					("Close to " + streetAddress), userId, todoListName, todoItemName);
 			todoGeofences.add(todoGeofence);
 
 			todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
@@ -165,7 +165,7 @@ public class LoginActivity extends Activity {
 					("Leaving " + streetAddress), userId, todoListName, todoItemName);
 			todoGeofences.add(todoGeofence);
 			
-/*			todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
+			/* todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
 					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
 					Geofence.GEOFENCE_TRANSITION_DWELL,
 					("At " + streetAddress), userId, todoListName, todoItemName);

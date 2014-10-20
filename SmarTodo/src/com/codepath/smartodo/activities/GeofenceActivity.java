@@ -22,11 +22,14 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -117,10 +120,32 @@ public class GeofenceActivity extends FragmentActivity {
         
         initTodoGeofences();
         
+        // sampleNotification();
+        
         registerGeofence(mTodoGeoFences);   
     }
     
-    private void initTodoGeofences() {
+    private void sampleNotification() {
+    	
+    	 // Get a notification builder that's compatible with platform versions >= 4
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        
+        String title =  getString(R.string.geofence_transition_alert_title);
+        String contentText = getString(R.string.geofence_transition_alert_text);
+        // Set the notification contents
+        builder.setSmallIcon(R.drawable.ic_notification)
+               .setContentTitle(getString(R.string.geofence_transition_alert_title))
+               .setContentText(getString(R.string.geofence_transition_alert_text));
+
+        // Get an instance of the Notification manager
+        NotificationManager mNotificationManager =
+            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Issue the notification
+        mNotificationManager.notify(0, builder.build());	
+	}
+
+	private void initTodoGeofences() {
     	for (TodoGeofence todoGeoFence : mTodoGeoFences) {
     		if (todoGeoFence.getGeofenceId() == null) {
             	todoGeoFence.setGeofenceId(UUID.randomUUID().toString());

@@ -150,6 +150,11 @@ public class ModelManagerService extends Service {
 		todoList.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException arg0) {
+				for(User sharedWith : todoList.getSharing()) {
+					Log.i("info", "Sending push message to " + sharedWith.getUsername());
+					NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
+				}
+				
 				Log.i("info", "Saving " + todoItemsList.size() + " list items");
 				for(TodoItem item : todoItemsList) {
 					item.setList(todoList);

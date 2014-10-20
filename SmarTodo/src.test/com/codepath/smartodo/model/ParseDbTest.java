@@ -50,7 +50,8 @@ public class ParseDbTest {
 	
 	private static void testAddress(User u) {
 		final Address a = new Address();
-		a.setLocation(new ParseGeoPoint(-10.22, +30.44));
+		a.setLocation(new ParseGeoPoint(37.4151756, -122.0244941));
+		a.setStreetAddress("1350 North Mathilda Avenue, Sunnyvale, CA");
 		a.setName("testlocation123");
 		a.setUser(u.getParseUser());
 		

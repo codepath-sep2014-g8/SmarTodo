@@ -32,12 +32,16 @@ import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
+import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
+import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -202,14 +206,32 @@ public class TodoListFragment extends Fragment {
 			
 		}
 		
-		try{
-			String location = todoList.getAddress().getName();
+		try {		
+			// Here is some test code to assign a street address to this Todolist for geofencing.
+			ParseUser parseUser = ParseUser.getCurrentUser();
+			
+			Address address = todoList.getAddress();
+			if (null == address) {
+				String streetAddress = "1350 North Mathilda Avenue, Sunnyvale, CA";			
+				address = new Address();
+				address.setLocation(new ParseGeoPoint(37.4151756, -122.0244941));  // need not do this; street address is sufficient
+				address.setStreetAddress(streetAddress);
+				address.setName("Yahoo Sunnyvale Building F");
+				address.setUser(parseUser);
+				todoList.setAddress(address);
+			}
+			
+			String location = address.getName();
 			
 			sb.append("Remind me at location: ").append(location);
 		    sb.append("\r\n");
+		    
+		    int radius = 50; // meters
+			GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), address.getStreetAddress(), radius,
+					Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + address.getName()), todoList.getName(), "All Todo items");
 		}
 		catch(Exception ex){
-			
+			ex.printStackTrace();
 		}
 		
 		return sb.toString();

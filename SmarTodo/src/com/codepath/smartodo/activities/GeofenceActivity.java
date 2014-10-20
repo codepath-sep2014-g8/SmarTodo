@@ -106,7 +106,7 @@ public class GeofenceActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setTitle("GeofenceActivity");
+        getActionBar().setTitle("GeofenceActivity");  // TODO: if we move the code to a service, remove this.
    
         // Get the geofencing parameters passed in the intent.
         mTodoGeoFences = (List<TodoGeofence>) getIntent().getSerializableExtra(GeofenceActivity.TODO_GEOFENCES_KEY);
@@ -122,7 +122,9 @@ public class GeofenceActivity extends FragmentActivity {
         
         // sampleNotification();
         
-        registerGeofence(mTodoGeoFences);   
+        registerGeofence(mTodoGeoFences);  
+        
+        super.onBackPressed();  // experimenting
     }
     
     private void sampleNotification() {

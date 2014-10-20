@@ -11,17 +11,17 @@ import com.google.android.gms.location.Geofence;
 Home 
 1274 Colleen Way, Campbell, CA 95008
 Latitude : 37.288007
-Longitude: -121.97236700000002
+Longitude: -121.972367
 
 Neighbor
 1234 Colleen Way, Campbell, CA 95008
-Latitude : 37.28801199999999
-Longitude: -121.97173700000002
+Latitude : 37.288012
+Longitude: -121.971737
 
 Yahoo Building
 1350 North Mathilda Avenue, Sunnyvale, CA
 Latitude : 37.4151756
-Longitude: -122.02449409999997
+Longitude: -122.0244941
  */
 public class TodoGeofence implements Serializable {
 	/**

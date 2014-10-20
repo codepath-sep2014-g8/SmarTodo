@@ -394,7 +394,7 @@ public class GeofenceActivity extends FragmentActivity {
          * permitted range
          */
         
-        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        for (TodoGeofence todoGeoFence : todoGeoFences) {
         	 if (!checkGeofenceParameters(todoGeoFence.getLatitude(), todoGeoFence.getLongitude(),
         			 todoGeoFence.getRadius())) {
              	Toast.makeText(this, "One of the lang,  lat, or radius values is invalid", Toast.LENGTH_SHORT).show();
@@ -404,7 +404,7 @@ public class GeofenceActivity extends FragmentActivity {
        
 
         // Store this flat version in SharedPreferences
-        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        for (TodoGeofence todoGeoFence : todoGeoFences) {
         	mPrefs.setGeofence(todoGeoFence.getGeofenceId(), todoGeoFence);
     	} 
 
@@ -414,7 +414,7 @@ public class GeofenceActivity extends FragmentActivity {
          * flat object
          */
         
-        for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+        for (TodoGeofence todoGeoFence : todoGeoFences) {
         	mCurrentGeofences.add(todoGeoFence.toGeofence());
     	} 
 

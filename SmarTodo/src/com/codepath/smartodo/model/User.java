@@ -1,6 +1,7 @@
 package com.codepath.smartodo.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +60,13 @@ public class User {
 	public List<TodoList> findAllLists() throws ParseException {
 		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
-		return itemQuery.find();
+		List<TodoList> lists = itemQuery.find();
+		
+		itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new ParseUser[]{this.parseUser}));
+		lists.addAll(itemQuery.find());
+		
+		return lists;
 	}
 	
 	/**

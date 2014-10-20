@@ -20,6 +20,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -51,20 +52,13 @@ public class ShareActivity extends Activity {
 	private void initialize(){
 		
 		listName = getIntent().getExtras().getString(AppConstants.KEY_TODOLIST);
-		
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
-		
 		try {
-			List<TodoList> list = itemQuery.find();
-			
-			todoList = list.get(0);
-			
-		} catch (ParseException e1) {
-			
-			Log.d(TAG, "Excpetion while getting the todo list");
-			e1.printStackTrace();
+			todoList = TodoList.findTodoListByName(listName);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
 		users = new ArrayList<ShareUser>();
@@ -113,9 +107,17 @@ public class ShareActivity extends Activity {
 	public void onShareRequested(View view){
 		
 		List<User> users = adapter.getSelectedUsers();
+		String userNames = "";
 		
 		for(User user : users){
 			NotificationsSender.shareTodoList(todoList, user.getParseUser());
+			userNames += user.getRealName() + ",";
+		}
+		
+		if(users.size() > 0){
+			Intent data = new Intent();
+            data.putExtra(AppConstants.KEY_USERS_LIST_STR, userNames);
+            setResult(RESULT_OK, data);
 		}
 		
 		finish();

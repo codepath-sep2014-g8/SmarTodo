@@ -3,6 +3,7 @@ package com.codepath.smartodo.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -52,6 +54,8 @@ public class TodoListFragment extends Fragment {
 	private LinearLayout llFooter;
 	private ImageView ivFooterReminder;
 	private TextView tvReminder;
+	
+	private TextView tvSharedWithList;
 	
 	private TodoItemsAdapter adapter;
 	private List<TodoItem> todoItemsList;
@@ -158,6 +162,8 @@ public class TodoListFragment extends Fragment {
 		tvReminder = (TextView)view.findViewById(R.id.tvReminder_ftdl);
 		btnSave = (Button)view.findViewById(R.id.btnSave);
 		
+		tvSharedWithList = (TextView)view.findViewById(R.id.tvSharedWith_ftdl);
+		
 		btnSave.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -176,6 +182,24 @@ public class TodoListFragment extends Fragment {
 		
 		etTitle.setText(todoList.getName());
 		
+		tvSharedWithList.setText("Shared with: " + getDisplaySharedWithList());
+		
+	}
+	
+	private String getDisplaySharedWithList(){
+		StringBuilder sb = new StringBuilder();
+		
+		List<User> users = todoList.getSharing();
+	
+		if(users == null){
+			return sb.toString();
+		}
+		for(User user : users){
+			sb.append(user.getRealName());
+			sb.append(",");
+		}
+		
+		return sb.toString();
 	}
 	
 	private void setupListeners(){
@@ -246,8 +270,7 @@ public class TodoListFragment extends Fragment {
 				// Show Share activity
 				Intent intent = new Intent(getActivity(), ShareActivity.class);
 				intent.putExtra(AppConstants.KEY_TODOLIST, listName);
-				startActivity(intent);
-				
+				startActivityForResult(intent, 200);				
 			}
 		});
 		
@@ -333,6 +356,15 @@ public class TodoListFragment extends Fragment {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		if(requestCode == AppConstants.REQUEST_CODE_SHARE_ACTIVITY && resultCode == Activity.RESULT_OK){
+			
+			
+		}
 	}
 	
 }

@@ -1,5 +1,7 @@
 package com.codepath.smartodo.fragments;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,6 +179,38 @@ public class TodoListFragment extends Fragment {
 		
 		tvSharedWithList.setText("Shared with: " + getDisplaySharedWithList());
 		
+		tvReminder.setText(getReminderDisplay());
+		
+	}
+	
+	private String getReminderDisplay(){
+		
+		StringBuilder sb = new StringBuilder();
+		
+		try{
+			Date dt = todoList.getNotificationTime();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
+			 
+		    
+		    String displayName = formatter.format(dt);
+		    sb.append("Remind me at: ").append(displayName);
+		    sb.append("\r\n");
+		}
+		catch(Exception ex){
+			
+		}
+		
+		try{
+			String location = todoList.getAddress().getName();
+			
+			sb.append("Remind me at location: ").append(location);
+		    sb.append("\r\n");
+		}
+		catch(Exception ex){
+			
+		}
+		
+		return sb.toString();
 	}
 	
 	private String getDisplaySharedWithList(){

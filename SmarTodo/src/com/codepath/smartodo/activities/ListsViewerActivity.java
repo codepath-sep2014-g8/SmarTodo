@@ -1,37 +1,36 @@
 package com.codepath.smartodo.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.helpers.AppConstants;
-import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.etsy.android.grid.StaggeredGridView;
+import com.parse.ParseException;
 
 
 
 
 public class ListsViewerActivity extends FragmentActivity {
+	public static final int REQUEST_CODE_NEW_LIST = 333;
+	protected static final int REQUEST_CODE_EDIT_LIST = 334;
 	private StaggeredGridView staggeredGridView;
 	private TodoListAdapter adapter;
-	private List<TodoList> list;
 	private ImageView ivAdd;
 	
 
@@ -43,8 +42,6 @@ public class ListsViewerActivity extends FragmentActivity {
     	initialize();
     	setupListeners();
     }
-    
-    
 
 	private void initialize(){
 		
@@ -53,10 +50,10 @@ public class ListsViewerActivity extends FragmentActivity {
     	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
 //    	list = new ArrayList<TodoList>();
     	//populateTestData();
-    	list = ModelManagerService.getLists();
-    	if(list == null){
-    		list = new ArrayList<TodoList>();
-    	}
+//    	list = ModelManagerService.getLists();
+//    	if(list == null){
+//    		list = new ArrayList<TodoList>();
+//    	}
     	
     	adapter = new TodoListAdapter(getBaseContext(), ModelManagerService.getLists());
     	
@@ -93,7 +90,7 @@ private void setupListeners() {
 				System.out.println("name:" + name);
 				Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
 				i.putExtra(AppConstants.KEY_TODOLIST, name);
-				startActivity(i);
+				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 			}
     		
 		});
@@ -111,57 +108,57 @@ private void setupListeners() {
 	private void showCreateListActivity(){
 		Intent intent = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
 		
-		startActivity(intent);
+		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
 	}
     
-    private void populateTestData(){
-    	
-    	try{
-    	TodoList l = new TodoList();
-    	l.setName("List1");
-    	
-    	TodoItem item = new TodoItem();
-    	item.setText("Item 1");
-    	item.setList(l);
-    	item.saveInBackground();
-
-    	TodoItem item2 = new TodoItem();
-    	item2.setText("Item 2");
-    	item2.setList(l);
-    	item2.save();
-    		
-    	l.save();
-    	
-    	TodoList l1 = new TodoList();
-    	l1.setName("List2");
-    	
-    	TodoItem item3 = new TodoItem();
-    	item3.setText("Item 4");
-    	item3.setList(l1);
-    	item3.save();
-
-    	TodoItem item4 = new TodoItem();
-    	item4.setText("Item 5");
-    	item4.setList(l1);
-    	item4.save();
-    	
-    	
-    	TodoItem item5 = new TodoItem();
-    	item5.setText("Item 7");
-    	item5.setList(l1);
-    	item5.save();
-    	
-    	
-    	
-    	l1.save();
-    	
-    	list.add(l);
-    	list.add(l1);
-    	}
-    	catch(Exception ex){
-    		
-    	}
-    }
+//    private void populateTestData(){
+//    	
+//    	try{
+//    	TodoList l = new TodoList();
+//    	l.setName("List1");
+//    	
+//    	TodoItem item = new TodoItem();
+//    	item.setText("Item 1");
+//    	item.setList(l);
+//    	item.saveInBackground();
+//
+//    	TodoItem item2 = new TodoItem();
+//    	item2.setText("Item 2");
+//    	item2.setList(l);
+//    	item2.save();
+//    		
+//    	l.save();
+//    	
+//    	TodoList l1 = new TodoList();
+//    	l1.setName("List2");
+//    	
+//    	TodoItem item3 = new TodoItem();
+//    	item3.setText("Item 4");
+//    	item3.setList(l1);
+//    	item3.save();
+//
+//    	TodoItem item4 = new TodoItem();
+//    	item4.setText("Item 5");
+//    	item4.setList(l1);
+//    	item4.save();
+//    	
+//    	
+//    	TodoItem item5 = new TodoItem();
+//    	item5.setText("Item 7");
+//    	item5.setList(l1);
+//    	item5.save();
+//    	
+//    	
+//    	
+//    	l1.save();
+//    	
+//    	list.add(l);
+//    	list.add(l1);
+//    	}
+//    	catch(Exception ex){
+//    		
+//    	}
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -180,5 +177,23 @@ private void setupListeners() {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	switch(requestCode) {
+    	case REQUEST_CODE_EDIT_LIST:
+    	case REQUEST_CODE_NEW_LIST:
+    		try {
+				ModelManagerService.refreshFromUser(ModelManagerService.getUser());
+				adapter.clear();
+				adapter.addAll(ModelManagerService.getLists());
+			} catch (ParseException e) {
+				Log.e("error", e.getMessage(), e);
+				Toast.makeText(this, "Failed refresh", Toast.LENGTH_LONG).show();
+			}
+    		break;
+    	default:     	super.onActivityResult(requestCode, resultCode, data);
+    	}
     }
 }

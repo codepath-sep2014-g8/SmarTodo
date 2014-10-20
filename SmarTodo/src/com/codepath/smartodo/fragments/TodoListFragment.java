@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
+import com.codepath.smartodo.dialogs.ColorPickerDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoItem;
@@ -287,7 +288,15 @@ public class TodoListFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				// Show color picker	
+				// Show color picker
+				new ColorPickerDialog(TodoListFragment.this.getActivity(), new ColorPickerDialog.OnColorChangedListener() {
+					
+					@Override
+					public void colorChanged(int color) {
+						Log.i("info", "Color changed: " + color);
+						todoList.setColor(color);
+					}
+				}, todoList.getColor()).show();
 			}
 		});
 		

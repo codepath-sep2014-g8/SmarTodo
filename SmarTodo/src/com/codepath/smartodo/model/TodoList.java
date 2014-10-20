@@ -121,7 +121,12 @@ public class TodoList extends ParseObject {
 	}
 	
 	public int getColor() {
-		return (Integer) super.getNumber(COLOR_KEY);
+		Number number = super.getNumber(COLOR_KEY);
+		if(number != null) {
+			return number.intValue();
+		} else {
+			return 0;
+		}
 	}
 	
 	public void setColor(int value) {

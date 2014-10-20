@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -324,7 +325,7 @@ public class TodoListFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				// Show notification creation window	
+				
 			}
 		});
 		

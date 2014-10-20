@@ -94,7 +94,13 @@ public class TodoList extends ParseObject {
 	
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
-		return convertToUsers((List<ParseUser>) super.get(SHARING_KEY));
+		List<ParseUser> parseUsers = (List<ParseUser>) super.get(SHARING_KEY);
+		
+		if(parseUsers == null) {
+			return new ArrayList<User>();
+		} else {
+			return convertToUsers(parseUsers);
+		}
 	}
 
 	public List<User> convertToUsers(List<ParseUser> parseUsers) {

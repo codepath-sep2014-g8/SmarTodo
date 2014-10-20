@@ -129,9 +129,7 @@ public class GeofenceActivity extends FragmentActivity {
     	
     	 // Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        
-        String title =  getString(R.string.geofence_transition_alert_title);
-        String contentText = getString(R.string.geofence_transition_alert_text);
+       
         // Set the notification contents
         builder.setSmallIcon(R.drawable.ic_notification)
                .setContentTitle(getString(R.string.geofence_transition_alert_title))

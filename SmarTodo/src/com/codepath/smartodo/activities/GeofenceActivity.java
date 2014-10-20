@@ -65,7 +65,7 @@ public class GeofenceActivity extends FragmentActivity {
      * Geofence#NEVER_EXPIRE.
      */
     private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
-    static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
 	static final String TODO_GEOFENCE_KEY = "Todo_Geofence";
 	public static final String TODO_GEOFENCES_KEY = "Todo_Geofences";

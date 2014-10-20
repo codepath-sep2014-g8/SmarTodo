@@ -16,11 +16,17 @@
 
 package com.codepath.smartodo.geofence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
+
+import com.codepath.smartodo.activities.GeofenceActivity;
+import com.codepath.smartodo.model.TodoGeofence;
 
 /**
  * This class defines constants used by location sample apps.
@@ -150,7 +156,6 @@ public final class GeofenceUtils {
     	        return null;
     	    }
     	    Address location = addresses.get(0);
-    	    ;
 
     	    return new GeoPoint(location.getLatitude(), location.getLongitude());	                  
 
@@ -181,5 +186,36 @@ public final class GeofenceUtils {
 			this.longitude = longitude;
 		}
     }
+      
+    // Creates a Geofence using the passed parameters and installs that geofence using
+    // the GeofenceActivity class.
+    //
+    // Todo => Move GeofenceActivity functionality to a service.
+    public static void setupTestGeofences(Context context, String userId, String streetAddress, 
+			int radius, int transition, String todoListName, String todoItemName) {
+		ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
+		double latitude, longitude;	
+		
+		GeoPoint geoPoint = getGeoPointFromSreetAddress(context, streetAddress);
+		if (geoPoint != null) {
+			latitude = geoPoint.getLatitude();
+			longitude = geoPoint.getLongitude();
+			//Override for testing
+			//latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
+			//longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
+			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude + ", longitude=" + longitude);
+
+			TodoGeofence todoGeofence = new TodoGeofence(null, latitude, longitude,
+					radius,
+					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+					transition,
+					("Close to " + streetAddress), userId, todoListName, todoItemName);
+			todoGeofences.add(todoGeofence);
+		}
+			
+		Intent intent = new Intent(context, GeofenceActivity.class);
+		intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
+		context.startActivity(intent);		
+	}
 
 }

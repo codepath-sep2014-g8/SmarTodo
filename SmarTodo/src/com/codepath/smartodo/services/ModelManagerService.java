@@ -115,7 +115,9 @@ public class ModelManagerService extends Service {
 				continue;
 			}
 			// Clean up any previous alarms
-			handler.removeMessages(list.getUniqueId());
+			if (handler != null) {
+			    handler.removeMessages(list.getUniqueId());
+			}
 			
 //			Date notificationTime = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30)); // TODO For testing purposes only
 			

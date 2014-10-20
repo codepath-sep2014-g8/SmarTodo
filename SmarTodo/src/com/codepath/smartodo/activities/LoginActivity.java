@@ -1,9 +1,6 @@
 package com.codepath.smartodo.activities;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +13,6 @@ import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.geofence.GeofenceUtils;
-import com.codepath.smartodo.geofence.GeofenceUtils.GeoPoint;
-import com.codepath.smartodo.model.TodoGeofence;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
@@ -120,8 +115,7 @@ public class LoginActivity extends Activity {
 	
 	private void someTestCode() {
 		// sendTestTodoList();	
-		String address = "1274 Colleen Way, Campbell, CA 95008";
-	    // setupTestGeofences(this, currentUser.getObjectId(), address, 10, "MyTodoList1", "MyTodoItem3");	
+		// setupTestGeofences();
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 
@@ -138,43 +132,14 @@ public class LoginActivity extends Activity {
 		NotificationsSender.shareTodoList(todoList, ParseUser.getCurrentUser());		
 	}
 	
-	private void setupTestGeofences(Context context, String userId, String streetAddress, 
-			int radius, String todoListName, String todoItemName) {
-		ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
-		double latitude, longitude;	
-		
-		GeoPoint geoPoint = GeofenceUtils.getGeoPointFromSreetAddress(context, streetAddress);
-		if (geoPoint != null) {
-			latitude = geoPoint.getLatitude();
-			longitude = geoPoint.getLongitude();
-			//Override for testing
-			//latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
-			//longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
-			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude + ", longitude=" + longitude);
-
-			TodoGeofence todoGeofence = new TodoGeofence(null, latitude, longitude,
-					radius,
-					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-					Geofence.GEOFENCE_TRANSITION_ENTER,
-					("Close to " + streetAddress), userId, todoListName, todoItemName);
-			todoGeofences.add(todoGeofence);
-
-			todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
-					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-					Geofence.GEOFENCE_TRANSITION_EXIT,
-					("Leaving " + streetAddress), userId, todoListName, todoItemName);
-			todoGeofences.add(todoGeofence);
-			
-			/* todoGeofence = new TodoGeofence(null, latitude, longitude, radius,
-					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-					Geofence.GEOFENCE_TRANSITION_DWELL,
-					("At " + streetAddress), userId, todoListName, todoItemName);
-			todoGeofences.add(todoGeofence);*/
-		}
-			
-		Intent intent = new Intent(LoginActivity.this, GeofenceActivity.class);
-		intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
-		startActivity(intent);		
+	private void setupTestGeofences() {
+		String address = "1274 Colleen Way, Campbell, CA 95008";
+		int radius = 10; // meters
+	    // setupTestGeofences(this, currentUser.getObjectId(), address, radius, "MyTodoList1", "MyTodoItem3");
+		GeofenceUtils.setupTestGeofences(this, currentUser.getObjectId(), address, radius, 
+				Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + address), "MyTodoList1", "MyTodoItem3");
+		GeofenceUtils.setupTestGeofences(this, currentUser.getObjectId(), address, radius, 
+				Geofence.GEOFENCE_TRANSITION_EXIT, ("Leaving " + address), "MyTodoList1", "MyTodoItem3");
 	}
 
 	// Send user to ParseLogin

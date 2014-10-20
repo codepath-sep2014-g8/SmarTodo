@@ -146,24 +146,6 @@ public final class GeofenceUtils {
     public static final String EMPTY_STRING = new String();
 
     public static final CharSequence GEOFENCE_ID_DELIMITER = ",";
-     
-    public static GeoPoint getGeoPointFromSreetAddress(Context context, String streetAddress) {
-    	Geocoder geocoder = new Geocoder(context);
-    	List<Address> addresses;
-        try {
-    	    addresses = geocoder.getFromLocationName(streetAddress, 1);
-    	    if (addresses == null) {
-    	        return null;
-    	    }
-    	    Address location = addresses.get(0);
-
-    	    return new GeoPoint(location.getLatitude(), location.getLongitude());	                  
-
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-        return null;
-    }
     
     public static class GeoPoint {
     	double latitude;
@@ -186,13 +168,31 @@ public final class GeofenceUtils {
 			this.longitude = longitude;
 		}
     }
+     
+    public static GeoPoint getGeoPointFromSreetAddress(Context context, String streetAddress) {
+    	Geocoder geocoder = new Geocoder(context);
+    	List<Address> addresses;
+        try {
+    	    addresses = geocoder.getFromLocationName(streetAddress, 1);
+    	    if (addresses == null) {
+    	        return null;
+    	    }
+    	    Address location = addresses.get(0);
+
+    	    return new GeoPoint(location.getLatitude(), location.getLongitude());	                  
+
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+        return null;
+    }
       
     // Creates a Geofence using the passed parameters and installs that geofence using
     // the GeofenceActivity class.
     //
     // Todo => Move GeofenceActivity functionality to a service.
     public static void setupTestGeofences(Context context, String userId, String streetAddress, 
-			int radius, int transition, String todoListName, String todoItemName) {
+			int radius, int transition, String alertMessage, String todoListName, String todoItemName) {
 		ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
 		double latitude, longitude;	
 		
@@ -200,22 +200,28 @@ public final class GeofenceUtils {
 		if (geoPoint != null) {
 			latitude = geoPoint.getLatitude();
 			longitude = geoPoint.getLongitude();
-			//Override for testing
-			//latitude = 37.288028; // using Accurate GPS: 37.2880556; // using precision GPS: 37.288028
-			//longitude = -121.972359; // using Accurate GPS: -121.9722823; // using precision GPS: -121.972359
-			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude + ", longitude=" + longitude);
+			// Override for testing
+			// latitude = 37.288028; // using Accurate GPS: 37.2880556; // using
+			// precision GPS: 37.288028
+			// longitude = -121.972359; // using Accurate GPS: -121.9722823; //
+			// using precision GPS: -121.972359
+			Log.d("Debug", "For " + streetAddress + ", latitude=" + latitude
+					+ ", longitude=" + longitude);
 
-			TodoGeofence todoGeofence = new TodoGeofence(null, latitude, longitude,
-					radius,
+			TodoGeofence todoGeofence = new TodoGeofence(null, latitude,
+					longitude, radius,
 					GeofenceActivity.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-					transition,
-					("Close to " + streetAddress), userId, todoListName, todoItemName);
+					transition, alertMessage, userId, todoListName,
+					todoItemName);
 			todoGeofences.add(todoGeofence);
+
+			Intent intent = new Intent(context, GeofenceActivity.class);
+			intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
+			context.startActivity(intent);
+		} else {
+			Log.e("Error", "No Geopoint found for " + streetAddress);
 		}
-			
-		Intent intent = new Intent(context, GeofenceActivity.class);
-		intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
-		context.startActivity(intent);		
+		
 	}
 
 }

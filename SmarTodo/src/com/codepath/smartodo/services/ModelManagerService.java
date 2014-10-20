@@ -1,10 +1,14 @@
 package com.codepath.smartodo.services;
 
+import java.util.Date;
 import java.util.List;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.codepath.smartodo.model.TodoItem;
@@ -23,11 +27,21 @@ public class ModelManagerService extends Service {
 
 	private static User user;
 	private static List<TodoList> lists;
+	private static Handler handler;
 
+	private static class ListMessageHandler extends Handler {
+		@Override public void handleMessage(Message msg) {
+			TodoList i = (TodoList) msg.obj;
+			Log.i("alarm", "Alarm activated for item " + i.getName() + " for time " + i.getNotificationTime());
+		}
+	}
+	
 	@Override
 	public void onCreate() {
 //		INSTANCE = this;
 		running = true;
+		handler = new ListMessageHandler();
+		
 		Log.i("info", "Started " + getClass().getSimpleName());
 		
 	 	ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -61,6 +75,28 @@ public class ModelManagerService extends Service {
 		ModelManagerService.user = user;
 		ModelManagerService.lists = user.findAllLists();
 		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");
+		
+		for(TodoList list : ModelManagerService.lists) {
+			// Clean up any previous alarms
+			handler.removeMessages(list.getUniqueId());
+			
+			Date notificationTime = list.getNotificationTime();
+			
+			if(notificationTime != null) {
+				Log.i("info", "Registering alarm for list " + list.getName() + " at " + notificationTime);
+				
+		        long timeAtBoot = System.currentTimeMillis() - SystemClock.uptimeMillis();
+		        long reminderTime = notificationTime.getTime() - timeAtBoot;
+		        
+		        boolean posted = handler.sendMessageAtTime(Message.obtain(handler, list.hashCode(), list), reminderTime);
+		        
+		        if(!posted) {
+		        	Log.w("warning", "The alarm could not be set up!");
+		        } else {
+		        	Log.i("info", "Alarm set up successfully");
+		        }
+			}
+		}
 		
 		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
 		// Register with ParseInstallation the current user under SHARED_USER_KEY 

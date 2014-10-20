@@ -148,4 +148,8 @@ public class TodoList extends ParseObject {
 			return list.get(0);
 		}
 	}
+
+	public int getUniqueId() {
+		return getObjectId().hashCode();
+	}
 }

@@ -2,15 +2,21 @@ package com.codepath.smartodo.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.codepath.smartodo.R;
+import com.codepath.smartodo.activities.ListsViewerActivity;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
@@ -25,14 +31,40 @@ public class ModelManagerService extends Service {
 //	private static ModelManagerService INSTANCE;
 //	public static ModelManagerService getInstance() { return INSTANCE; }
 
+	private static final int NOTIFICATION_ID = 1;
+	
 	private static User user;
 	private static List<TodoList> lists;
 	private static Handler handler;
 
 	private static class ListMessageHandler extends Handler {
+		private ModelManagerService service;
+		
+		public ListMessageHandler(ModelManagerService service) {
+			this.service = service;
+		}
+
 		@Override public void handleMessage(Message msg) {
 			TodoList i = (TodoList) msg.obj;
 			Log.i("alarm", "Alarm activated for item " + i.getName() + " for time " + i.getNotificationTime());
+			
+			// Create a notification area notification so the user 
+			// can get back to the client UI		
+			final Intent notificationIntent = new Intent(service.getApplicationContext(), ListsViewerActivity.class);
+			final PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, notificationIntent, 0);
+
+			final Notification notification = new NotificationCompat.Builder(
+					service.getApplicationContext())
+					.setSmallIcon(R.drawable.ic_stat_todolistalarm)
+					.setAutoCancel(true)
+					.setContentTitle("SmarTodo alarm for " + i.getName())
+					.setContentText("Your list is due now!")
+					.setContentIntent(pendingIntent)
+					.build();
+
+			// Put this Service in a foreground state, so it won't 
+			// readily be killed by the system  
+			service.startForeground(NOTIFICATION_ID, notification);
 		}
 	}
 	
@@ -40,7 +72,7 @@ public class ModelManagerService extends Service {
 	public void onCreate() {
 //		INSTANCE = this;
 		running = true;
-		handler = new ListMessageHandler();
+		handler = new ListMessageHandler(this);
 		
 		Log.i("info", "Started " + getClass().getSimpleName());
 		
@@ -77,8 +109,15 @@ public class ModelManagerService extends Service {
 		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");
 		
 		for(TodoList list : ModelManagerService.lists) {
+			if(list == null) {
+				// TODO Why is the list null?!
+				Log.w("warning", "Encountered a null list. Skipping it.");
+				continue;
+			}
 			// Clean up any previous alarms
 			handler.removeMessages(list.getUniqueId());
+			
+//			Date notificationTime = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30)); // TODO For testing purposes only
 			
 			Date notificationTime = list.getNotificationTime();
 			

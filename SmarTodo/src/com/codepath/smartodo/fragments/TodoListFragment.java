@@ -185,9 +185,14 @@ public class TodoListFragment extends Fragment {
 		if(users == null){
 			return sb.toString();
 		}
+		try{
 		for(User user : users){
 			sb.append(user.getRealName());
 			sb.append(",");
+		}
+		}
+		catch(Exception ex){
+			
 		}
 		
 		return sb.toString();

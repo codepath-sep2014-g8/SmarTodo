@@ -18,6 +18,7 @@ import com.codepath.smartodo.notifications.NotificationsSender;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -106,19 +107,23 @@ public class ShareActivity extends Activity {
 	
 	public void onShareRequested(View view){
 		
-		List<User> users = adapter.getSelectedUsers();
-		String userNames = "";
+		final List<User> users = adapter.getSelectedUsers();
 		
-		for(User user : users){
-			NotificationsSender.shareTodoList(todoList, user.getParseUser());
-			userNames += user.getRealName() + ",";
-		}
-		
-		if(users.size() > 0){
-			Intent data = new Intent();
-            data.putExtra(AppConstants.KEY_USERS_LIST_STR, userNames);
-            setResult(RESULT_OK, data);
-		}
+		todoList.addToSharing(users);
+		todoList.saveInBackground(new SaveCallback() {
+			
+			@Override
+			public void done(ParseException arg0) {
+				
+				for(User user : users){					
+					NotificationsSender.shareTodoList(todoList, user.getParseUser());					
+				}
+				
+				if(users.size() > 0){	
+		            setResult(RESULT_OK, null);
+				}
+			}
+		});
 		
 		finish();
 	}

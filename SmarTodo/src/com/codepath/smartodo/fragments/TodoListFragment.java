@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
+import com.codepath.smartodo.dialogs.NotificationSelectorDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
@@ -325,6 +327,11 @@ public class TodoListFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
+				FragmentManager manager = getActivity().getFragmentManager();
+				
+				NotificationSelectorDialog dialog = NotificationSelectorDialog.newInstance();
+				dialog.show(manager, "fragment_notification_selector");
+				
 				
 			}
 		});

@@ -3,18 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvLocationLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:text="Location"/>
+    <EditText
+        android:id="@+id/etLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
     
+    <TextView
+        android:id="@+id/tvDateTimeLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:text="Date Time"/>
      <DatePicker
          android:id="@+id/datePicker1"
-         android:layout_width="wrap_content"
+         android:layout_width="match_parent"
          android:layout_height="wrap_content" 
+         android:spinnersShown="true"
+         android:layout_gravity="center_horizontal"
+         android:calendarViewShown="false"
+         
          >
     </DatePicker>
 
     <TimePicker
         android:id="@+id/timePicker1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_gravity="center_horizontal">
     </TimePicker>
 
 </LinearLayout>

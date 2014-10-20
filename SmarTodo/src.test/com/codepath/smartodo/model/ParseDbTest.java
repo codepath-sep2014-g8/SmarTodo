@@ -65,22 +65,43 @@ public class ParseDbTest {
 		final TodoList list = new TodoList();
 		list.setAddress(a);
 		list.setCompleted(true);
-		list.setName("testlist321");
+		list.setName("testlist" + System.currentTimeMillis());
 		list.setNotificationTime(new Date());
 		
 		User u2 = createUser("notsure1", "not2@sure.com", "Not Sure 2");
 		User u3 = createUser("notsure2", "not3@sure.com", "Not Sure 3");
 		
 		list.addToSharing(Arrays.asList(new User[]{u2, u3}));
-		
+
 		runNext(list, new Runnable() {
 			public void run() {
-				testFindAllLike(list, a);
+				testSharingRead(list, a);
 			}
 		});
+
+	}
+	
+	protected static void testSharingRead(final TodoList list, final Address a) {
+		try {
+			TodoList readList = TodoList.findTodoListByName(list.getName());
+			
+			softAssertEquals(list, readList);
+			
+			List<User> sharedWith = readList.getSharing();
+			
+			softAssertEquals(2, sharedWith.size());
+			
+			runNext(list, new Runnable() {
+				public void run() {
+					testFindUsersAllLike(list, a);
+				}
+			});
+		} catch (ParseException e) {
+			fail(e);
+		}
 	}
 
-	protected static void testFindAllLike(final TodoList list, final Address a) {
+	protected static void testFindUsersAllLike(final TodoList list, final Address a) {
 		Collection<User> users = User.findAllLike("sure.co");
 		softAssertEquals(3, users.size());
 		

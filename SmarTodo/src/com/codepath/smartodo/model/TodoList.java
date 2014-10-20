@@ -94,7 +94,7 @@ public class TodoList extends ParseObject {
 	
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
-		return convertToUsers((List<ParseUser>) super.getParseObject(SHARING_KEY));
+		return convertToUsers((List<ParseUser>) super.get(SHARING_KEY));
 	}
 
 	public List<User> convertToUsers(List<ParseUser> parseUsers) {
@@ -152,4 +152,15 @@ public class TodoList extends ParseObject {
 	public int getUniqueId() {
 		return getObjectId().hashCode();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof TodoList) {
+			return getObjectId().equals(((TodoList)o).getObjectId());
+		} else {
+			return false;
+		}
+	}
+	
+	
 }

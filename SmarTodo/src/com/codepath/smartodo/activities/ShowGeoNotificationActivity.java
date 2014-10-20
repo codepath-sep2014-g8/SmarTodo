@@ -36,7 +36,7 @@ public class ShowGeoNotificationActivity extends Activity {
         if (mTodoGeofences.size() > 0) {    	
         	mTodoGeofence = mTodoGeofences.get(0);
         	tvLocationName.setText(mTodoGeofence.getAlertMessage());  
-        	tvTodoListName.setText(mTodoGeofence.getTodoListId());  // TODO: fetch the todo list and get its name
+        	tvTodoListName.setText(mTodoGeofence.getTodoListName());  
         }
         else {
         	tvLocationName.setText("Here is a nice location.");

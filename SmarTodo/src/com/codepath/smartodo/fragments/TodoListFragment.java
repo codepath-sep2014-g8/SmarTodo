@@ -238,7 +238,7 @@ public class TodoListFragment extends Fragment {
 			}
 			
 			if(i<users.size() - 1) {
-				sb.append(","); // Don't end the string with a comma
+				sb.append(", "); // Don't end the string with a comma
 			}
 		}
 		

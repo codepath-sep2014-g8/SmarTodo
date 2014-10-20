@@ -1,0 +1,60 @@
+C:\Users\User>"C:\Program Files (x86)\Java\jre7\bin\keytool.exe" -list -v -keyst
+ore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass an
+droid -keypass android
+Alias name: androiddebugkey
+Creation date: Nov 21, 2013
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=Android Debug, O=Android, C=US
+Issuer: CN=Android Debug, O=Android, C=US
+Serial number: 661c3c4f
+Valid from: Thu Nov 21 14:43:55 PST 2013 until: Sat Nov 14 14:43:55 PST 2043
+Certificate fingerprints:
+         MD5:  77:CC:40:55:EC:03:78:EF:24:69:45:24:B8:7D:D6:C1
+         SHA1: 6D:EB:6A:DE:64:42:4C:89:2F:32:12:70:1B:AB:DD:5C:53:3D:ED:2C
+         SHA256: FF:CA:32:AD:7F:A3:F2:11:BB:1D:E8:A0:94:F7:D1:AD:C5:A0:BD:B9:E3:
+D2:01:C2:F4:BA:93:43:A1:56:47:2E
+         Signature algorithm name: SHA256withRSA
+         Version: 3
+
+Extensions:
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 9A 3B D9 A3 7B F4 EB 25   4D BE BD 59 A1 48 98 33  .;.....%M..Y.H.3
+0010: D5 BF 18 3C                                        ...<
+]
+]
+
+At Google Developers Console:
+-----------------------------
+
+Client ID
+    730849452720-252p2nkpv8offhu1p4odh08c3pqss5nb.apps.googleusercontent.com
+Redirect URIs
+
+        urn:ietf:wg:oauth:2.0:oob
+        http://localhost
+
+Package name
+    com.damodar.mapdemo
+Certificate fingerprint (SHA1)
+    6D:EB:6A:DE:64:42:4C:89:2F:32:12:70:1B:AB:DD:5C:53:3D:ED:2C
+Deep linking
+    Disabled 
+
+
+
+Key for Android applications
+
+API key
+    AIzaSyDfIleMWP_W1-TWQ0LPo2OldYAW-gmPwok
+Android applications
+    Any application allowed 
+Activation date
+    Oct 12, 2014 10:36 PM
+Activated by
+    dperiwal@gmail.com (you) 
+

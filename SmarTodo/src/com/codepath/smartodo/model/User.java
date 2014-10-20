@@ -36,16 +36,16 @@ public class User {
 		parseUser.put(PHONENUMBER_KEY, value);
 	}
 	
-	public String getPhoneNumber() {
-		return parseUser.getString(PHONENUMBER_KEY);
+	public String getPhoneNumber() throws ParseException {
+		return parseUser.fetchIfNeeded().getString(PHONENUMBER_KEY);
 	}
 
 	public void setRealName(String value) {
 		parseUser.put(REALNAME_KEY, value);
 	}
 	
-	public String getRealName() {
-		return parseUser.getString(REALNAME_KEY);
+	public String getRealName() throws ParseException {
+		return parseUser.fetchIfNeeded().getString(REALNAME_KEY);
 	}
 	
 	public ParseUser getParseUser() {

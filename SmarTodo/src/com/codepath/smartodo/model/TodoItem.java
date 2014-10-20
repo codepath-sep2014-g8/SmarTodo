@@ -52,4 +52,13 @@ public class TodoItem extends ParseObject {
 	public TodoList getList() {
 		return (TodoList) super.getParseObject(LIST_KEY);
 	}
+
+	@Override
+	public String toString() {
+		return "TodoItem [isCompleted()=" + isCompleted() + ", getText()="
+				+ getText() + ", getAddress()=" + getAddress()
+				+ ", getNotificationTime()=" + getNotificationTime() + "]";
+	}
+	
+	
 }

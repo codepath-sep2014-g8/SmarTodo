@@ -3,6 +3,8 @@ package com.codepath.smartodo.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -185,14 +187,24 @@ public class TodoListFragment extends Fragment {
 		if(users == null){
 			return sb.toString();
 		}
-		try{
-		for(User user : users){
-			sb.append(user.getRealName());
-			sb.append(",");
-		}
-		}
-		catch(Exception ex){
+		
+		for(int i=0;i<users.size();i++){
+			User user = users.get(i);
+			try {
+				String realName = user.getRealName();
+				if(!StringUtils.isEmpty(realName)) {
+					sb.append(realName);
+				} else {
+					sb.append(user.getUsername());
+				}
+			} catch (ParseException e) {
+				Log.e("error", e.getMessage(), e);
+				sb.append(user.getUsername());
+			}
 			
+			if(i<users.size() - 1) {
+				sb.append(","); // Don't end the string with a comma
+			}
 		}
 		
 		return sb.toString();

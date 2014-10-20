@@ -112,7 +112,8 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="2dp"
-            android:paddingRight="2dp"/>
+            android:paddingRight="2dp"
+            android:clickable="true"/>
         
         <ImageView
             android:id="@+id/ivShare_ftdl"

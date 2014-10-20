@@ -64,8 +64,6 @@ public class TodoListFragment extends Fragment {
 	
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
-	private Button btnSave;
-	
 	public static TodoListFragment newInstance(String todoListName)
     {
 		TodoListFragment fragment = new TodoListFragment();
@@ -160,16 +158,9 @@ public class TodoListFragment extends Fragment {
 		llFooter = (LinearLayout)view.findViewById(R.id.llfooter_ftdl);
 		ivFooterReminder = (ImageView)view.findViewById(R.id.ivFooterReminder_ftdl);
 		tvReminder = (TextView)view.findViewById(R.id.tvReminder_ftdl);
-		btnSave = (Button)view.findViewById(R.id.btnSave);
+		
 		
 		tvSharedWithList = (TextView)view.findViewById(R.id.tvSharedWith_ftdl);
-		
-		btnSave.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ModelManagerService.saveList(etTitle.getText().toString(), ModelManagerService.getUser(), todoItemsList);
-			}
-		});
 		
 		lvItems.setAdapter(adapter);
 	}
@@ -315,6 +306,9 @@ public class TodoListFragment extends Fragment {
 		if(todoList == null){
 			todoList = new TodoList();
 		}
+		
+		//Should be used when creating new list
+		//ModelManagerService.saveList(etTitle.getText().toString(), ModelManagerService.getUser(), todoItemsList);
 		
 		Log.i("info", "Saving TODO List " + listName);
 		

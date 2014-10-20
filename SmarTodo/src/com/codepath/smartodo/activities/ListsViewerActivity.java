@@ -53,6 +53,11 @@ public class ListsViewerActivity extends FragmentActivity {
     	staggeredGridView = (StaggeredGridView)findViewById(R.id.grid_view);
 //    	list = new ArrayList<TodoList>();
     	//populateTestData();
+    	list = ModelManagerService.getLists();
+    	if(list == null){
+    		list = new ArrayList<TodoList>();
+    	}
+    	
     	adapter = new TodoListAdapter(getBaseContext(), ModelManagerService.getLists());
     	
     	staggeredGridView.setAdapter(adapter);

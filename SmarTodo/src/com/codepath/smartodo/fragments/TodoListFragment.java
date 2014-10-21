@@ -219,7 +219,8 @@ public class TodoListFragment extends Fragment {
 			// Here is some test code to assign a street address to this Todolist for geofencing.
 			ParseUser parseUser = ParseUser.getCurrentUser();
 			
-			Address address = todoList.getAddress().fetchIfNeeded();
+			Address address = todoList.getAddress();
+			
 			if (null == address) {
 				String streetAddress = "1350 North Mathilda Avenue, Sunnyvale, CA";			
 				address = new Address();

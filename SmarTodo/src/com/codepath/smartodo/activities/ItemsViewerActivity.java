@@ -10,11 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.utils.Utils;
 
 
 public class ItemsViewerActivity extends FragmentActivity {
@@ -58,6 +60,9 @@ public class ItemsViewerActivity extends FragmentActivity {
         ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
         ivBack.setVisibility(View.VISIBLE);
         
+        TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
+        tvTitle_home.setText(Utils.buildTitleText());
+        
         ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT,
                 Gravity.CENTER);
@@ -74,8 +79,7 @@ public class ItemsViewerActivity extends FragmentActivity {
         
         actionBar.setCustomView(view, params);
     }
-	
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

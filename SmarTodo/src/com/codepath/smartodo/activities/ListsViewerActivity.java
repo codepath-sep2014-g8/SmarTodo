@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
+import com.codepath.smartodo.utils.Utils;
 import com.etsy.android.grid.StaggeredGridView;
 import com.parse.ParseException;
 
@@ -66,6 +68,9 @@ public class ListsViewerActivity extends FragmentActivity {
 		View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
 		
 		ivAdd = (ImageView)view.findViewById(R.id.ivAdd_todolist);
+		
+		TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
+        tvTitle_home.setText(Utils.buildTitleText());
 		
 		ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
 				ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);

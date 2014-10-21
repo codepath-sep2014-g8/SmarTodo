@@ -213,7 +213,7 @@ public class TodoListFragment extends Fragment {
 			// Here is some test code to assign a street address to this Todolist for geofencing.
 			ParseUser parseUser = ParseUser.getCurrentUser();
 			
-			Address address = todoList.getAddress().fetchIfNeeded();
+			Address address = todoList.getAddress();
 			if (null == address) {
 				String streetAddress = "1350 North Mathilda Avenue, Sunnyvale, CA";			
 				address = new Address();
@@ -222,6 +222,8 @@ public class TodoListFragment extends Fragment {
 				address.setName("Yahoo Sunnyvale Building F");
 				address.setUser(parseUser);
 				todoList.setAddress(address);
+			} else {
+				address = address.fetchIfNeeded();
 			}
 			
 			String location = address.getName();
@@ -438,7 +440,7 @@ public class TodoListFragment extends Fragment {
 		}
 		
 		try {
-			if(TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
+			if(mode == TodoListDisplayMode.CREATE && TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
 				return "The list name is not unique!";
 			}
 		} catch (ParseException e) {

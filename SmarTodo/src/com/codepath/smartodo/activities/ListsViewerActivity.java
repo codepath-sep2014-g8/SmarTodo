@@ -201,8 +201,9 @@ private void setupListeners() {
 		    				ModelManagerService.getLists().set(existingListIdx, newList);
 		    			}
 		    			
-						adapter.clear();
-						adapter.addAll(ModelManagerService.getLists());
+//						adapter.clear();
+//						adapter.addAll(ModelManagerService.getLists());
+						adapter.notifyDataSetChanged();
 	    			}
     			}
 			} catch (ParseException e) {

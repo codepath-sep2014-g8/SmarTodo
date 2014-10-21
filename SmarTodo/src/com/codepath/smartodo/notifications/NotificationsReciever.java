@@ -3,6 +3,8 @@ package com.codepath.smartodo.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.codepath.smartodo.services.ModelManagerService;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +39,7 @@ public class NotificationsReciever extends BroadcastReceiver {
 					String sharedWithObjectId = data.getString(NotificationsSender.SHAREDWITH_OBJECTID_KEY);
 
 					// Todo: Take the next action from here
+					ModelManagerService.getInstance().displayNotification("List " + todoListName + " was shared with you", "by " + sharedByUserName);
 				}
 			}
 		} catch (JSONException e) {

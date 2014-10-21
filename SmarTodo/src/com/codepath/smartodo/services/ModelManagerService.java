@@ -28,8 +28,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class ModelManagerService extends Service {
-//	private static ModelManagerService INSTANCE;
-//	public static ModelManagerService getInstance() { return INSTANCE; }
+	private static ModelManagerService INSTANCE;
+	public static ModelManagerService getInstance() { return INSTANCE; }
 
 	private static final int NOTIFICATION_ID = 1;
 	
@@ -37,6 +37,11 @@ public class ModelManagerService extends Service {
 	private static List<TodoList> lists;
 	private static Handler handler;
 
+	public ModelManagerService() {
+		INSTANCE = this;
+		handler = new ListMessageHandler(this);
+	}
+	
 	private static class ListMessageHandler extends Handler {
 		private ModelManagerService service;
 		
@@ -48,31 +53,13 @@ public class ModelManagerService extends Service {
 			TodoList i = (TodoList) msg.obj;
 			Log.i("alarm", "Alarm activated for item " + i.getName() + " for time " + i.getNotificationTime());
 			
-			// Create a notification area notification so the user 
-			// can get back to the client UI		
-			final Intent notificationIntent = new Intent(service.getApplicationContext(), ListsViewerActivity.class);
-			final PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, notificationIntent, 0);
-
-			final Notification notification = new NotificationCompat.Builder(
-					service.getApplicationContext())
-					.setSmallIcon(R.drawable.ic_stat_todolistalarm)
-					.setAutoCancel(true)
-					.setContentTitle("SmarTodo alarm for " + i.getName())
-					.setContentText("Your list is due now!")
-					.setContentIntent(pendingIntent)
-					.build();
-
-			// Put this Service in a foreground state, so it won't 
-			// readily be killed by the system  
-			service.startForeground(NOTIFICATION_ID, notification);
+			service.displayNotification("SmarTodo alarm for " + i.getName(), "Your list is due now!");
 		}
 	}
 	
 	@Override
 	public void onCreate() {
-//		INSTANCE = this;
 		running = true;
-		handler = new ListMessageHandler(this);
 		
 		Log.i("info", "Started " + getClass().getSimpleName());
 		
@@ -150,8 +137,9 @@ public class ModelManagerService extends Service {
 			@Override
 			public void done(ParseException ex) {
 				if(ex == null) {
+					Log.i("info", "Parse installation set up corectly");
 					// For testing
-					sendTestTodoList();
+//					sendTestTodoList();
 				} else {
 					Log.e("error", ex.getMessage(), ex);
 				}
@@ -240,6 +228,26 @@ public class ModelManagerService extends Service {
 		}
 		
 		return -1;
+	}
+
+	public void displayNotification(String title, String text) {
+		// Create a notification area notification so the user 
+		// can get back to the client UI		
+		final Intent notificationIntent = new Intent(getApplicationContext(), ListsViewerActivity.class);
+		final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+		final Notification notification = new NotificationCompat.Builder(
+				getApplicationContext())
+				.setSmallIcon(R.drawable.ic_stat_todolistalarm)
+				.setAutoCancel(true)
+				.setContentTitle(title)
+				.setContentText(text)
+				.setContentIntent(pendingIntent)
+				.build();
+
+		// Put this Service in a foreground state, so it won't 
+		// readily be killed by the system  
+		startForeground(NOTIFICATION_ID, notification);
 	}
 
 }

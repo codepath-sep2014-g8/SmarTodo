@@ -513,6 +513,8 @@ public class TodoListFragment extends Fragment {
 			c.set(Calendar.MINUTE, minute);
 			todoList.setNotificationTime(c.getTime());	
 			tvReminder.setText(getReminderDisplay()); // refresh
+			
+			ModelManagerService.processListNotifications(todoList);
 			// Save the todoList now?
 		};
 	}

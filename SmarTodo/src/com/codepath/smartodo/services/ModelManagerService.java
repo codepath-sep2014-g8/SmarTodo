@@ -101,33 +101,7 @@ public class ModelManagerService extends Service {
 				Log.w("warning", "Encountered a null list. Skipping it.");
 				continue;
 			}
-			// Clean up any previous alarms
-			if (handler != null) {
-			    handler.removeMessages(list.getUniqueId());
-			}
-			
-//			Date notificationTime = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30)); // TODO For testing purposes only
-			
-			Date notificationTime = list.getNotificationTime();
-			
-			if(notificationTime != null) {
-				if(handler == null) {
-					continue; // TODO Ugly hack. We need to sync the service start with the activities
-				}
-				
-				Log.i("info", "Registering alarm for list " + list.getName() + " at " + notificationTime);
-				
-		        long timeAtBoot = System.currentTimeMillis() - SystemClock.uptimeMillis();
-		        long reminderTime = notificationTime.getTime() - timeAtBoot;
-		        
-		        boolean posted = handler.sendMessageAtTime(Message.obtain(handler, list.hashCode(), list), reminderTime);
-		        
-		        if(!posted) {
-		        	Log.w("warning", "The alarm could not be set up!");
-		        } else {
-		        	Log.i("info", "Alarm set up successfully");
-		        }
-			}
+			processListNotifications(list);
 		}
 		
 		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
@@ -149,6 +123,36 @@ public class ModelManagerService extends Service {
 				}
 			}
 		});
+	}
+
+	public static void processListNotifications(TodoList list) {
+		// Clean up any previous alarms
+		if (handler != null) {
+		    handler.removeMessages(list.getUniqueId());
+		}
+		
+//			Date notificationTime = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30)); // TODO For testing purposes only
+		
+		Date notificationTime = list.getNotificationTime();
+		
+		if(notificationTime != null) {
+			if(handler == null) {
+				return;
+			}
+			
+			Log.i("info", "Registering alarm for list " + list.getName() + " at " + notificationTime);
+			
+		    long timeAtBoot = System.currentTimeMillis() - SystemClock.uptimeMillis();
+		    long reminderTime = notificationTime.getTime() - timeAtBoot;
+		    
+		    boolean posted = handler.sendMessageAtTime(Message.obtain(handler, list.hashCode(), list), reminderTime);
+		    
+		    if(!posted) {
+		    	Log.w("warning", "The alarm could not be set up!");
+		    } else {
+		    	Log.i("info", "Alarm set up successfully");
+		    }
+		}
 	}
 	
 	// This is just for testing purpose. Notice that we are sharing a newly created 

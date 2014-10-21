@@ -483,12 +483,12 @@ public class TodoListFragment extends Fragment {
 
 		public TimePickerFragment(TodoList todoList) {
 			super();
-			this.todoList = todoList;		
+			this.todoList = todoList;	
+			initCurrentDate();
 		}
 		
 		private void initCurrentDate() {
 			Date notificationTime = todoList.getNotificationTime();
-			Log.d(TAG, "In initCurrentDate, notificationTime is null");
 			if (notificationTime == null) {
 				notificationTime = new Date();
 			}
@@ -508,7 +508,6 @@ public class TodoListFragment extends Fragment {
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			
-			Log.d(TAG, "In onTimeSet, hourOfDay is " + hourOfDay + ", minute is " + minute);
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
 			todoList.setNotificationTime(c.getTime());	

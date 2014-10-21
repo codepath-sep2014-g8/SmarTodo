@@ -111,6 +111,10 @@ public class ModelManagerService extends Service {
 			Date notificationTime = list.getNotificationTime();
 			
 			if(notificationTime != null) {
+				if(handler == null) {
+					continue; // TODO Ugly hack. We need to sync the service start with the activities
+				}
+				
 				Log.i("info", "Registering alarm for list " + list.getName() + " at " + notificationTime);
 				
 		        long timeAtBoot = System.currentTimeMillis() - SystemClock.uptimeMillis();

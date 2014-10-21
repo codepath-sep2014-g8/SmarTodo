@@ -76,7 +76,7 @@ public class TodoListFragment extends Fragment {
 	private TodoItemsAdapter adapter;
 	private List<TodoItem> todoItemsList;
 	private TodoList todoList = null;
-	private String listName = null;
+	private String listObjectId = null;
 	
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
@@ -85,7 +85,7 @@ public class TodoListFragment extends Fragment {
 		TodoListFragment fragment = new TodoListFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putString(AppConstants.KEY_TODOLIST, todoListName);
+        arguments.putString(AppConstants.OBJECTID_EXTRA, todoListName);
         fragment.setArguments(arguments);
 
         return fragment;
@@ -124,11 +124,11 @@ public class TodoListFragment extends Fragment {
 	private void initializeTodoList(){
 		
 		
-		if(getArguments() != null && getArguments().containsKey(AppConstants.KEY_TODOLIST)){
-			listName = getArguments().getString(AppConstants.KEY_TODOLIST);
+		if(getArguments() != null && getArguments().containsKey(AppConstants.OBJECTID_EXTRA)){
+			listObjectId = getArguments().getString(AppConstants.OBJECTID_EXTRA);
 		}
 		
-		if(listName == null || listName.isEmpty()){	
+		if(listObjectId == null || listObjectId.isEmpty()){	
 			todoList = new TodoList();
 			todoItemsList = new ArrayList<TodoItem>();
 			mode = TodoListDisplayMode.CREATE;
@@ -136,7 +136,7 @@ public class TodoListFragment extends Fragment {
 		}
 		
 		try {
-			todoList = TodoList.findTodoListByName(listName);
+			todoList = TodoList.findTodoListByObjectId(listObjectId);
 			todoItemsList = todoList.getAllItems();
 		} catch (ParseException e1) {
 			
@@ -219,7 +219,7 @@ public class TodoListFragment extends Fragment {
 			// Here is some test code to assign a street address to this Todolist for geofencing.
 			ParseUser parseUser = ParseUser.getCurrentUser();
 			
-			Address address = todoList.getAddress();
+			Address address = todoList.getAddress().fetchIfNeeded();
 			if (null == address) {
 				String streetAddress = "1350 North Mathilda Avenue, Sunnyvale, CA";			
 				address = new Address();
@@ -228,6 +228,8 @@ public class TodoListFragment extends Fragment {
 				address.setName("Yahoo Sunnyvale Building F");
 				address.setUser(parseUser);
 				todoList.setAddress(address);
+			} else {
+				address = address.fetchIfNeeded();
 			}
 			
 			String location = address.getName();
@@ -349,7 +351,7 @@ public class TodoListFragment extends Fragment {
 			public void onClick(View v) {
 				// Show Share activity
 				Intent intent = new Intent(getActivity(), ShareActivity.class);
-				intent.putExtra(AppConstants.KEY_TODOLIST, listName);
+				intent.putExtra(AppConstants.OBJECTID_EXTRA, listObjectId);
 				startActivityForResult(intent, 200);				
 			}
 		});
@@ -376,7 +378,13 @@ public class TodoListFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				updateTodoList();
+				String objectId = updateTodoList();
+				
+				if(objectId != null) {
+					Intent i = new Intent();
+					i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+					TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
+				}
 			}
 		});
 		
@@ -402,12 +410,12 @@ public class TodoListFragment extends Fragment {
 	/*
 	 * Populate the TodoList object
 	 */
-	private void updateTodoList(){
+	private String updateTodoList(){
 		String validationString = validateInput();
 		if(validateInput() != null){
 			//Show toast and dont update
 			Toast.makeText(getActivity(), validationString, Toast.LENGTH_LONG).show();
-			return;
+			return null;
 		}
 		//Create todoList if new list being created
 		if(todoList == null){
@@ -417,13 +425,21 @@ public class TodoListFragment extends Fragment {
 		//Should be used when creating new list
 		//ModelManagerService.saveList(etTitle.getText().toString(), ModelManagerService.getUser(), todoItemsList);
 		
-		Log.i("info", "Saving TODO List " + listName);
+		Log.i("info", "Saving TODO List " + listObjectId);
 		
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
 		
-		ModelManagerService.saveList(todoList, todoItemsList);
-		Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
+		try {
+			String objectId = ModelManagerService.saveList(todoList, todoItemsList);
+			Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
+			
+			return objectId;
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+			Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+			return null;
+		}
 	}
 	
 	private String validateInput(){
@@ -439,7 +455,7 @@ public class TodoListFragment extends Fragment {
 		}
 		
 		try {
-			if(TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
+			if(mode == TodoListDisplayMode.CREATE && TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
 				return "The list name is not unique!";
 			}
 		} catch (ParseException e) {

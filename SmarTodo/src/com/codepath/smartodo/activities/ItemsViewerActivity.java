@@ -22,7 +22,6 @@ public class ItemsViewerActivity extends FragmentActivity {
 	private ImageView ivAdd;
 	private ImageView ivBack;
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,12 +33,12 @@ public class ItemsViewerActivity extends FragmentActivity {
 	private void initialize(){
 		initializeActionBar();
 
-		String name = null;
-		if (getIntent().hasExtra(AppConstants.KEY_TODOLIST)) {			
-			name = (String) getIntent().getStringExtra(AppConstants.KEY_TODOLIST);
+		String objectId = null;
+		if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
+			objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
 		}
 
-		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(name);
+		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.fragmentContainer, fragmentTodoList);

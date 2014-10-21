@@ -180,12 +180,12 @@ public class ModelManagerService extends Service {
 		// TODO
 	}
 	
-	public static void saveList(final TodoList todoList, final List<TodoItem> todoItemsList) {
+	public static String saveList(final TodoList todoList, final List<TodoItem> todoItemsList) throws ParseException {
 		Log.i("info", "Saving list");
 
-		todoList.saveInBackground(new SaveCallback() {
-			@Override
-			public void done(ParseException arg0) {
+		todoList.save();//InBackground(new SaveCallback() {
+//			@Override
+//			public void done(ParseException arg0) {
 				for(User sharedWith : todoList.getSharing()) {
 					Log.i("info", "Sending push message to " + sharedWith.getUsername());
 					NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
@@ -203,10 +203,12 @@ public class ModelManagerService extends Service {
 				}
 				
 				Log.i("info", "Items saved");
-			}
-		});
+//			}
+//		});
 		
 		Log.i("info", "List save started in background");
+		
+		return todoList.getObjectId();
 	}
 	
 	private static boolean running = false;
@@ -227,6 +229,17 @@ public class ModelManagerService extends Service {
 
 	public static List<TodoList> getLists() {
 		return lists;
+	}
+
+	public static int findExistingListIdxByObjectId(String objectId) {
+		for(int i=0;i< getLists().size();i++) {
+			TodoList list = getLists().get(i);
+			if(list.getObjectId().equals(objectId)) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 
 }

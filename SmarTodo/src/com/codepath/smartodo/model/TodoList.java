@@ -178,6 +178,23 @@ public class TodoList extends ParseObject {
 			return list.get(0);
 		}
 	}
+	
+	public static TodoList findTodoListByObjectId(String objectId) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery.whereEqualTo("objectId", objectId);
+		
+		List<TodoList> list = itemQuery.find();
+		
+		if(list.isEmpty()) {
+			return null;
+		} else { 
+			if(list.size() > 1) {
+				Log.w("warning", "Found " + list.size() + " lists with the same name: " + objectId + ". Returning only the first one");
+			}
+			
+			return list.get(0);
+		}
+	}
 
 	public int getUniqueId() {
 		String objectId = getObjectId();

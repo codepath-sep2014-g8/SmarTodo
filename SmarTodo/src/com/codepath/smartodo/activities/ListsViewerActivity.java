@@ -33,6 +33,7 @@ public class ListsViewerActivity extends FragmentActivity {
 	private TodoListAdapter adapter;
 	private ImageView ivAdd;
 	
+	private String editedObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +87,10 @@ private void setupListeners() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				TodoList todoList = adapter.getItem(position);
-				String name = todoList.getName();
-				System.out.println("name:" + name);
+				editedObjectId = todoList.getObjectId();
+				
 				Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
-				i.putExtra(AppConstants.KEY_TODOLIST, name);
+				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
 				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 			}
     		
@@ -108,6 +109,7 @@ private void setupListeners() {
 	private void showCreateListActivity(){
 		Intent intent = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
 		
+		editedObjectId = null;
 		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
 	}
     
@@ -185,9 +187,25 @@ private void setupListeners() {
     	case REQUEST_CODE_EDIT_LIST:
     	case REQUEST_CODE_NEW_LIST:
     		try {
-				ModelManagerService.refreshFromUser(ModelManagerService.getUser());
-				adapter.clear();
-				adapter.addAll(ModelManagerService.getLists());
+    			if(data != null) {
+	    			String objectId = data.getStringExtra(AppConstants.OBJECTID_EXTRA);
+	    			
+	    			if(objectId != null) {
+	    				// Refresh the model with only the modified/added list without triggering a full refresh
+		    			TodoList newList = TodoList.findTodoListByObjectId(objectId);
+		    			int existingListIdx = ModelManagerService.findExistingListIdxByObjectId(objectId);
+		    			
+		    			if(existingListIdx == -1) {
+		    				ModelManagerService.getLists().add(newList);
+		    			} else {
+		    				ModelManagerService.getLists().set(existingListIdx, newList);
+		    			}
+		    			
+//						adapter.clear();
+//						adapter.addAll(ModelManagerService.getLists());
+						adapter.notifyDataSetChanged();
+	    			}
+    			}
 			} catch (ParseException e) {
 				Log.e("error", e.getMessage(), e);
 				Toast.makeText(this, "Failed refresh", Toast.LENGTH_LONG).show();

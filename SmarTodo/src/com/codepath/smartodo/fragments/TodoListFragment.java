@@ -1,8 +1,9 @@
 package com.codepath.smartodo.fragments;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,12 +11,15 @@ import org.apache.commons.lang.StringUtils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
@@ -45,9 +50,7 @@ import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 public class TodoListFragment extends Fragment {
 
@@ -198,9 +201,12 @@ public class TodoListFragment extends Fragment {
 		
 		try{
 			Date dt = todoList.getNotificationTime();
+			if (dt == null) {
+				Log.d(TAG, "In getReminderDisplay, notificationTime is null");
+				dt = new Date();
+			}
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
-			 
-		    
+			 		    
 		    String displayName = formatter.format(dt);
 		    sb.append("Remind me at: ").append(displayName);
 		    sb.append("\r\n");
@@ -381,6 +387,15 @@ public class TodoListFragment extends Fragment {
 				// if owner of the list then only allow deletion
 			}
 		});
+		
+		ivFooterReminder.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DialogFragment newFragment = new TimePickerFragment(todoList);
+			    newFragment.show(getFragmentManager(), "timePicker");	
+			}
+		});
 	}
 	
 	
@@ -442,6 +457,48 @@ public class TodoListFragment extends Fragment {
 			
 			
 		}
+	}
+	
+	public class TimePickerFragment extends DialogFragment implements
+			TimePickerDialog.OnTimeSetListener {	
+
+		private TodoList todoList;
+		final Calendar c = Calendar.getInstance();
+
+		public TimePickerFragment(TodoList todoList) {
+			super();
+			this.todoList = todoList;		
+		}
+		
+		private void initCurrentDate() {
+			Date notificationTime = todoList.getNotificationTime();
+			Log.d(TAG, "In initCurrentDate, notificationTime is null");
+			if (notificationTime == null) {
+				notificationTime = new Date();
+			}
+			c.setTime(notificationTime);		
+		}
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Use the current time as the default values for the picker
+			int hour = c.get(Calendar.HOUR_OF_DAY);
+	        int minute = c.get(Calendar.MINUTE);
+
+			// Create a new instance of TimePickerDialog and return it
+			return new TimePickerDialog(getActivity(), this, hour, minute,
+					DateFormat.is24HourFormat(getActivity()));
+		}
+
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			
+			Log.d(TAG, "In onTimeSet, hourOfDay is " + hourOfDay + ", minute is " + minute);
+			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			c.set(Calendar.MINUTE, minute);
+			todoList.setNotificationTime(c.getTime());	
+			tvReminder.setText(getReminderDisplay()); // refresh
+			// Save the todoList now?
+		};
 	}
 	
 }

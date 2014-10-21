@@ -351,7 +351,7 @@ public class TodoListFragment extends Fragment {
 			public void onClick(View v) {
 				// Show Share activity
 				Intent intent = new Intent(getActivity(), ShareActivity.class);
-				intent.putExtra(AppConstants.KEY_TODOLIST, listObjectId);
+				intent.putExtra(AppConstants.OBJECTID_EXTRA, listObjectId);
 				startActivityForResult(intent, 200);				
 			}
 		});

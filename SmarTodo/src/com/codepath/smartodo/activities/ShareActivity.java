@@ -52,9 +52,9 @@ public class ShareActivity extends Activity {
 	
 	private void initialize(){
 		
-		listName = getIntent().getExtras().getString(AppConstants.KEY_TODOLIST);
+		listName = getIntent().getExtras().getString(AppConstants.OBJECTID_EXTRA);
 		try {
-			todoList = TodoList.findTodoListByName(listName);
+			todoList = TodoList.findTodoListByObjectId(listName);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

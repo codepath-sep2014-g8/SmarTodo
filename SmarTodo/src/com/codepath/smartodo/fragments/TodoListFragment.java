@@ -9,15 +9,18 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -47,6 +50,7 @@ import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
+import com.codepath.smartodo.utils.Utils;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -220,27 +224,19 @@ public class TodoListFragment extends Fragment {
 			ParseUser parseUser = ParseUser.getCurrentUser();
 			
 			Address address = todoList.getAddress();
-			
-			if (null == address) {
-				String streetAddress = "1350 North Mathilda Avenue, Sunnyvale, CA";			
+			if (null == address) { // Create a temporary address object for display
+				String streetAddress = "Not set yet";			
 				address = new Address();
-				address.setLocation(new ParseGeoPoint(37.4151756, -122.0244941));  // need not do this; street address is sufficient
 				address.setStreetAddress(streetAddress);
-				address.setName("Yahoo Sunnyvale Building F");
-				address.setUser(parseUser);
-				todoList.setAddress(address);
+				address.setName(streetAddress);
 			} else {
 				address = address.fetchIfNeeded();
 			}
 			
-			String location = address.getName();
+			String location = address.getStreetAddress();   // TOdo: change to address.getName();
 			
 			sb.append("Remind me at location: ").append(location);
 		    sb.append("\r\n");
-		    
-		    int radius = 50; // meters
-			GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), address.getStreetAddress(), radius,
-					Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + address.getName()), todoList.getName(), "All Todo items");
 		}
 		catch(Exception ex){
 			ex.printStackTrace();
@@ -334,7 +330,7 @@ public class TodoListFragment extends Fragment {
 		
 		ivNotifications.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
+/*			@Override
 			public void onClick(View v) {
 				FragmentManager manager = getActivity().getFragmentManager();
 				
@@ -342,9 +338,16 @@ public class TodoListFragment extends Fragment {
 				dialog.show(manager, "fragment_notification_selector");
 				
 				
+			}*/
+			
+			@Override
+			public void onClick(View v) {
+				android.support.v4.app.FragmentManager manager = getActivity()
+						.getSupportFragmentManager();
+				LocationDialogFragment dialog = new LocationDialogFragment(todoList);
+				dialog.show(manager, "fragment_notification_selector");
 			}
 		});
-		
 		
 		ivShare.setOnClickListener(new View.OnClickListener() {
 			
@@ -507,16 +510,82 @@ public class TodoListFragment extends Fragment {
 					DateFormat.is24HourFormat(getActivity()));
 		}
 
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
 			todoList.setNotificationTime(c.getTime());	
 			tvReminder.setText(getReminderDisplay()); // refresh
-			
-			ModelManagerService.processListNotifications(todoList);
 			// Save the todoList now?
 		};
 	}
 	
+	public class LocationDialogFragment extends DialogFragment implements android.content.DialogInterface.OnClickListener {
+
+		private TodoList todoList;
+		private Address currentAddress;
+		private String currentStreetAddress;
+		private EditText etStreetAddress;
+
+		public LocationDialogFragment(TodoList todoList) {
+			super();
+			this.todoList = todoList;	
+			initCurrentLocation();
+		}
+		
+	    private void initCurrentLocation() {    	
+		    currentAddress = todoList.getAddress();
+	    	if (currentAddress != null) {
+	    	    currentStreetAddress = currentAddress.getStreetAddress();    	        	       
+	    	}
+		}
+		
+	    @Override
+	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+	    	etStreetAddress = new EditText(getActivity());
+    	    etStreetAddress.setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+    	    if (!Utils.isNullOrEmpty(currentStreetAddress)) {
+    		    etStreetAddress.setText(currentStreetAddress);
+    	    } 
+	        return new AlertDialog.Builder(getActivity()).setTitle("Please specify an address for " + todoList.getName())
+	        		.setMessage("Please enter an address for reminder")
+	                .setPositiveButton("OK", this).setNegativeButton("CANCEL", null).setView(etStreetAddress).create();
+	    }
+
+	    @Override
+	    public void onClick(DialogInterface dialog, int position) {
+
+	        String newStreetAddress = etStreetAddress.getText().toString();
+	        if (Utils.isNullOrEmpty(newStreetAddress)) {
+	        	return; // Nothing much to do
+	        }
+	        if (!Utils.isNullOrEmpty(currentStreetAddress) &&
+	            (newStreetAddress.equalsIgnoreCase(currentStreetAddress))) {
+	        	currentAddress.setStreetAddress(newStreetAddress);	 // Update it anyway
+	        	return; // Nothing much to do
+	        }
+	        
+	        // Now we have a new street address specified
+	        ParseUser parseUser = ParseUser.getCurrentUser();
+	        Address newAddress;        
+	        if (null == currentAddress) {
+	        	newAddress = new Address();	 
+	        	newAddress.setUser(parseUser);	    
+	        	newAddress.setName(newStreetAddress);  // Defaulting to the address itself instead of (Home, Office, Safeway, etc.). Todo: Get this also in a text view        	    	
+			} else {
+			    newAddress = currentAddress;
+			}
+	        						
+			newAddress.setStreetAddress(newStreetAddress);
+			newAddress.setLocation(new ParseGeoPoint(10, 10));  // need not do this; street address is sufficient
+			todoList.setAddress(newAddress);
+			
+			// Now set up a geofence around the new street address
+			int radius = 50; // meters
+		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
+						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
+			
+			tvReminder.setText(getReminderDisplay()); // refresh                
+	        dialog.dismiss();
+	    }
+	}
 }

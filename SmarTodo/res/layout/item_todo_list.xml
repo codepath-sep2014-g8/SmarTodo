@@ -13,12 +13,12 @@
         android:text="Title"
         android:layout_gravity="center_horizontal"
         android:gravity="left"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
-        android:textColor="#ffffff"/>
+        android:textColor="#C9CFD0"/>
     
     <ListView
         android:id="@+id/lvToDoItemsList_item_todo_list"

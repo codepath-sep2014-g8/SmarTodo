@@ -45,6 +45,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		void populateData(TodoList todoList){
 			
 			tvTitle.setText(todoList.getName());
+			tvTitle.append(":");
 			
 			try {
 				

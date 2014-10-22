@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -45,6 +46,9 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					.findViewById(R.id.tvItemText_ftl);
 			viewHolder.ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
+			
+			//?? Refactor later
+			viewHolder.ivImage.setClickable(true);
 
 			convertView.setTag(viewHolder);
 
@@ -54,6 +58,24 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 		viewHolder.tvItemText.setText(todoItem.getText());
 
+		//?? Refactor later
+		viewHolder.ivImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				todoItem.setCompleted(true);
+				try {
+					todoItem.save();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				updateImage(viewHolder, todoItem);
+				updateCompletedStatus(viewHolder, todoItem);
+			}
+		});
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
 
@@ -65,7 +87,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		if (todoItem.isCompleted()) {
 			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_full);
 		} else {
-			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_empty);
+			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_empty_medium);
 		}
 	}
 

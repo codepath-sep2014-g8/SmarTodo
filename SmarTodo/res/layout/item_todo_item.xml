@@ -26,11 +26,11 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivCheckbox_ftl"
         android:hint="@string/hint_todo_item"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" 
-        android:textColor="#ffffff"
+        android:textColor="#ffff"
         android:clickable="false"
         />
 

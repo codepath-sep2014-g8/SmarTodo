@@ -174,7 +174,7 @@ public final class GeofenceUtils {
     	List<Address> addresses;
         try {
     	    addresses = geocoder.getFromLocationName(streetAddress, 1);
-    	    if (addresses == null) {
+    	    if (addresses == null || addresses.size() == 0) {
     	        return null;
     	    }
     	    Address location = addresses.get(0);

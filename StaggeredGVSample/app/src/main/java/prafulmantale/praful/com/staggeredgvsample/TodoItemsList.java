@@ -7,5 +7,5 @@ public class TodoItemsList {
 
     private String listName;
     private TodoItem todoItem;
-    private int colorCode
+    private int colorCode;
 }

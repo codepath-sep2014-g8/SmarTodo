@@ -4,7 +4,7 @@
     android:orientation="vertical" 
     android:id="@+id/contentPanel"
     android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/todo_list_grid_view_style">
+    android:background="@drawable/grid_view_item">
 
     <TextView
         android:id="@+id/tvTitle"

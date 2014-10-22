@@ -1,7 +1,12 @@
 package prafulmantale.praful.com.staggeredgvsample;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -63,7 +68,11 @@ public class CutomAdapter extends ArrayAdapter<String> {
         int backgroundIndex = position >= colorsList.size() ?
                 position % colorsList.size() : position;
 
-        convertView.setBackgroundResource(colorsList.get(backgroundIndex));
+        //convertView.setBackgroundColor(colorsList.get(backgroundIndex));
+        StateListDrawable sld = (StateListDrawable)convertView.getBackground();
+        GradientDrawable gd = (GradientDrawable)sld.getCurrent();
+        gd.setColor(getContext().getResources().getColor(colorsList.get(backgroundIndex)));
+
 
         List<String> list = MainActivity.seedData.get(listName);
         viewHolder.txtItem.setText("");

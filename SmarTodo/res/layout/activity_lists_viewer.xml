@@ -21,7 +21,7 @@
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        app:drawable="@drawable/ic_action_add"
-        app:color="#000000"
+        app:drawable="@drawable/ic_action_add_list"
+        app:color="#ffffff"
     />
     </FrameLayout>

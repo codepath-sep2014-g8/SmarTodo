@@ -3,7 +3,9 @@ package com.codepath.smartodo.notifications;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
+import com.parse.ParseException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,6 +42,14 @@ public class NotificationsReciever extends BroadcastReceiver {
 
 					// Todo: Take the next action from here
 					ModelManagerService.getInstance().displayNotification("List " + todoListName + " was shared with you", "by " + sharedByUserName);
+					
+					try {
+						TodoList sharedTodoList = TodoList.findTodoListByName(todoListName);
+						ModelManagerService.processListNotifications(sharedTodoList);
+						ModelManagerService.getLists().add(sharedTodoList);
+					} catch (ParseException e) {
+						Log.e("error", e.getMessage(), e);
+					}
 				}
 			}
 		} catch (JSONException e) {

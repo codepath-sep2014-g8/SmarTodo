@@ -1,32 +1,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:id="@+id/contentPanel">
+    android:id="@+id/contentPanel"
+    android:layout_gravity="center_vertical" 
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:padding="1dp"
+            android:descendantFocusability="blocksDescendants"
+    >
 
      <ImageView
         android:id="@+id/ivCheckbox_ftl"
         android:layout_width="wrap_content"
-        android:layout_height="20sp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_checkbox_empty" 
+        android:src="@drawable/ic_checkbox_empty_medium" 
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"/>
+        android:layout_marginLeft="15dp"
+        android:clickable="false"
+        />
     
-    <EditText
-        android:id="@+id/etItemText_ftl"
+    <TextView
+        android:id="@+id/tvItemText_ftl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/ivCheckbox_ftl"
         android:hint="@string/hint_todo_item"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:layout_marginLeft="5dp"
         android:layout_centerVertical="true"
-        android:layout_alignBottom="@+id/ivCheckbox_ftl"
-        android:textAlignment="center"
-        android:gravity="center_vertical"
-        android:background="@drawable/item_selector"
+        android:gravity="center_vertical" 
+        android:textColor="#ffffff"
+        android:clickable="false"
         />
 
    

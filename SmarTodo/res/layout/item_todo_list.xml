@@ -4,7 +4,7 @@
     android:orientation="vertical" 
     android:id="@+id/contentPanel"
     android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/todo_list_grid_view_style">
+    android:background="@drawable/grid_view_item">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -13,37 +13,38 @@
         android:text="Title"
         android:layout_gravity="center_horizontal"
         android:gravity="left"
-        android:textColor="#000000"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginLeft="5dp"
+        android:textColor="#ffffff"/>
     
     <ListView
         android:id="@+id/lvToDoItemsList_item_todo_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:dividerHeight="2dp"
+        android:divider="@android:color/transparent"
+        android:descendantFocusability="blocksDescendants"
         >
     </ListView>
     
     <TextView
-        android:paddingTop="5dp"
+       
         android:id="@+id/tvLocation"
         android:layout_width="match_parent"
-        android:layout_height="24sp"
+        android:layout_height="32sp"
         android:text="Location"
         android:layout_gravity="center_horizontal"
         android:gravity="left|center_vertical"
-        android:textColor="#000000"
+        android:textColor="#ffffff"
         android:textSize="12sp"
         android:textStyle="normal"
         android:drawableRight="@drawable/ic_action_location"
         android:background="@drawable/top_border_style"
-        android:drawablePadding="4dp"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="5dp"
         android:drawableLeft="@drawable/ic_action_reminder_time"
         />
     

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.codepath.smartodo.model.TodoList;
 public class TodoListAdapter extends ArrayAdapter<TodoList> {
 
 	private static final StrikethroughSpan STRIKE_THROUGH_SPAN = new StrikethroughSpan();
+	private int[] colorsList;
 
 	private class ViewHolder {
 		TextView tvTitle;
@@ -75,6 +78,19 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 
 	public TodoListAdapter(Context context, List<TodoList> objects) {
 		super(context, R.layout.item_todo_list, objects);
+		initializeColors();
+	}
+	
+	private void initializeColors(){
+		
+		colorsList = new int[6];
+		
+		colorsList[0] = getContext().getResources().getColor(R.color.bg_list_green);
+		colorsList[1] = getContext().getResources().getColor(R.color.bg_list_blue);
+		colorsList[2] = getContext().getResources().getColor(R.color.bg_list_greenish);
+		colorsList[3] = getContext().getResources().getColor(R.color.bg_list_gray);
+		colorsList[4] = getContext().getResources().getColor(R.color.bg_list_purple);
+		colorsList[5] = getContext().getResources().getColor(R.color.bg_list_red);
 	}
 
 	@Override
@@ -96,18 +112,18 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-	 //convertView.setBackgroundColor(todoList.getColor);
-		//?? Remove later
-		if(position % 2 == 0){
-		convertView.setBackgroundResource(R.color.blue);
-		}
-		else{
-			convertView.setBackgroundResource(R.color.orange);
-		}
+		setViewColor(convertView, position);
 		
 		viewHolder.populateData(todoList);
 
 		return convertView;
+	}
+	
+	private void setViewColor(View convertView, int position){
+		StateListDrawable sld = (StateListDrawable)convertView.getBackground();
+        GradientDrawable gd = (GradientDrawable)sld.getCurrent();
+        gd.setColor(colorsList[position % 6]);
+		
 	}
 
 }

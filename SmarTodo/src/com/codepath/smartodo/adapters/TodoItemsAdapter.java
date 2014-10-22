@@ -17,14 +17,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 	private class ViewHolder {
 		ImageView ivImage;
-		EditText etItemText;
+		TextView tvItemText;
 	}
-	
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects) {
 		super(context, R.layout.item_todo_item, objects);
@@ -41,77 +41,22 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder = new ViewHolder();
 
-			viewHolder.etItemText = (EditText) convertView
-					.findViewById(R.id.etItemText_ftl);
+			viewHolder.tvItemText = (TextView) convertView
+					.findViewById(R.id.tvItemText_ftl);
 			viewHolder.ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
-			
-			/*
-			 * 
-			 * 
-			 * Code below is temporary move to appropriate place
-			 * 
-			 * 
-			 */
-			
-			viewHolder.etItemText.addTextChangedListener(new TextWatcher() {
-				
-				@Override
-				public void onTextChanged(CharSequence s, int start, int before, int count) {
-					// TODO Auto-generated method stub
-					String text = viewHolder.etItemText.getText().toString();
-					todoItem.setText(text);
-					if(text == null || text.isEmpty()){
-						//Hide if any addition dummy was added
-					}
-					else{
-						//Show a dummy one
-					}
-					
-				}
-				
-				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void afterTextChanged(Editable s) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			
-			viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					todoItem.setCompleted(!todoItem.isCompleted());
-					todoItem.saveInBackground(new SaveCallback() {
-
-						@Override
-						public void done(ParseException arg0) {
-							updateImage(viewHolder, todoItem);
-							// Show saving status somewhere
-							updateCompletedStatus(viewHolder, todoItem);
-						}
-					});
-				}
-
-			});
 
 			convertView.setTag(viewHolder);
+
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		viewHolder.etItemText.setText(todoItem.getText());
+		viewHolder.tvItemText.setText(todoItem.getText());
 
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
-		
+
 		return convertView;
 	}
 
@@ -120,24 +65,17 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		if (todoItem.isCompleted()) {
 			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_full);
 		} else {
-
-			if (todoItem.getText() == null || todoItem.getText().isEmpty()) {
-				viewHolder.ivImage
-						.setImageResource(R.drawable.ic_content_new_hint);
-			} else {
-				viewHolder.ivImage
-						.setImageResource(R.drawable.ic_checkbox_empty);
-			}
+			viewHolder.ivImage.setImageResource(R.drawable.ic_checkbox_empty);
 		}
 	}
 
 	private void updateCompletedStatus(ViewHolder viewHolder, TodoItem todoItem) {
 
 		if (todoItem.isCompleted()) {
-			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
+			viewHolder.tvItemText.setPaintFlags(viewHolder.tvItemText
 					.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
-			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
+			viewHolder.tvItemText.setPaintFlags(viewHolder.tvItemText
 					.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
 	}

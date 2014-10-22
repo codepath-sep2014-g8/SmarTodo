@@ -112,14 +112,18 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		StateListDrawable sld = (StateListDrawable)convertView.getBackground();
-        GradientDrawable gd = (GradientDrawable)sld.getCurrent();
-        gd.setColor(colorsList[position % 6]);
-		
+		setViewColor(convertView, position);
 		
 		viewHolder.populateData(todoList);
 
 		return convertView;
+	}
+	
+	private void setViewColor(View convertView, int position){
+		StateListDrawable sld = (StateListDrawable)convertView.getBackground();
+        GradientDrawable gd = (GradientDrawable)sld.getCurrent();
+        gd.setColor(colorsList[position % 6]);
+		
 	}
 
 }

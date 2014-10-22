@@ -46,7 +46,6 @@
         android:background="@drawable/top_border_style"
         android:drawablePadding="4dp"
         android:layout_marginTop="1dp"
-        android:layout_marginLeft="5dp"
         android:drawableLeft="@drawable/ic_action_reminder_time"
         />
     

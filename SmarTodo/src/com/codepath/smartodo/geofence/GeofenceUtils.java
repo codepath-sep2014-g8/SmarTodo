@@ -216,6 +216,8 @@ public final class GeofenceUtils {
 			todoGeofences.add(todoGeofence);
 
 			Intent intent = new Intent(context, GeofenceActivity.class);
+			// Need the following flags to force the activity to execute right away
+			intent.setFlags( intent.FLAG_ACTIVITY_MULTIPLE_TASK + intent.FLAG_ACTIVITY_NEW_TASK); 
 			intent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);
 			context.startActivity(intent);
 		} else {

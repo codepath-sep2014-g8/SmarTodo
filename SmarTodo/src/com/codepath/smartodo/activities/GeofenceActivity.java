@@ -23,6 +23,7 @@ import java.util.UUID;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -48,6 +49,7 @@ import com.codepath.smartodo.geofence.GeofenceUtils.REQUEST_TYPE;
 import com.codepath.smartodo.geofence.TodoGeofenceStore;
 import com.codepath.smartodo.model.TodoGeofence;
 import com.codepath.smartodo.notifications.GeofenceReceiver;
+import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
@@ -100,29 +102,39 @@ public class GeofenceActivity extends FragmentActivity {
     // Store the list of geofences to remove
     private List<String> mGeofenceIdsToRemove;
     
+    // Currrent list of geofences to register in this instance of the activity
     private List<TodoGeofence> mTodoGeoFences;
+    
+    // The ever-present background service for our app
+    private Service mBaseService;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setTitle("GeofenceActivity");  // TODO: if we move the code to a service, remove this.
+        
+        // Log.d(GeofenceUtils.APPTAG, "Entering GeofenceActivity.onCreate()");
    
         // Get the geofencing parameters passed in the intent.
         mTodoGeoFences = (List<TodoGeofence>) getIntent().getSerializableExtra(GeofenceActivity.TODO_GEOFENCES_KEY);
-        if (mTodoGeoFences == null) {
-        	 Toast.makeText(this, "Error: A null todoGeoFences object is passed in the intent for GeofenceActivity",
+        if (mTodoGeoFences == null || mTodoGeoFences.size() == 0) {
+        	 Toast.makeText(this, "Error: A null or empty todoGeoFences object is passed in the intent for GeofenceActivity",
                      Toast.LENGTH_LONG).show();
         	 finish();	
         }
         
+        Log.d(GeofenceUtils.APPTAG, "In GeofenceActivity.onCreate(), the todo list name is " + mTodoGeoFences.get(0).getTodoListName());	
+        
         doGeofencingSetup();
         
-        initTodoGeofences();
+        initTodoGeofences(mTodoGeoFences);
         
         // sampleNotification();
         
-        registerGeofence(mTodoGeoFences);  
+        registerGeofence(mTodoGeoFences); 
+        
+        // Log.d(GeofenceUtils.APPTAG, "Exiting GeofenceActivity.onCreate()");
         
         super.onBackPressed();  // experimenting
     }
@@ -145,8 +157,8 @@ public class GeofenceActivity extends FragmentActivity {
         mNotificationManager.notify(0, builder.build());	
 	}
 
-	private void initTodoGeofences() {
-    	for (TodoGeofence todoGeoFence : mTodoGeoFences) {
+	private void initTodoGeofences(List<TodoGeofence> todoGeoFences) {
+    	for (TodoGeofence todoGeoFence : todoGeoFences) {
     		if (todoGeoFence.getGeofenceId() == null) {
             	todoGeoFence.setGeofenceId(UUID.randomUUID().toString());
             }		
@@ -154,6 +166,9 @@ public class GeofenceActivity extends FragmentActivity {
     }
 
     private void doGeofencingSetup() {
+    	
+    	mBaseService = ModelManagerService.getInstance();
+    	
     	// Create a new broadcast receiver to receive updates from the listeners and service
         mBroadcastReceiver = new GeofenceReceiver();
 
@@ -173,16 +188,16 @@ public class GeofenceActivity extends FragmentActivity {
         mIntentFilter.addCategory(GeofenceUtils.CATEGORY_LOCATION_SERVICES);
 
         // Instantiate a new geofence storage area
-        mPrefs = new TodoGeofenceStore(this);
+        mPrefs = new TodoGeofenceStore(mBaseService);
 
         // Instantiate the current List of geofences
         mCurrentGeofences = new ArrayList<Geofence>();
 
         // Instantiate a Geofence requester
-        mGeofenceRequester = new GeofenceRequester(this);
+        mGeofenceRequester = new GeofenceRequester(mBaseService);
 
         // Instantiate a Geofence remover
-        mGeofenceRemover = new GeofenceRemover(this);	
+        mGeofenceRemover = new GeofenceRemover(mBaseService);	
 	}
 
 	/*
@@ -192,6 +207,7 @@ public class GeofenceActivity extends FragmentActivity {
      * start an Activity that handles Google Play services problems. The result of this
      * call returns here, to onActivityResult.
      * calls
+     * TODO: Move this to ModelManagerService? How? This is a method on FragmentActivity.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -263,7 +279,7 @@ public class GeofenceActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         // Register the broadcast receiver to receive status updates
-        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, mIntentFilter);
+        LocalBroadcastManager.getInstance(mBaseService).registerReceiver(mBroadcastReceiver, mIntentFilter);
     }
 
     /*
@@ -303,7 +319,7 @@ public class GeofenceActivity extends FragmentActivity {
 
         // Check that Google Play services is available
         int resultCode =
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+                GooglePlayServicesUtil.isGooglePlayServicesAvailable(mBaseService);
 
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
@@ -429,6 +445,7 @@ public class GeofenceActivity extends FragmentActivity {
             Toast.makeText(this, R.string.add_geofences_already_requested_error,
                         Toast.LENGTH_LONG).show();
         }
+        // Log.d(GeofenceUtils.APPTAG, "Exiting GeofenceActivity.registerGeofence()");
     }
     
 	/**

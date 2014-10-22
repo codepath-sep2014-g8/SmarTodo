@@ -18,6 +18,7 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.GeofenceActivity;
 import com.codepath.smartodo.activities.ShowGeoNotificationActivity;
 import com.codepath.smartodo.model.TodoGeofence;
+import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 
@@ -124,7 +125,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
      */
     private void sendNotification(String transitionType, String ids) {
 
-    	// Log.d(TAG, "In sendNotification: ids are " + ids.toString());
+    	Log.d(TAG, "In sendNotification: ids are " + ids.toString());
     	TodoGeofenceStore mPrefs = new TodoGeofenceStore(this);
     	String[] idArray = TextUtils.split(ids, GeofenceUtils.GEOFENCE_ID_DELIMITER.toString());
     	
@@ -132,13 +133,13 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	for (int i = 0; i <  idArray.length; i++) {
     		String geofenceId = idArray[i];
         	TodoGeofence todoGeofence = mPrefs.getGeofence(geofenceId);
-        	// Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
+        	Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
         	todoGeofences.add(todoGeofence);
-        	// Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
+        	Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
         	// Toast.makeText(this, todoGeofence.getAlertMessage(), Toast.LENGTH_LONG).show();
     	}
     		
-        // Create an explicit content Intent that starts the ShowGeoNotificationActivity Activity
+       /* // Create an explicit content Intent that starts the ShowGeoNotificationActivity Activity
         Intent notificationIntent =
                 new Intent(getApplicationContext(), ShowGeoNotificationActivity.class);
         notificationIntent.putExtra(GeofenceActivity.TODO_GEOFENCES_KEY, todoGeofences);		
@@ -157,7 +158,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Get a notification builder that's compatible with platform versions >= 4
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);*/
 
         // Set the notification contents
 /*        builder.setSmallIcon(R.drawable.ic_notification)
@@ -189,7 +190,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
         	contentText = contentTextBuffer.toString();
         }
         
-		builder.setSmallIcon(R.drawable.ic_notification)
+/*		builder.setSmallIcon(R.drawable.ic_notification)
 			.setContentTitle(title)
 			.setContentText(contentText);
 
@@ -198,7 +199,9 @@ public class ReceiveTransitionsIntentService extends IntentService {
             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Issue the notification
-        mNotificationManager.notify(0, builder.build());
+        mNotificationManager.notify(0, builder.build());*/
+        
+        ModelManagerService.getInstance().displayNotification(title, contentText);
     }
 
     /**

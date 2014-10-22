@@ -23,5 +23,6 @@
         android:layout_marginRight="16dp"
         app:drawable="@drawable/ic_action_add_list"
         app:color="#ffffff"
+        android:onClick="onNewTodoRequested"
     />
     </FrameLayout>

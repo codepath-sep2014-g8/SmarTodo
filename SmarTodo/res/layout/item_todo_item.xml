@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:com.custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/contentPanel"
@@ -16,22 +17,23 @@
         android:layout_alignParentLeft="true"
         android:src="@drawable/ic_checkbox_empty_medium" 
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:clickable="false"
         />
     
-    <TextView
+    <com.codepath.smartodo.widgets.TypefacedTextView
         android:id="@+id/tvItemText_ftl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivCheckbox_ftl"
         android:hint="@string/hint_todo_item"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical" 
         android:textColor="#ffff"
         android:clickable="false"
+        com.custom:typeface="fonts/DancingScript-Regular.otf"
         />
 
    

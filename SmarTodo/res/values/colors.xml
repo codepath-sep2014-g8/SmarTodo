@@ -8,4 +8,12 @@
     <color name="red">#fff10800</color>
     <color name="list_item_pressed">#1A000000</color>
     <color name="action_bar_color_grid_view">#ff55acee</color>
+    
+    <color name="bg_list_gray">#ff808080</color>
+    <color name="bg_list_green">#ff17AFCA</color>
+    <color name="bg_list_blue">#ff1E8DD3</color>
+    <color name="bg_list_greenish">#ff4E6A78</color>
+    <color name="bg_list_purple">#ffA844CC</color>
+    <color name="bg_list_red">#ffFD5835</color>
+    
 </resources>

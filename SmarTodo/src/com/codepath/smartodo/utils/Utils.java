@@ -29,7 +29,8 @@ public class Utils {
 			username = username.substring(0, idx + 2);
 		}
 		
-		return "SmarTodo - " + username;
+		//return "SmarTodo - " + username;
+		return "SmarTodo";
 	}
 	
 }

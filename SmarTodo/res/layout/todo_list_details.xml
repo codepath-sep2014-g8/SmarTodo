@@ -22,7 +22,7 @@
         <EditText
         android:id="@+id/etTitle_tdld"
         android:layout_width="match_parent"
-        android:layout_height="0"
+        android:layout_height="0dp"
         android:hint="@string/hint_title"
         android:ems="10" 
         android:background="@drawable/title_selector"
@@ -44,4 +44,4 @@
     </LinearLayout>
      
 
-</RelativeLayout>
+</LinearLayout>

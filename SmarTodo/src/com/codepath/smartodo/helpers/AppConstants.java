@@ -10,5 +10,7 @@ public class AppConstants {
 	
 	public static final int REQUEST_CODE_SHARE_ACTIVITY = 200;
 	public static final String OBJECTID_EXTRA = "objectId";
+	
+	public static final String KEY_ANIMATION_STYLE = "ANIM_STYLE";
 
 }

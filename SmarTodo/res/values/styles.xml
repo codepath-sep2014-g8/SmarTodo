@@ -26,5 +26,10 @@
         <item name="android:windowEnterAnimation">@anim/slide_in_from_right</item>
         <item name="android:windowExitAnimation">@anim/slide_out_from_right</item>
     </style>
+    
+    <style name="DialogFromBottomAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_from_bottom</item>
+    </style>
 
 </resources>

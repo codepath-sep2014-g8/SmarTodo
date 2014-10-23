@@ -84,15 +84,19 @@ public class TodoListFragment extends DialogFragment {
 	private TodoList todoList = null;
 	private String listObjectId = null;
 	
+	private int animationStyle = R.style.DialogFromLeftAnimation;
+	
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
-	public static TodoListFragment newInstance(String todoListName)
+	public static TodoListFragment newInstance(String todoListName, int animationStyle)
     {
 		TodoListFragment fragment = new TodoListFragment();
 
         Bundle arguments = new Bundle();
         arguments.putString(AppConstants.OBJECTID_EXTRA, todoListName);
+        arguments.putInt(AppConstants.KEY_ANIMATION_STYLE, animationStyle);
         fragment.setArguments(arguments);
+        
 
         return fragment;
     }
@@ -126,7 +130,7 @@ public class TodoListFragment extends DialogFragment {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(arg0);
 		getDialog().getWindow()
-	    .getAttributes().windowAnimations = R.style.DialogFromRightAnimation;
+	    .getAttributes().windowAnimations = animationStyle;
 	}
 	
 	@Override
@@ -149,6 +153,9 @@ public class TodoListFragment extends DialogFragment {
 	
 	private void initializeTodoList(){
 		
+		if(getArguments() != null && getArguments().containsKey(AppConstants.KEY_ANIMATION_STYLE)){
+			animationStyle = getArguments().getInt(AppConstants.KEY_ANIMATION_STYLE);
+		}
 		
 		if(getArguments() != null && getArguments().containsKey(AppConstants.OBJECTID_EXTRA)){
 			listObjectId = getArguments().getString(AppConstants.OBJECTID_EXTRA);

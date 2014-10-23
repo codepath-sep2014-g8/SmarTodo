@@ -98,7 +98,8 @@ public class ListsViewerActivity extends FragmentActivity {
 //				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
 //				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 				
-				showTodoListDialog(todoList.getObjectId());
+				showTodoListDialog(todoList.getObjectId(), 
+						(position % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation);
 			}
 
 		});
@@ -116,14 +117,14 @@ public class ListsViewerActivity extends FragmentActivity {
 //		editedObjectId = null;
 //		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
 		
-		showTodoListDialog(null);
+		showTodoListDialog(null, R.style.DialogFromBottomAnimation);
 		
 		
 	}
 	
-	private void showTodoListDialog(String objectID){
+	private void showTodoListDialog(String objectID, int animationStyle){
 		FragmentManager manager = getSupportFragmentManager();
-		TodoListFragment dialog = TodoListFragment.newInstance(objectID);
+		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle);
 		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 		dialog.show(manager, "TAG");
 	}

@@ -16,4 +16,10 @@
     <color name="bg_list_purple">#BC80B4</color>
     <color name="bg_list_red">#FD5835</color>
     
+    <color name="todo_list_title">#E00051</color>
+    <color name="todo_list_item_text">#808080</color>
+    <color name="todo_list_backcolor">#E7E7E7</color>
+    
+    <color name="white">#ffffff</color>
+    
 </resources>

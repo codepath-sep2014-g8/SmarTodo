@@ -36,7 +36,7 @@
        
         android:id="@+id/tvLocation"
         android:layout_width="match_parent"
-        android:layout_height="32sp"
+        android:layout_height="wrap_content"
         android:text="Location"
         android:layout_gravity="center_horizontal"
         android:gravity="left|center_vertical"
@@ -46,8 +46,7 @@
         android:drawableRight="@drawable/ic_location_rounded"
         android:background="@drawable/top_border_style"
         android:layout_marginTop="1dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:padding="10dp"
         android:drawableLeft="@drawable/ic_notification_calender"
         
         />

@@ -21,7 +21,6 @@ import com.codepath.smartodo.utils.Utils;
 
 public class ItemsViewerActivity extends FragmentActivity {
 	
-	private ImageView ivAdd;
 	private ImageView ivBack;
 	
 	@Override
@@ -53,9 +52,6 @@ public class ItemsViewerActivity extends FragmentActivity {
         ActionBar actionBar = getActionBar();
 
         View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
-        
-        ivAdd = (ImageView)view.findViewById(R.id.ivAdd_todolist);
-        ivAdd.setVisibility(View.GONE);
         
         ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
         ivBack.setVisibility(View.VISIBLE);

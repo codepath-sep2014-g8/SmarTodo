@@ -32,7 +32,6 @@ public class ListsViewerActivity extends FragmentActivity {
 	protected static final int REQUEST_CODE_EDIT_LIST = 334;
 	private StaggeredGridView staggeredGridView;
 	private TodoListAdapter adapter;
-	//private ImageView ivAdd;
 
 	private String editedObjectId;
 
@@ -68,7 +67,6 @@ public class ListsViewerActivity extends FragmentActivity {
 		View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view,
 				null);
 
-		//ivAdd = (ImageView) view.findViewById(R.id.ivAdd_todolist);
 
 		TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
 		tvTitle_home.setText(Utils.buildTitleText());
@@ -100,21 +98,10 @@ public class ListsViewerActivity extends FragmentActivity {
 //				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
 //				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 				
-				FragmentManager manager = getSupportFragmentManager();
-				TodoListFragment dialog = TodoListFragment.newInstance(todoList.getObjectId());
-				dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-				dialog.show(manager, "TAG");
+				showTodoListDialog(todoList.getObjectId());
 			}
 
 		});
-
-//		ivAdd.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				showCreateListActivity();
-//			}
-//		});
 
 	}
 
@@ -123,11 +110,22 @@ public class ListsViewerActivity extends FragmentActivity {
 	}
 
 	private void showCreateListActivity() {
-		Intent intent = new Intent(ListsViewerActivity.this,
-				ItemsViewerActivity.class);
-
-		editedObjectId = null;
-		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
+//		Intent intent = new Intent(ListsViewerActivity.this,
+//				ItemsViewerActivity.class);
+//
+//		editedObjectId = null;
+//		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
+		
+		showTodoListDialog(null);
+		
+		
+	}
+	
+	private void showTodoListDialog(String objectID){
+		FragmentManager manager = getSupportFragmentManager();
+		TodoListFragment dialog = TodoListFragment.newInstance(objectID);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+		dialog.show(manager, "TAG");
 	}
 	
 	

@@ -37,7 +37,17 @@
         com.custom:typeface="fonts/AmericanTypewriter.ttc"
         android:background="@drawable/item_no_border"
         />
-
+		
+    <ImageView
+        android:id="@+id/ivRemove_todoitem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_content_clear" 
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:clickable="true"
+        />
    
     
 </RelativeLayout>

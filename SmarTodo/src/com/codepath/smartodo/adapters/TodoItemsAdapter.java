@@ -28,6 +28,17 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private class ViewHolder {
 		ImageView ivImage;
 		EditText etItemText;
+		ImageView ivRemove;
+		
+		void init(View convertView){
+			etItemText = (EditText) convertView
+					.findViewById(R.id.tvItemText_ftl);
+			
+			ivImage = (ImageView) convertView
+					.findViewById(R.id.ivCheckbox_ftl);
+			
+			ivRemove = (ImageView)convertView.findViewById(R.id.ivRemove_todoitem);
+		}
 	}
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects,
@@ -48,10 +59,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder = new ViewHolder();
 
-			viewHolder.etItemText = (EditText) convertView
-					.findViewById(R.id.tvItemText_ftl);
-			viewHolder.ivImage = (ImageView) convertView
-					.findViewById(R.id.ivCheckbox_ftl);
+			viewHolder.init(convertView);
 
 			convertView.setTag(viewHolder);
 
@@ -61,6 +69,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 		viewHolder.ivImage.setClickable(false);
 		viewHolder.etItemText.setClickable(false);
+		viewHolder.ivRemove.setVisibility(View.GONE);
 		if (mode == TodoListDisplayMode.CREATE
 				|| mode == TodoListDisplayMode.UPDATE) {
 			viewHolder.etItemText.setTextColor(getContext().getResources()
@@ -68,6 +77,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder.ivImage.setClickable(true);
 			viewHolder.etItemText.setClickable(true);
+			viewHolder.ivRemove.setVisibility(View.VISIBLE);
 			
 			// ?? Refactor later
 			viewHolder.ivImage.setOnClickListener(new OnClickListener() {

@@ -4,7 +4,8 @@
     android:orientation="vertical" 
     android:id="@+id/contentPanel"
     android:descendantFocusability="blocksDescendants"
-    android:background="@drawable/grid_view_item">
+    android:background="@drawable/grid_view_item"
+    >
 
     <TextView
         android:id="@+id/tvTitle"
@@ -35,17 +36,19 @@
        
         android:id="@+id/tvLocation"
         android:layout_width="match_parent"
-        android:layout_height="32sp"
+        android:layout_height="wrap_content"
         android:text="Location"
         android:layout_gravity="center_horizontal"
         android:gravity="left|center_vertical"
-        android:textColor="#ffffff"
+        android:textColor="#ffff"
         android:textSize="12sp"
         android:textStyle="normal"
-        android:drawableRight="@drawable/ic_action_location"
+        android:drawableRight="@drawable/ic_location_rounded"
         android:background="@drawable/top_border_style"
         android:layout_marginTop="1dp"
-        android:drawableLeft="@drawable/ic_action_reminder_time"
+        android:padding="10dp"
+        android:drawableLeft="@drawable/ic_notification_calender"
+        
         />
     
 </LinearLayout>

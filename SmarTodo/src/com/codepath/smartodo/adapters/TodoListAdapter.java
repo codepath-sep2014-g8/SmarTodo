@@ -86,12 +86,12 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		
 		colorsList = new int[6];
 		
-		colorsList[0] = getContext().getResources().getColor(R.color.bg_list_green);
+		colorsList[0] = getContext().getResources().getColor(R.color.bg_list_greenish);
 		colorsList[1] = getContext().getResources().getColor(R.color.bg_list_blue);
-		colorsList[2] = getContext().getResources().getColor(R.color.bg_list_greenish);
-		colorsList[3] = getContext().getResources().getColor(R.color.bg_list_gray);
+		colorsList[2] = getContext().getResources().getColor(R.color.bg_list_gray);
+		colorsList[3] = getContext().getResources().getColor(R.color.bg_list_red);
 		colorsList[4] = getContext().getResources().getColor(R.color.bg_list_purple);
-		colorsList[5] = getContext().getResources().getColor(R.color.bg_list_red);
+		colorsList[5] = getContext().getResources().getColor(R.color.bg_list_green);
 	}
 
 	@Override

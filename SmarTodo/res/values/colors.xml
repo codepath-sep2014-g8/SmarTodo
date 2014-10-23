@@ -9,11 +9,17 @@
     <color name="list_item_pressed">#1A000000</color>
     <color name="action_bar_color_grid_view">#E7E7E7</color>
     
-    <color name="bg_list_gray">#ff808080</color>
-    <color name="bg_list_green">#ff17AFCA</color>
-    <color name="bg_list_blue">#ff1E8DD3</color>
-    <color name="bg_list_greenish">#ff4E6A78</color>
-    <color name="bg_list_purple">#ffA844CC</color>
-    <color name="bg_list_red">#ffFD5835</color>
+    <color name="bg_list_gray">#808080</color>
+    <color name="bg_list_green">#4E6A78</color>
+    <color name="bg_list_blue">#1E8DD3</color>
+    <color name="bg_list_greenish">#17AFCA</color>
+    <color name="bg_list_purple">#BC80B4</color>
+    <color name="bg_list_red">#FD5835</color>
+    
+    <color name="todo_list_title">#E00051</color>
+    <color name="todo_list_item_text">#808080</color>
+    <color name="todo_list_backcolor">#E7E7E7</color>
+    
+    <color name="white">#ffffff</color>
     
 </resources>

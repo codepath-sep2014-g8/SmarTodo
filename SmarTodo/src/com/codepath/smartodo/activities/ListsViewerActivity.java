@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
+import com.codepath.smartodo.dialogs.NotificationSelectorDialog;
+import com.codepath.smartodo.fragments.TodoListDetailsFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
@@ -97,6 +100,10 @@ public class ListsViewerActivity extends FragmentActivity {
 						ItemsViewerActivity.class);
 				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
 				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
+				
+//				FragmentManager manager = getSupportFragmentManager();
+//				TodoListDetailsFragment dialog= new TodoListDetailsFragment();
+//				dialog.show(manager, "TAG");
 			}
 
 		});

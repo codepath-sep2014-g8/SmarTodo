@@ -16,6 +16,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,7 +58,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 
-public class TodoListFragment extends Fragment {
+public class TodoListFragment extends DialogFragment {
 
 	private static final String TAG = TodoListFragment.class.getSimpleName();
 	
@@ -106,6 +108,9 @@ public class TodoListFragment extends Fragment {
 		populateData();
 		setupListeners();
 		
+//		getDialog().getWindow().setSoftInputMode(
+//		WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		
 		return view;
 	}
 		
@@ -113,16 +118,33 @@ public class TodoListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		initialize();
 	}
 
+	@Override
+	public void onActivityCreated(Bundle arg0) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(arg0);
+		getDialog().getWindow()
+	    .getAttributes().windowAnimations = R.style.DialogFromRightAnimation;
+	}
+	
+	@Override
+	@NonNull
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		Dialog dialog = super.onCreateDialog(savedInstanceState);
+		
+//		dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		
+		return dialog;
+	}
 
 	private void initialize(){
 		
 		initializeTodoList();
 		
-		adapter = new TodoItemsAdapter(getActivity(), todoItemsList);	
+		adapter = new TodoItemsAdapter(getActivity(), todoItemsList, mode);	
 	}
 	
 	private void initializeTodoList(){

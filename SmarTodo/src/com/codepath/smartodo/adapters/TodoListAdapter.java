@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 
@@ -38,7 +39,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 		
 			this.lvToDoItems = (ListView)convertView.findViewById(R.id.lvToDoItemsList_item_todo_list);
 			
-			adapter = new TodoItemsAdapter(getContext(), itemsList);
+			adapter = new TodoItemsAdapter(getContext(), itemsList, TodoListDisplayMode.GRID);
 			lvToDoItems.setAdapter(adapter);
 		}
 		

@@ -3,15 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="@color/action_bar_color_grid_view">
+    android:padding="5dp" 
+    android:background="@color/todo_list_backcolor"
+    android:weightSum="1">
 
+    <LinearLayout
+        android:id="@+id/listContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/drop_shadow"
+        android:orientation="vertical" 
+        android:layout_weight="0.8">
+        
     <EditText
         android:id="@+id/etTitle_ftdl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_title"
         android:ems="10" 
-        android:background="@drawable/title_selector">
+        android:background="@drawable/title_selector"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/todo_list_title">
         <requestFocus />
     </EditText>
 
@@ -19,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/action_bar_color_grid_view"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/etNewItem_ftdl"
@@ -46,7 +59,10 @@
     <ListView
         android:id="@+id/lvToDoItemsList_ftdl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
+        android:descendantFocusability="blocksDescendants"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,6 +72,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/item_todolist_actions_border_style"
+        android:visibility="gone"
        
         >
         
@@ -101,6 +118,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="3dp"
         android:background="@drawable/item_todolist_actions_border_style"
+         android:visibility="gone"
         >
 
         <ImageView
@@ -159,6 +177,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="3dp"
         android:background="@drawable/item_todolist_actions_border_style"
+         android:visibility="gone"
         >
 
         <ImageView
@@ -184,14 +203,17 @@
         android:textSize="12dp"/>
         </LinearLayout>
         
+    
+        </LinearLayout>
+        
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
+        android:layout_height="0dp" 
         android:id="@+id/llShareInfo_ftdl"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/item_todolist_actions_border_style"
+        android:orientation="horizontal"
+        android:background="@drawable/drop_shadow"
+        android:layout_weight="0.2"
+        android:minHeight="60dp"
         >
 
         <ImageView
@@ -200,8 +222,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:src="@drawable/ic_action_reminder_time" />

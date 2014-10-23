@@ -3,6 +3,7 @@ package com.codepath.smartodo.activities;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -10,22 +11,20 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
-import com.codepath.smartodo.dialogs.NotificationSelectorDialog;
-import com.codepath.smartodo.fragments.TodoListDetailsFragment;
+import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.codepath.smartodo.utils.Utils;
 import com.etsy.android.grid.StaggeredGridView;
+import com.google.android.gms.internal.di;
 import com.parse.ParseException;
 
 public class ListsViewerActivity extends FragmentActivity {
@@ -94,16 +93,17 @@ public class ListsViewerActivity extends FragmentActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				TodoList todoList = adapter.getItem(position);
-				editedObjectId = todoList.getObjectId();
-
-				Intent i = new Intent(ListsViewerActivity.this,
-						ItemsViewerActivity.class);
-				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
-				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
+//				editedObjectId = todoList.getObjectId();
+//
+//				Intent i = new Intent(ListsViewerActivity.this,
+//						ItemsViewerActivity.class);
+//				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
+//				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 				
-//				FragmentManager manager = getSupportFragmentManager();
-//				TodoListDetailsFragment dialog= new TodoListDetailsFragment();
-//				dialog.show(manager, "TAG");
+				FragmentManager manager = getSupportFragmentManager();
+				TodoListFragment dialog = TodoListFragment.newInstance(todoList.getObjectId());
+				dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+				dialog.show(manager, "TAG");
 			}
 
 		});

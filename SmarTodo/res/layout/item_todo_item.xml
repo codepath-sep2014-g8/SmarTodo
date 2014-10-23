@@ -21,7 +21,7 @@
         android:clickable="false"
         />
     
-    <com.codepath.smartodo.widgets.TypefacedTextView
+    <com.codepath.smartodo.widgets.TypefacedEditText
         android:id="@+id/tvItemText_ftl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +35,7 @@
         android:clickable="false"
         android:textStyle="bold"
         com.custom:typeface="fonts/AmericanTypewriter.ttc"
+        android:background="@drawable/item_no_border"
         />
 
    

@@ -27,7 +27,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 	private class ViewHolder {
 		ImageView ivImage;
-		TextView tvItemText;
+		EditText etItemText;
 	}
 
 	public TodoItemsAdapter(Context context, List<TodoItem> objects,
@@ -48,18 +48,10 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder = new ViewHolder();
 
-			viewHolder.tvItemText = (TextView) convertView
+			viewHolder.etItemText = (EditText) convertView
 					.findViewById(R.id.tvItemText_ftl);
 			viewHolder.ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
-
-			if (mode == TodoListDisplayMode.CREATE
-					|| mode == TodoListDisplayMode.UPDATE) {
-				viewHolder.tvItemText.setTextColor(getContext().getResources()
-						.getColor(R.color.todo_list_item_text));
-
-				viewHolder.ivImage.setClickable(true);
-			}
 
 			convertView.setTag(viewHolder);
 
@@ -67,25 +59,36 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		viewHolder.tvItemText.setText(todoItem.getText());
+		viewHolder.ivImage.setClickable(false);
+		viewHolder.etItemText.setClickable(false);
+		if (mode == TodoListDisplayMode.CREATE
+				|| mode == TodoListDisplayMode.UPDATE) {
+			viewHolder.etItemText.setTextColor(getContext().getResources()
+					.getColor(R.color.todo_list_item_text));
 
-		// ?? Refactor later
-		viewHolder.ivImage.setOnClickListener(new OnClickListener() {
+			viewHolder.ivImage.setClickable(true);
+			viewHolder.etItemText.setClickable(true);
+			
+			// ?? Refactor later
+			viewHolder.ivImage.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				todoItem.setCompleted(todoItem.isCompleted());
-				try {
-					todoItem.save();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				@Override
+				public void onClick(View v) {
+					todoItem.setCompleted(!todoItem.isCompleted());
+					try {
+						todoItem.save();
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+
+					updateImage(viewHolder, todoItem);
+					updateCompletedStatus(viewHolder, todoItem);
 				}
-
-				updateImage(viewHolder, todoItem);
-				updateCompletedStatus(viewHolder, todoItem);
-			}
-		});
+			});
+		}
+		
+		viewHolder.etItemText.setText(todoItem.getText());
+		
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
 
@@ -105,10 +108,10 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private void updateCompletedStatus(ViewHolder viewHolder, TodoItem todoItem) {
 
 		if (todoItem.isCompleted()) {
-			viewHolder.tvItemText.setPaintFlags(viewHolder.tvItemText
+			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
 					.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
-			viewHolder.tvItemText.setPaintFlags(viewHolder.tvItemText
+			viewHolder.etItemText.setPaintFlags(viewHolder.etItemText
 					.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
 	}

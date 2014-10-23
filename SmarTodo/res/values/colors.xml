@@ -9,11 +9,11 @@
     <color name="list_item_pressed">#1A000000</color>
     <color name="action_bar_color_grid_view">#E7E7E7</color>
     
-    <color name="bg_list_gray">#707D86</color>
-    <color name="bg_list_green">#85C48C</color>
-    <color name="bg_list_blue">#809FD6</color>
-    <color name="bg_list_greenish">#2798B4</color>
+    <color name="bg_list_gray">#808080</color>
+    <color name="bg_list_green">#4E6A78</color>
+    <color name="bg_list_blue">#1E8DD3</color>
+    <color name="bg_list_greenish">#17AFCA</color>
     <color name="bg_list_purple">#BC80B4</color>
-    <color name="bg_list_red">#FF4F4B</color>
+    <color name="bg_list_red">#FD5835</color>
     
 </resources>

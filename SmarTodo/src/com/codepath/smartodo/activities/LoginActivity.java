@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
@@ -19,38 +16,28 @@ import com.codepath.smartodo.notifications.NotificationsSender;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
 public class LoginActivity extends Activity {
 	public static int LOGIN_REQUEST = 0;
-	private Button btnLogin;
 	private ParseUser currentUser;
 	boolean loginInProgress = false;
+	
 	// Set it to true if we want email verifications to happen.
-	// Setting the following variable to false for testing with existing accounts
+	// Set  the following variable to false for testing with existing accounts
 	// whose emails might not have been verified.
-	boolean checkEmailVerification = false;   
+	boolean checkEmailVerification = true;   
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		// Log.d("DEBUG", "In LoginActivity.onCreate");
-		
-		btnLogin = (Button) findViewById(R.id.btnLogin);
-		btnLogin.setOnClickListener(new OnClickListener() {		
-			@Override
-			public void onClick(View v) {
-				doParseLogin();					
-			}
-		});
 				
 		if (checkCurrentUserOK()) {
 			// Send the logged in user to our main class
 			lauchMainApp();
-		} else {		
-			btnLogin.setVisibility(View.VISIBLE);		
+		} else {
+			doParseLogin();	
 		}
 	}
 	
@@ -97,14 +84,6 @@ public class LoginActivity extends Activity {
 			Log.e("error", e.getMessage(), e);
 		}
 		
-		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
-		// Register with ParseInstallation the current user under SHARED_USER_KEY 
-		// so that push notifications can be received on behalf of the current user 
-		// when they are sent by other users of the app.
-		ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-		installation.put(NotificationsSender.SHAREDWITH_USER_KEY, ParseUser.getCurrentUser());
-		installation.saveInBackground();
-		
 		// For testing
 		someTestCode();
 		
@@ -115,7 +94,7 @@ public class LoginActivity extends Activity {
 	
 	private void someTestCode() {
 		// sendTestTodoList();	
-		// setupTestGeofences();
+	    // setupTestGeofences();
 	}
 
 	// This is just for testing purpose. Notice that we are sharing a newly created 
@@ -134,7 +113,7 @@ public class LoginActivity extends Activity {
 	
 	private void setupTestGeofences() {
 		String address = "1274 Colleen Way, Campbell, CA 95008";
-		int radius = 10; // meters
+		int radius = 15; // meters
 	    // setupTestGeofences(this, currentUser.getObjectId(), address, radius, "MyTodoList1", "MyTodoItem3");
 		GeofenceUtils.setupTestGeofences(this, currentUser.getObjectId(), address, radius, 
 				Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + address), "MyTodoList1", "MyTodoItem3");
@@ -150,8 +129,9 @@ public class LoginActivity extends Activity {
 		}
 		loginInProgress = true;
 		
-		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
-				LoginActivity.this);
+		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);
+		// loginBuilder.setFacebookLoginEnabled(false).setTwitterLoginEnabled(false);
+		loginBuilder.setAppLogo(R.drawable.ic_logo_smartodo);
 		startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);	
 	}
 	
@@ -162,8 +142,8 @@ public class LoginActivity extends Activity {
 			loginInProgress = false;
 			if (resultCode == RESULT_OK && checkCurrentUserOK()) {
 			   lauchMainApp();
-			} else { // stay in the login screen
-			    // finish(); 
+			} else { // exit the login activity
+			    finish(); 
 			}
 		}
 	}

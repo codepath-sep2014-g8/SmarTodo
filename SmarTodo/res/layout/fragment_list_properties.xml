@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="11dp"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_toRightOf="@+id/tvTagline"
         android:text="Select date&amp;time..." />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/tvTagline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/btnOpenItemsViewer"

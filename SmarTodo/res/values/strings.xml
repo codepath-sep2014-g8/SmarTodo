@@ -11,7 +11,7 @@
     <string name="twitter_consumer_key">YOUR_TWITTER_CONSUMER_KEY</string>
     <string name="twitter_consumer_secret">YOUR_TWITTER_CONSUMER_SECRET</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="login_button_label">Login</string>
+    <string name="login_button_label">Signup with Email</string>
     <string name="title_activity_items_viewer">ItemsViewerActivity</string>
 
     <!-- Start: Geofencing related strings -->
@@ -85,5 +85,6 @@
     <string name="todo_list_name_text">Todo List Name</string>
     <string name="notification_acknowledgement_text">Got it!</string>
     <string name="title_activity_share">ShareActivity</string>
+    <string name="tagline">Smartest way to create and share todo lists</string>
 
 </resources>

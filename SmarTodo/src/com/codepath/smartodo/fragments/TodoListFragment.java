@@ -85,16 +85,17 @@ public class TodoListFragment extends DialogFragment {
 	private String listObjectId = null;
 	
 	private int animationStyle = R.style.DialogFromLeftAnimation;
-	
+	private int colorId;
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
-	public static TodoListFragment newInstance(String todoListName, int animationStyle)
+	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
 		TodoListFragment fragment = new TodoListFragment();
 
         Bundle arguments = new Bundle();
         arguments.putString(AppConstants.OBJECTID_EXTRA, todoListName);
         arguments.putInt(AppConstants.KEY_ANIMATION_STYLE, animationStyle);
+        arguments.putInt(AppConstants.KEY_COLOR_ID, colorId);
         fragment.setArguments(arguments);
         
 
@@ -107,6 +108,15 @@ public class TodoListFragment extends DialogFragment {
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		
 		View view = inflater.inflate(R.layout.fragment_todo_list, container, false);
+		
+		if(getArguments() != null && getArguments().containsKey(AppConstants.KEY_COLOR_ID)){
+			colorId = getArguments().getInt(AppConstants.KEY_COLOR_ID);
+		}
+		else{
+			colorId = R.color.todo_list_backcolor;
+		}
+		
+		view.setBackgroundColor(getResources().getColor(colorId));
 		
 		initializeViews(view);
 		populateData();

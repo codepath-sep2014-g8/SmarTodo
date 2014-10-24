@@ -12,5 +12,6 @@ public class AppConstants {
 	public static final String OBJECTID_EXTRA = "objectId";
 	
 	public static final String KEY_ANIMATION_STYLE = "ANIM_STYLE";
+	public static final String KEY_COLOR_ID = "COLOR_ID";
 
 }

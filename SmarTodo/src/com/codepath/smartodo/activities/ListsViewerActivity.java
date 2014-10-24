@@ -98,8 +98,10 @@ public class ListsViewerActivity extends FragmentActivity {
 //				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
 //				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
 				
+				
 				showTodoListDialog(todoList.getObjectId(), 
-						(position % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation);
+						(position % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+							com.codepath.smartodo.helpers.Utils.getColor(position % 6)	);
 			}
 
 		});
@@ -117,14 +119,14 @@ public class ListsViewerActivity extends FragmentActivity {
 //		editedObjectId = null;
 //		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
 		
-		showTodoListDialog(null, R.style.DialogFromBottomAnimation);
+		showTodoListDialog(null, R.style.DialogFromBottomAnimation, R.color.todo_list_backcolor);
 		
 		
 	}
 	
-	private void showTodoListDialog(String objectID, int animationStyle){
+	private void showTodoListDialog(String objectID, int animationStyle, int colorId){
 		FragmentManager manager = getSupportFragmentManager();
-		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle);
+		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle, colorId);
 		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 		dialog.show(manager, "TAG");
 	}

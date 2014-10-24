@@ -39,7 +39,7 @@ public class ItemsViewerActivity extends FragmentActivity {
 			objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
 		}
 
-		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation);
+		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, R.color.todo_list_backcolor);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.fragmentContainer, fragmentTodoList);

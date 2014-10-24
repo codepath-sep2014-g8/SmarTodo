@@ -57,14 +57,12 @@ public class LoginActivity extends Activity {
 	
 	// Checks if the user email has been verified by a separate email during signup
 	private boolean emailVerified() {	   
-        if (currentUser.containsKey("emailVerified")) {
-        	reportEmailVerificationNeeded();
-        	return false;
-        }
-        if (!currentUser.getBoolean("emailVerified")) {
-        	reportEmailVerificationNeeded();
-        	return false;
-        }
+		if (currentUser.containsKey("emailVerified")) {
+			if (!currentUser.getBoolean("emailVerified")) {
+				reportEmailVerificationNeeded();
+				return false;
+			}
+		}
         return true;
 	}
 

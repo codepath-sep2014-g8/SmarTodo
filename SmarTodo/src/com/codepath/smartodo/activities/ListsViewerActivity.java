@@ -20,20 +20,22 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
-import com.codepath.smartodo.utils.Utils;
+import com.codepath.smartodo.helpers.Utils;
 import com.etsy.android.grid.StaggeredGridView;
 import com.google.android.gms.internal.di;
 import com.parse.ParseException;
 
-public class ListsViewerActivity extends FragmentActivity {
+public class ListsViewerActivity extends FragmentActivity implements TouchActionsListener{
 	public static final int REQUEST_CODE_NEW_LIST = 333;
 	protected static final int REQUEST_CODE_EDIT_LIST = 334;
 	private StaggeredGridView staggeredGridView;
 	private TodoListAdapter adapter;
 
 	private String editedObjectId;
+	private int currentListIndex = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -191,4 +193,40 @@ public class ListsViewerActivity extends FragmentActivity {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
+
+	@Override
+	public void onPreviousListRequested() {
+		System.out.println("onPreviousListRequested: " + currentListIndex);
+		if(currentListIndex == -1 || currentListIndex == 0){
+			currentListIndex = adapter.getCount() - 1;
+		}
+		else{
+			currentListIndex --;
+		}
+		TodoList todoList = adapter.getItem(currentListIndex);
+		showTodoListDialog(todoList.getObjectId(), 
+				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
+		
+	}
+
+	@Override
+	public void onNextListRequested() {
+		
+		System.out.println("onNextListRequested: " + currentListIndex);
+		
+		if(currentListIndex == adapter.getCount() -1 || currentListIndex == -1){
+			currentListIndex = 0;
+		}
+		else{
+			currentListIndex ++;
+		}
+		
+		TodoList todoList = adapter.getItem(currentListIndex);
+		showTodoListDialog(todoList.getObjectId(), 
+				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
+	}
+	
+	
 }

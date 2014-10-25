@@ -26,8 +26,10 @@ import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
@@ -47,18 +49,20 @@ import com.codepath.smartodo.dialogs.NotificationSelectorDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.interfaces.TouchActionsListener;
+import com.codepath.smartodo.listeners.OnSwipeTouchListener;
 import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
-import com.codepath.smartodo.utils.Utils;
+import com.codepath.smartodo.helpers.Utils;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 
-public class TodoListFragment extends DialogFragment {
+public class TodoListFragment extends DialogFragment implements OnTouchListener {
 
 	private static final String TAG = TodoListFragment.class.getSimpleName();
 	
@@ -88,6 +92,8 @@ public class TodoListFragment extends DialogFragment {
 	private int colorId;
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
+	private TouchActionsListener listener = null;
+	
 	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
 		TodoListFragment fragment = new TodoListFragment();
@@ -103,6 +109,15 @@ public class TodoListFragment extends DialogFragment {
     }
 
 	
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		System.out.println("Hello");
+		return false;
+	}
+
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -121,7 +136,37 @@ public class TodoListFragment extends DialogFragment {
 		initializeViews(view);
 		populateData();
 		setupListeners();
-		
+//		view.setOnTouchListener(this);
+//		lvItems.setOnTouchListener(new OnSwipeTouchListener(getActivity().getApplicationContext()){
+//
+//			@Override
+//			public void onSwipeRight() {
+//				// TODO Auto-generated method stub
+//				listener.onNextListRequested();
+//				//dismiss();
+//			}
+//
+//			@Override
+//			public void onSwipeLeft() {
+//				// TODO Auto-generated method stub
+//				listener.onPreviousListRequested();
+//				//dismiss();
+//				
+//			}
+//
+//			@Override
+//			public void onSwipeUp() {
+//				// TODO Auto-generated method stub
+//				super.onSwipeUp();
+//			}
+//
+//			@Override
+//			public void onSwipeDown() {
+//				// TODO Auto-generated method stub
+//				super.onSwipeDown();
+//			}
+//			
+//		});
 //		getDialog().getWindow().setSoftInputMode(
 //		WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		
@@ -141,6 +186,8 @@ public class TodoListFragment extends DialogFragment {
 		super.onActivityCreated(arg0);
 		getDialog().getWindow()
 	    .getAttributes().windowAnimations = animationStyle;
+		
+		listener = (TouchActionsListener)getActivity();
 	}
 	
 	@Override

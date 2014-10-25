@@ -63,7 +63,7 @@
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="4dp"
-        android:descendantFocusability="blocksDescendants"/>
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"

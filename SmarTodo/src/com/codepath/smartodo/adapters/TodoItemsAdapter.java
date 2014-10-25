@@ -24,6 +24,7 @@ import android.widget.TextView;
 public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 	private TodoListDisplayMode mode = TodoListDisplayMode.GRID;
+	private TodoItem dummyItem = new TodoItem();
 
 	private class ViewHolder {
 		ImageView ivImage;
@@ -46,6 +47,9 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		super(context, R.layout.item_todo_item, objects);
 
 		this.mode = mode;
+		if(mode != TodoListDisplayMode.GRID){
+			add(dummyItem);
+		}
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		}
 
 		viewHolder.ivImage.setClickable(false);
-		viewHolder.etItemText.setClickable(false);
+//		viewHolder.etItemText.setClickable(false);
 		viewHolder.ivRemove.setVisibility(View.GONE);
 		if (mode == TodoListDisplayMode.CREATE
 				|| mode == TodoListDisplayMode.UPDATE) {
@@ -76,7 +80,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					.getColor(R.color.todo_list_item_text));
 
 			viewHolder.ivImage.setClickable(true);
-			viewHolder.etItemText.setClickable(true);
+//			viewHolder.etItemText.setClickable(true);
 			viewHolder.ivRemove.setVisibility(View.VISIBLE);
 			
 			// ?? Refactor later
@@ -95,12 +99,28 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					updateCompletedStatus(viewHolder, todoItem);
 				}
 			});
+			
+			viewHolder.etItemText.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					System.out.println("Et Text clicked");
+					viewHolder.etItemText.requestFocus();
+					viewHolder.etItemText.setEnabled(true);
+					
+				}
+			});
 		}
 		
 		viewHolder.etItemText.setText(todoItem.getText());
 		
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
+		
+		if(todoItem == dummyItem){
+			viewHolder.ivImage.setImageResource(R.drawable.ic_content_new_hint);
+			viewHolder.etItemText.setHint(R.string.hint_todo_item);
+		}
 
 		return convertView;
 	}
@@ -125,5 +145,4 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 		}
 	}
-
 }

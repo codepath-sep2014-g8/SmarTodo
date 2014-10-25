@@ -14,5 +14,4 @@ public interface ViewActionsListener {
 	
 	public void onShareActivityRequested(TodoList todoList);
 	public void onColotPickerRequested(TodoList todoList);
-	
 }

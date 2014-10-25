@@ -7,7 +7,6 @@
     android:layout_marginTop="1dp"
     android:layout_marginBottom="1dp"
     android:padding="1dp"
-            android:descendantFocusability="blocksDescendants"
     >
 
      <ImageView
@@ -21,7 +20,7 @@
         android:clickable="false"
         />
     
-    <com.codepath.smartodo.widgets.TypefacedEditText
+    <EditText
         android:id="@+id/tvItemText_ftl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,9 +31,7 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical" 
         android:textColor="#ffff"
-        android:clickable="false"
         android:textStyle="bold"
-        com.custom:typeface="fonts/AmericanTypewriter.ttc"
         android:background="@drawable/item_no_border"
         />
 		

@@ -16,7 +16,7 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
-import com.codepath.smartodo.utils.Utils;
+import com.codepath.smartodo.helpers.Utils;
 
 
 public class ItemsViewerActivity extends FragmentActivity {

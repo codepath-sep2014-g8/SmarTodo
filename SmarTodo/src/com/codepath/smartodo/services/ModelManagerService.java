@@ -189,6 +189,10 @@ public class ModelManagerService extends Service {
 				
 				Log.i("info", "Saving " + todoItemsList.size() + " list items");
 				for(TodoItem item : todoItemsList) {
+					if(item.getText() == null || item.getText().trim().isEmpty()){
+						continue;
+					}
+						
 					item.setList(todoList);
 					
 					try {

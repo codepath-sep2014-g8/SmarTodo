@@ -15,6 +15,10 @@ import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,6 +62,7 @@ import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.codepath.smartodo.helpers.Utils;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.wearable.NodeApi.GetConnectedNodesResult;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
@@ -117,6 +122,12 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	}
 
 
+	private void setViewColor(View view){
+		LayerDrawable sld = (LayerDrawable)view.getBackground();
+		GradientDrawable shape = (GradientDrawable) (sld.findDrawableByLayerId(R.id.drop_shadow_backcolor));
+        shape.setColor(getActivity().getResources().getColor(colorId));
+		
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -131,11 +142,16 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			colorId = R.color.todo_list_backcolor;
 		}
 		
-		view.setBackgroundColor(getResources().getColor(colorId));
+		
 		
 		initializeViews(view);
 		populateData();
 		setupListeners();
+		
+		Drawable drawable = llActions.getBackground();
+		
+		setViewColor(llActions);
+		//llActions.setBackgroundColor(getResources().getColor(colorId));
 //		view.setOnTouchListener(this);
 //		lvItems.setOnTouchListener(new OnSwipeTouchListener(getActivity().getApplicationContext()){
 //
@@ -482,7 +498,14 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			
 			@Override
 			public void onClick(View v) {
-				// if owner of the list then only allow deletion
+				
+				try {
+					todoList.delete();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				dismiss();
 			}
 		});
 		

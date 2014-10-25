@@ -59,7 +59,7 @@
     </item>
 
     <!-- Background -->
-    <item>
+    <item android:id="@+id/drop_shadow_backcolor">
         <shape>
             <solid android:color="@color/white" />
 

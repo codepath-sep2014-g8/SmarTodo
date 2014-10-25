@@ -161,8 +161,12 @@
             android:label="@string/title_activity_show_geo_notification" >
         </activity>
         <activity
-            android:name="com.codepath.smartodo.activities.ShareActivity"
+            android:name=".activities.ShareActivity"
             android:label="@string/title_activity_share" >
+        </activity>
+        <activity
+            android:name="com.codepath.smartodo.activities.DrawerActivity"
+            android:label="@string/title_activity_drawer" >
         </activity>
     </application>
 

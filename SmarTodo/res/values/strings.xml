@@ -48,7 +48,7 @@
     <string name="geofence_transition_notification_title">        %1$s geofence(s) %2$s</string>
     <string name="geofence_transition_unknown">Unknown transition</string>
     <string name="geofence_transition_alert_title">"Location alert!"</string>
-    <string name="geofence_transition_alert_text">"Remember something to do here?"</string>        
+    <string name="geofence_transition_alert_text">"Remember something to do here?"</string>
     <string name="invalid_action">Invalid action received. See error log for details.</string>
     <string name="invalid_action_detail">Invalid action %1$s received.</string>
     <string name="invalid_integer_id">Invalid integer request ID: %1$s</string>
@@ -86,5 +86,13 @@
     <string name="notification_acknowledgement_text">Got it!</string>
     <string name="title_activity_share">ShareActivity</string>
     <string name="tagline">Smartest way to create and share todo lists</string>
+
+    <!-- Drawer -->
+    <string name="drawer_todos">Todos</string>
+    <string name="drawer_trash">Trash</string>
+    <string name="drawer_feedback">Feedback</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
 
 </resources>

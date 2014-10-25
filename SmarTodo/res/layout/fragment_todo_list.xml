@@ -9,12 +9,67 @@
     android:weightSum="1">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp" 
+        android:id="@+id/llAction_ftdl"
+        android:background="@drawable/drop_shadow"
+         android:visibility="visible"
+         android:layout_weight="0.1"
+        >
+
+        <ImageView
+            android:id="@+id/ivNotification_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_notification" 
+            android:layout_marginLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:clickable="true"/>
+        
+        <ImageView
+            android:id="@+id/ivShare_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_social_share" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+
+        <ImageView
+            android:id="@+id/ivColorPicker_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_color_picker" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+        
+        <ImageView
+            android:id="@+id/ivSave_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+        
+        <ImageView
+            android:id="@+id/ivDelete_ftdl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete" 
+            android:layout_margin="5dp"
+            android:padding="5dp"/>
+
+    </LinearLayout>
+    
+    <LinearLayout
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/drop_shadow"
         android:orientation="vertical" 
-        android:layout_weight="0.8">
+        android:layout_weight="0.7">
         
     <EditText
         android:id="@+id/etTitle_ftdl"
@@ -111,62 +166,6 @@
         
         </RelativeLayout>
         
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:id="@+id/llAction_ftdl"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/item_todolist_actions_border_style"
-         android:visibility="gone"
-        >
-
-        <ImageView
-            android:id="@+id/ivNotification_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_notification" 
-            android:layout_marginLeft="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:clickable="true"/>
-        
-        <ImageView
-            android:id="@+id/ivShare_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_social_share" 
-            android:layout_margin="5dp"
-            android:padding="5dp"/>
-
-        <ImageView
-            android:id="@+id/ivColorPicker_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_color_picker" 
-            android:layout_margin="5dp"
-            android:padding="5dp"/>
-        
-        <ImageView
-            android:id="@+id/ivSave_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_save" 
-            android:layout_margin="5dp"
-            android:padding="5dp"/>
-        
-        <ImageView
-            android:id="@+id/ivDelete_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete" 
-            android:layout_margin="5dp"
-            android:padding="5dp"/>
-
-    </LinearLayout>
     
     
         

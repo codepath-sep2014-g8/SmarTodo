@@ -33,6 +33,7 @@
         android:textColor="#ffff"
         android:textStyle="bold"
         android:background="@drawable/item_no_border"
+        android:textColorHint="#501A2943"
         />
 		
     <ImageView

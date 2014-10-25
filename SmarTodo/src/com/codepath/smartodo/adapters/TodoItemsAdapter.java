@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
+	private static final String TAG = TodoItemsAdapter.class.getSimpleName();
 	private TodoListDisplayMode mode = TodoListDisplayMode.GRID;
 	private TodoItem dummyItem = new TodoItem();
 
@@ -45,12 +47,13 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	public TodoItemsAdapter(Context context, List<TodoItem> objects,
 			TodoListDisplayMode mode) {
 		super(context, R.layout.item_todo_item, objects);
-
 		this.mode = mode;
 		if(mode != TodoListDisplayMode.GRID){
 			add(dummyItem);
 		}
 	}
+	
+	
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -71,6 +74,8 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
+		viewHolder.etItemText.setTag(todoItem);
+		
 		viewHolder.ivImage.setClickable(false);
 //		viewHolder.etItemText.setClickable(false);
 		viewHolder.ivRemove.setVisibility(View.GONE);
@@ -104,9 +109,43 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 				
 				@Override
 				public void onClick(View v) {
-					System.out.println("Et Text clicked");
 					viewHolder.etItemText.requestFocus();
-					viewHolder.etItemText.setEnabled(true);
+				}
+			});
+			
+			viewHolder.etItemText.addTextChangedListener(new TextWatcher() {
+				
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					if(viewHolder.etItemText.isFocused() == false){
+						return;
+					}
+					TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
+					if(origTodoItem == dummyItem){
+						Log.d(TAG, "Creating New Item");
+						String str = viewHolder.etItemText.getText().toString();
+						TodoItem ti = dummyItem;
+						//itemsList.add(getCount() - 1,  ti);
+						//notifyDataSetChanged();
+						dummyItem = new TodoItem();
+						add(dummyItem);
+						ti.setText(str);
+						viewHolder.etItemText.setTag(ti);
+						viewHolder.etItemText.requestFocus();
+						
+					}
+				}
+				
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void afterTextChanged(Editable s) {
+					// TODO Auto-generated method stub
 					
 				}
 			});

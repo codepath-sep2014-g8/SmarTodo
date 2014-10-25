@@ -10,6 +10,7 @@ import com.parse.SaveCallback;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		void init(View convertView){
 			etItemText = (EditText) convertView
 					.findViewById(R.id.tvItemText_ftl);
+			etItemText.setTypeface(Typeface.createFromAsset(getContext().getAssets(),  "fonts/AmericanTypewriter.ttc"));
 			
 			ivImage = (ImageView) convertView
 					.findViewById(R.id.ivCheckbox_ftl);
@@ -134,6 +136,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 						viewHolder.etItemText.requestFocus();
 						
 					}
+					origTodoItem.setText(viewHolder.etItemText.getText().toString());
 				}
 				
 				@Override

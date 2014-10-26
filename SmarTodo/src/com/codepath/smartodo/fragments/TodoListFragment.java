@@ -3,7 +3,9 @@ package com.codepath.smartodo.fragments;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,19 +13,16 @@ import org.apache.commons.lang.StringUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -35,12 +34,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -49,20 +49,17 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
-import com.codepath.smartodo.dialogs.NotificationSelectorDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
-import com.codepath.smartodo.listeners.OnSwipeTouchListener;
 import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
-import com.codepath.smartodo.helpers.Utils;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.wearable.NodeApi.GetConnectedNodesResult;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
@@ -70,6 +67,14 @@ import com.parse.ParseUser;
 public class TodoListFragment extends DialogFragment implements OnTouchListener {
 
 	private static final String TAG = TodoListFragment.class.getSimpleName();
+
+	// Some dummy addresses for demo. Todo: They should eventually come from some Settings/Preferences
+	private static final String HOME_ADDR = "1274 Colleen Way, Campbell, CA 95008";
+	private static final String YAHOO_BUILDING_E_ADDR = "700 First Ave, Sunnyvale, CA 94089";
+	private static final String YAHOO_BUILDING_F_ADDR = "1350 North Mathilda Avenue, Sunnyvale, CA 94089";
+	private static final String SAFEWAY_STEVENSCREEK_ADDR = "5146 Stevens Creek Blvd, San Jose, CA";
+	private static final String SAFEWAY_CAMPBELL_ADDR = "950 W Hamilton Ave, Campbell, CA";
+	private static final String RIGHT_STUFF_ADDR = "1730 W Campbell Ave, Campbell, CA 95008";
 	
 	//UI elements
 	private EditText etTitle;
@@ -98,6 +103,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
 	private TouchActionsListener listener = null;
+	private HashMap<String, String> locationsMap;
 	
 	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
@@ -299,6 +305,13 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		
 		tvReminder.setText(getReminderDisplay());
 		
+        locationsMap = new HashMap();
+        locationsMap.put("Home", HOME_ADDR);
+        locationsMap.put("Yahoo Building E", YAHOO_BUILDING_E_ADDR);
+        locationsMap.put("Yahoo Building F", YAHOO_BUILDING_F_ADDR);
+        locationsMap.put("Safeway Stevens Creek", SAFEWAY_STEVENSCREEK_ADDR);
+        locationsMap.put("Safeway Campbell", SAFEWAY_CAMPBELL_ADDR);
+        locationsMap.put("Gym", RIGHT_STUFF_ADDR);
 	}
 	
 	private String getReminderDisplay(){
@@ -335,7 +348,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 				address = address.fetchIfNeeded();
 			}
 			
-			String location = address.getStreetAddress();   // TOdo: change to address.getName();
+			String location = address.getName(); 
 			
 			sb.append("Remind me at location: ").append(location);
 		    sb.append("\r\n");
@@ -446,7 +459,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			public void onClick(View v) {
 				android.support.v4.app.FragmentManager manager = getActivity()
 						.getSupportFragmentManager();
-				LocationDialogFragment dialog = new LocationDialogFragment(todoList);
+				LocationDialogFragment dialog = new LocationDialogFragment(todoList, locationsMap);
 				dialog.show(manager, "fragment_notification_selector");
 			}
 		});
@@ -628,14 +641,128 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		};
 	}
 	
-	public class LocationDialogFragment extends DialogFragment implements android.content.DialogInterface.OnClickListener {
+	public class LocationDialogFragment extends DialogFragment implements android.content.DialogInterface.OnClickListener {	
+		private Spinner locationSpinner;
+		private TodoList todoList;
+		private HashMap<String, String> locationsMap;
+		private List<String> locationList;
+		private Address currentAddress;
+		private String currentLocation;
+		ArrayAdapter<String> dataAdapter;
+
+		public LocationDialogFragment(TodoList todoList, HashMap<String, String> locationsMap) {
+			super();
+			this.todoList = todoList;
+			this.locationsMap = locationsMap;
+			initCurrentLocation();
+		}
+		
+	    private void initCurrentLocation() {    	
+		    currentAddress = todoList.getAddress();
+	    	if (currentAddress != null) {
+	    	    currentLocation = currentAddress.getName();    	        	       
+	    	} else {
+	    		currentLocation = null;
+	    	}
+	    	// Create a list of location names
+	    	locationList = new ArrayList<String>();		
+	    	locationList.addAll(locationsMap.keySet());
+	    	Collections.sort(locationList, String.CASE_INSENSITIVE_ORDER);
+	    	// Log.d(TAG, "In LocationDialogFragment: total location keys are " + locationList.size());
+		}
+		
+	    @Override
+	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+			// Create and initialize an adapter
+			dataAdapter = new ArrayAdapter<String>(
+					getActivity(), android.R.layout.simple_spinner_item, locationList);
+			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			
+			// Create and initialize a spinner
+			locationSpinner = new Spinner(getActivity());
+			locationSpinner.setAdapter(dataAdapter);
+			if (currentLocation != null) {
+				//set the default choice according to the current value
+				int spinnerPosition = dataAdapter.getPosition(currentLocation);			
+				locationSpinner.setSelection(spinnerPosition);		
+			}
+
+			// Create an AlertDialog and associate the spinner for location names
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(getString(R.string.title_location_reminding_dialog, todoList.getName()));		 			
+			builder.setView(locationSpinner); 
+			builder.setPositiveButton("OK", this).setNegativeButton("CANCEL", null);	
+			return builder.create();
+		}
+	    
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			String locationKey = (String) locationSpinner.getSelectedItem();
+					
+			// Log.d(TAG, "In onClick, locationKey is:" + locationKey);
+			if (Utils.isNullOrEmpty(locationKey)) {
+				dialog.dismiss();
+				return;
+			}
+
+			if (!Utils.isNullOrEmpty(currentLocation)
+					&& (locationKey.equalsIgnoreCase(currentLocation))) {
+				dialog.dismiss();
+				return; // Nothing much to do; same old location has been chosen.
+			}
+
+			String streetAddress = locationsMap.get(locationKey);
+			// Log.d(TAG, "In onClick, streetAddress is:" + streetAddress);
+			// The following should not happen because a street address
+			// would always be associated with a location name
+			if (Utils.isNullOrEmpty(streetAddress)) { 
+				dialog.dismiss();
+				return;
+			}
+			
+			HandleGeofencingAddress(locationKey, streetAddress);
+
+			dialog.dismiss();;
+			return;	
+		}
+	   		    
+		void HandleGeofencingAddress(String locationKey, String newStreetAddress) {		
+			Log.d(TAG, "In HandleGeofencingAddress, newStreetAddress is:" + newStreetAddress);
+			ParseUser parseUser = ParseUser.getCurrentUser();
+			Address newAddress;
+			if (null == currentAddress) {
+				newAddress = new Address();
+				newAddress.setUser(parseUser);
+
+			} else {
+				newAddress = currentAddress;
+			}
+
+			newAddress.setName(locationKey);
+			newAddress.setStreetAddress(newStreetAddress);
+			newAddress.setLocation(new ParseGeoPoint(10, 10)); // need not do this; streetaddress is sufficient
+			todoList.setAddress(newAddress);
+			
+			// Now set up a geofence around the new street address
+			int radius = 50; // meters
+		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
+						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
+			
+			tvReminder.setText(getReminderDisplay()); // refresh              
+			
+		}
+
+
+	}
+	
+	public class LocationDialogFragmentOld extends DialogFragment implements android.content.DialogInterface.OnClickListener {
 
 		private TodoList todoList;
 		private Address currentAddress;
 		private String currentStreetAddress;
 		private EditText etStreetAddress;
 
-		public LocationDialogFragment(TodoList todoList) {
+		public LocationDialogFragmentOld(TodoList todoList) {
 			super();
 			this.todoList = todoList;	
 			initCurrentLocation();

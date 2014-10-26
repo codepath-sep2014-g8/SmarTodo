@@ -13,6 +13,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="login_button_label">Signup with Email</string>
     <string name="title_activity_items_viewer">ItemsViewerActivity</string>
+    <string name="title_location_reminding_dialog">Select a location for reminding about %1$s</string>
 
     <!-- Start: Geofencing related strings -->
     <string name="title_activity_geofence">Geofence Entry</string>

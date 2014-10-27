@@ -58,3 +58,4 @@ proguard/
 .metadata/.plugins/org.eclipse.ui.ide/dialog_settings.xml
 
 .metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
+/.DS_Store

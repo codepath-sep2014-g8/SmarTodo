@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
-import com.codepath.smartodo.fragments.ListPropertiesDialogFragment;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
@@ -91,7 +90,6 @@ public class ItemsViewerActivity extends FragmentActivity {
 		int id = item.getItemId();
 		if (id == R.id.action_items_properties) {
 			Log.d("debug", "here");
-			ListPropertiesDialogFragment.newInstance(null).show(getSupportFragmentManager(), "dummytag");
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -61,17 +61,9 @@ public class TodoList extends ParseObject {
 	 * @param users
 	 */
 	public void addToSharing(List<User> users) {
-		super.addAll(SHARING_KEY, extractParseUsers(users));
+		super.addAll(SHARING_KEY, User.extractParseUsers(users));
 	}
 
-	public List<ParseUser> extractParseUsers(List<User> users) {
-		List<ParseUser> tmpList = new ArrayList<ParseUser>(users.size());
-		for(User u:users) {
-			tmpList.add(u.getParseUser());
-		}
-		return tmpList;
-	}
-	
 	/**
 	 * <p>Appends the user to the current list.
 	 * <p>Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call save in between every different kind of array operation.
@@ -89,7 +81,7 @@ public class TodoList extends ParseObject {
 	 * @param users
 	 */
 	public void removeAllFromSharing(List<User> users) {
-		super.removeAll(SHARING_KEY, extractParseUsers(users));
+		super.removeAll(SHARING_KEY, User.extractParseUsers(users));
 	}
 	
 	@SuppressWarnings("unchecked")

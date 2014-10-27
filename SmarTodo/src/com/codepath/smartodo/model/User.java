@@ -58,13 +58,15 @@ public class User {
 	}
 
 	public List<TodoList> findAllLists() throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
 		List<TodoList> lists = itemQuery.find();
 		
-		itemQuery = LocalParseQuery.getQuery(TodoList.class);
+		itemQuery = ParseQuery.getQuery(TodoList.class);
 		itemQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new ParseUser[]{this.parseUser}));
 		lists.addAll(itemQuery.find());
+		
+		ParseObject.pinAll(lists);
 		
 		return lists;
 	}
@@ -112,7 +114,14 @@ public class User {
 			uniqueUsers.put(tmpUser.getUsername(), new User(tmpUser));
 		}
 		
-		return uniqueUsers.values();
+		List<User> tmpList = new ArrayList<User>(uniqueUsers.values());
+		try {
+			ParseObject.pinAll(extractParseUsers(tmpList));
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+		}
+		
+		return tmpList;
 	}
 	
 	public boolean equals(Object o) {
@@ -296,5 +305,13 @@ public class User {
 
 	public void unpin() throws ParseException {
 		parseUser.unpin();
+	}
+
+	public static List<ParseUser> extractParseUsers(List<User> users) {
+		List<ParseUser> tmpList = new ArrayList<ParseUser>(users.size());
+		for(User u:users) {
+			tmpList.add(u.getParseUser());
+		}
+		return tmpList;
 	}
 }

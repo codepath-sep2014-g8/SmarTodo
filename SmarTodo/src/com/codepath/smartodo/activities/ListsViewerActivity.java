@@ -2,10 +2,13 @@ package com.codepath.smartodo.activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -20,12 +23,11 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.services.ModelManagerService;
-import com.codepath.smartodo.helpers.Utils;
 import com.etsy.android.grid.StaggeredGridView;
-import com.google.android.gms.internal.di;
 import com.parse.ParseException;
 
 public class ListsViewerActivity extends FragmentActivity implements TouchActionsListener{
@@ -36,6 +38,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 
 	private String editedObjectId;
 	private int currentListIndex = -1;
+	private SwipeRefreshLayout swipeContainer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,44 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 
 		initializeActionBar();
 
+		swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+            	AsyncTask task = new AsyncTask() {
+
+					@Override
+					protected Object doInBackground(Object... params) {
+						try {
+							ModelManagerService.refreshFromUser(ModelManagerService.getUser());
+						} catch (ParseException e) {
+							Log.e("error", e.getMessage(), e);
+						}
+						return null;
+					}
+            		
+					@Override
+					protected void onPostExecute(Object result) {
+						adapter.clear();
+						adapter.addAll(ModelManagerService.getLists());
+						adapter.notifyDataSetChanged();
+						swipeContainer.setRefreshing(false);
+					}
+            	};
+            	
+            	task.execute();
+            } 
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, 
+                android.R.color.holo_green_light, 
+                android.R.color.holo_orange_light, 
+                android.R.color.holo_red_light);
+		
 		staggeredGridView = (StaggeredGridView) findViewById(R.id.grid_view);
 		// list = new ArrayList<TodoList>();
 		// populateTestData();

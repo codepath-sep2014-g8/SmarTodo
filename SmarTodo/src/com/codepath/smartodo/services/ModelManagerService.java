@@ -83,13 +83,17 @@ public class ModelManagerService extends Service {
 		running = false;
 	}
 
+	public static void refreshFromUser(User user) throws ParseException {
+		refreshFromUser(user, null);
+	}
+	
 	/**
 	 * Call this whenever a user logs in.
 	 * 
 	 * @param user
 	 * @throws ParseException 
 	 */
-	public static void refreshFromUser(User user) throws ParseException {
+	public static void refreshFromUser(User user, final Runnable runAtEnd) throws ParseException {
 		Log.i("info", "Refreshing data from current user " + user.getUsername());
 		ModelManagerService.user = user;
 		ModelManagerService.lists = user.findAllLists();
@@ -102,6 +106,10 @@ public class ModelManagerService extends Service {
 				continue;
 			}
 			processListNotifications(list);
+		}
+		
+		if(runAtEnd!=null) {
+			runAtEnd.run();
 		}
 		
 		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	

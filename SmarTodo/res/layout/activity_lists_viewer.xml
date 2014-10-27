@@ -1,28 +1,34 @@
-<FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-<com.etsy.android.grid.StaggeredGridView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     
-    android:id="@+id/grid_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:item_margin="8dp"
-    app:column_count_portrait="2" 
-    />
-<com.faizmalkani.floatingactionbutton.FloatingActionButton 
-    android:id="@+id/fabbutton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        app:drawable="@drawable/ic_content_add"
-        app:color="#ffffff"
-        android:onClick="onNewTodoRequested"
-    />
-    </FrameLayout>
+    <FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+        
+		<com.etsy.android.grid.StaggeredGridView
+		    xmlns:android="http://schemas.android.com/apk/res/android"
+		    
+		    android:id="@+id/grid_view"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    app:item_margin="8dp"
+		    app:column_count_portrait="2" 
+		    />
+		<com.faizmalkani.floatingactionbutton.FloatingActionButton 
+		    android:id="@+id/fabbutton"
+		        android:layout_width="48dp"
+		        android:layout_height="48dp"
+		        android:layout_gravity="bottom|right"
+		        android:layout_marginBottom="16dp"
+		        android:layout_marginRight="16dp"
+		        app:drawable="@drawable/ic_content_add"
+		        app:color="#ffffff"
+		        android:onClick="onNewTodoRequested"
+		    />
+		</FrameLayout>
+	</android.support.v4.widget.SwipeRefreshLayout>

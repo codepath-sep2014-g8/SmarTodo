@@ -176,35 +176,60 @@ public class ModelManagerService extends Service {
 		// TODO
 	}
 	
-	public static String saveList(final TodoList todoList, final List<TodoItem> todoItemsList) throws ParseException {
+	public static String saveList(final TodoList todoList, final List<TodoItem> newTodoItemsList, final SaveCallback callback) {
 		Log.i("info", "Saving list");
 
-		todoList.save();//InBackground(new SaveCallback() {
-//			@Override
-//			public void done(ParseException arg0) {
-				for(User sharedWith : todoList.getSharing()) {
-					Log.i("info", "Sending push message to " + sharedWith.getUsername());
-					NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
-				}
-				
-				Log.i("info", "Saving " + todoItemsList.size() + " list items");
-				for(TodoItem item : todoItemsList) {
-					if(item.getText() == null || item.getText().trim().isEmpty()){
-						continue;
-					}
-						
-					item.setList(todoList);
-					
+		todoList.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException ex) {
+				if(ex != null) {
+					Log.e("error", "Save error: " + ex.getMessage(), ex);
+				} else {
 					try {
-						item.save();
-					} catch (ParseException e) {
-						Log.e("error", e.getMessage(), e);
+						todoList.pin();
+					} catch (ParseException ex2) {
+						Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
 					}
+					
+					if(newTodoItemsList != null) {
+						Log.i("info", "Saving " + newTodoItemsList.size() + " list items");
+						for(TodoItem item : newTodoItemsList) {
+							if(item.getText() == null || item.getText().trim().isEmpty()){
+								continue;
+							}
+								
+							item.setList(todoList);
+							
+							try {
+								item.pin();
+							} catch (ParseException ex2) {
+								Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
+							}
+							
+							item.saveInBackground(new SaveCallback() {
+		
+								@Override
+								public void done(ParseException e) {
+									if(e!=null) {
+										Log.e("error", e.getMessage(), e);
+									}
+								}
+								
+							});
+						}
+						
+						Log.i("info", "Items saved");
+					}
+					
+					for(User sharedWith : todoList.getSharing()) {
+						Log.i("info", "Sending push message to " + sharedWith.getUsername());
+						NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
+					}
+					
+					callback.done(null);
 				}
-				
-				Log.i("info", "Items saved");
-//			}
-//		});
+			}
+		});
 		
 		Log.i("info", "List save started in background");
 		

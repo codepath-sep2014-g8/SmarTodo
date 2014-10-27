@@ -96,11 +96,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 				@Override
 				public void onClick(View v) {
 					todoItem.setCompleted(!todoItem.isCompleted());
-					try {
-						todoItem.save();
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
+					todoItem.saveEventually();
 
 					updateImage(viewHolder, todoItem);
 					updateCompletedStatus(viewHolder, todoItem);

@@ -21,6 +21,7 @@ public class ParseConfig {
 		
 		Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 		
+		Parse.enableLocalDatastore(context);
 		Parse.initialize(context, context.getString(R.string.parse_app_id),
 				context.getString(R.string.parse_client_key));
 		

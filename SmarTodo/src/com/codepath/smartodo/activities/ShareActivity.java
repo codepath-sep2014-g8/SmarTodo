@@ -3,33 +3,25 @@ package com.codepath.smartodo.activities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.codepath.smartodo.R;
-import com.codepath.smartodo.R.id;
-import com.codepath.smartodo.R.layout;
-import com.codepath.smartodo.R.menu;
-import com.codepath.smartodo.adapters.ShareListAdapter;
-import com.codepath.smartodo.enums.TodoListDisplayMode;
-import com.codepath.smartodo.helpers.AppConstants;
-import com.codepath.smartodo.model.ShareUser;
-import com.codepath.smartodo.model.TodoItem;
-import com.codepath.smartodo.model.TodoList;
-import com.codepath.smartodo.model.User;
-import com.codepath.smartodo.notifications.NotificationsSender;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
+
+import com.codepath.smartodo.R;
+import com.codepath.smartodo.adapters.ShareListAdapter;
+import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.model.ShareUser;
+import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.model.User;
+import com.codepath.smartodo.services.ModelManagerService;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 public class ShareActivity extends Activity {
 
@@ -105,27 +97,24 @@ public class ShareActivity extends Activity {
 		}
 	}
 	
-	public void onShareRequested(View view){
+	public void onShareRequested(final View view){
 		
 		final List<User> users = adapter.getSelectedUsers();
 		
 		todoList.addToSharing(users);
-		todoList.saveInBackground(new SaveCallback() {
-			
+
+		ModelManagerService.saveList(todoList, null, new SaveCallback() {
+
 			@Override
-			public void done(ParseException arg0) {
-				
-				for(User user : users){					
-					NotificationsSender.shareTodoList(todoList, user.getParseUser());					
-				}
-				
-				if(users.size() > 0){	
-		            setResult(RESULT_OK, null);
+			public void done(ParseException e) {
+				if(e == null) {
+					finish();
+				} else {
+					Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
 				}
 			}
+			
 		});
-		
-		finish();
 	}
 
 	@Override

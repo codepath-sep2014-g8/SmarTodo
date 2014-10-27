@@ -63,6 +63,7 @@ import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class TodoListFragment extends DialogFragment implements OnTouchListener {
 
@@ -556,16 +557,21 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
 		
-		try {
-			String objectId = ModelManagerService.saveList(todoList, todoItemsList);
-			Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
+		String objectId = ModelManagerService.saveList(todoList, todoItemsList, new SaveCallback() {
 			
-			return objectId;
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-			Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
-			return null;
-		}
+			@Override
+			public void done(ParseException e) {
+				if(e == null) {
+					Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
+				} else {
+					Log.e("error", e.getMessage(), e);
+					Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+				}
+				
+			}
+		});
+		
+		return objectId;
 	}
 	
 	private String validateInput(){

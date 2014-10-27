@@ -138,14 +138,15 @@ public class TodoList extends ParseObject {
 	 * @throws ParseException
 	 */
 	public List<TodoItem> getAllItems() throws ParseException {
-		ParseQuery<TodoItem> itemQuery = ParseQuery.getQuery(TodoItem.class);
+		ParseQuery<TodoItem> itemQuery = LocalParseQuery.getQuery(TodoItem.class);
 		itemQuery.whereEqualTo(TodoItem.LIST_KEY, this);
 		return itemQuery.find();
 	}
 	
 	// TODO Merge the implementation with findTodoListByName
 	public static TodoList findTodoListByNameAndUser(String listName, User user) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
+		itemQuery.fromLocalDatastore();
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
 		
@@ -163,7 +164,7 @@ public class TodoList extends ParseObject {
 	}
 	
 	public static TodoList findTodoListByName(String listName) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		
 		List<TodoList> list = itemQuery.find();
@@ -180,7 +181,7 @@ public class TodoList extends ParseObject {
 	}
 	
 	public static TodoList findTodoListByObjectId(String objectId) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo("objectId", objectId);
 		
 		List<TodoList> list = itemQuery.find();

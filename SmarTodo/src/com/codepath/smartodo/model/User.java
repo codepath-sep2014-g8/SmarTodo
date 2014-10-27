@@ -58,11 +58,11 @@ public class User {
 	}
 
 	public List<TodoList> findAllLists() throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
 		List<TodoList> lists = itemQuery.find();
 		
-		itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery = LocalParseQuery.getQuery(TodoList.class);
 		itemQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new ParseUser[]{this.parseUser}));
 		lists.addAll(itemQuery.find());
 		
@@ -83,7 +83,7 @@ public class User {
 		
 		ParseQuery<ParseUser> itemQuery;
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
 			itemQuery.whereContains(REALNAME_KEY, generousPattern);
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
@@ -91,7 +91,7 @@ public class User {
 		}
 		
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
 			itemQuery.whereContains("email", generousPattern);
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
@@ -99,7 +99,7 @@ public class User {
 		}
 		
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
 			itemQuery.whereContains("username", generousPattern);
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {

@@ -461,7 +461,9 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 				android.support.v4.app.FragmentManager manager = getActivity()
 						.getSupportFragmentManager();
 				LocationDialogFragment dialog = new LocationDialogFragment(todoList, locationsMap);
-				dialog.show(manager, "fragment_notification_selector");
+				if (dialog != null) {
+				    dialog.show(manager, "fragment_notification_selector");
+				}
 			}
 		});
 		
@@ -663,7 +665,10 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			initCurrentLocation();
 		}
 		
-	    private void initCurrentLocation() {    	
+	    private void initCurrentLocation() {    
+	    	if (todoList == null || locationsMap == null) {
+	    		return;
+	    	}
 		    currentAddress = todoList.getAddress();
 	    	if (currentAddress != null) {
 	    	    currentLocation = currentAddress.getName();    	        	       
@@ -679,6 +684,9 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		
 	    @Override
 	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+	    	if (todoList == null || locationsMap == null) {
+	    		return null;
+	    	}
 			// Create and initialize an adapter
 			dataAdapter = new ArrayAdapter<String>(
 					getActivity(), android.R.layout.simple_spinner_item, locationList);
@@ -686,6 +694,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			
 			// Create and initialize a spinner
 			locationSpinner = new Spinner(getActivity());
+			// locationSpinner.setBackgroundResource(R.drawable.login_background);
 			locationSpinner.setAdapter(dataAdapter);
 			if (currentLocation != null) {
 				//set the default choice according to the current value
@@ -754,11 +763,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
 						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
 			
-			tvReminder.setText(getReminderDisplay()); // refresh              
-			
+			tvReminder.setText(getReminderDisplay()); // refresh              			
 		}
-
-
 	}
 	
 	public class LocationDialogFragmentOld extends DialogFragment implements android.content.DialogInterface.OnClickListener {

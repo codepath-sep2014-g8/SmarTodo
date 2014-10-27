@@ -28,6 +28,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -681,6 +682,17 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	    	Collections.sort(locationList, String.CASE_INSENSITIVE_ORDER);
 	    	// Log.d(TAG, "In LocationDialogFragment: total location keys are " + locationList.size());
 		}
+	    
+	    private TextView getCustomTitle() {
+	    	TextView title = new TextView(getActivity());
+	    	title.setText(getString(R.string.title_location_reminding_dialog, todoList.getName()));
+	    	title.setGravity(Gravity.CENTER_HORIZONTAL);
+	    	title.setTextSize(16);
+	    	title.setBackgroundColor(getActivity().getResources().getColor(colorId));
+	    	title.setAlpha(0.8f);
+	    	title.setTextColor(getResources().getColor(R.color.white));
+	    	return title;
+	    }
 		
 	    @Override
 	    public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -694,7 +706,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			
 			// Create and initialize a spinner
 			locationSpinner = new Spinner(getActivity());
-			// locationSpinner.setBackgroundResource(R.drawable.login_background);
+			// locationSpinner.setBackgroundResource(R.drawable.drop_shadow);
 			locationSpinner.setAdapter(dataAdapter);
 			if (currentLocation != null) {
 				//set the default choice according to the current value
@@ -703,8 +715,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			}
 
 			// Create an AlertDialog and associate the spinner for location names
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle(getString(R.string.title_location_reminding_dialog, todoList.getName()));		 			
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialogTheme);
+			builder.setCustomTitle(getCustomTitle());		 			
 			builder.setView(locationSpinner); 
 			builder.setPositiveButton("OK", this).setNegativeButton("CANCEL", null);	
 			return builder.create();

@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    tools:context="${packageName}.${activityClass}" >
+ 	<!-- check if the image is copyright protected. -->
+    <!-- Splash Screen TAG line goes here change position as per image -->
+
+
+
+    <ImageView
+        android:id="@+id/ivPencilLogo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_logo_pencil" />
+    
+      <ImageView
+        android:id="@+id/ivSmarTodoLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ivPencilLogo"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_logo_smartodo" />
+
+    <TextView
+        android:id="@+id/tvTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivSmarTodoLogo"
+        android:layout_centerHorizontal="true"
+
+        android:text="@string/tagline"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+</RelativeLayout>

@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/com_parse_ui_logo_content_description"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_logo_smartodo" />
+        android:src="@drawable/ic_logo_pencil_smartodo" />
 
     <TextView
         android:id="@+id/tvTagline"

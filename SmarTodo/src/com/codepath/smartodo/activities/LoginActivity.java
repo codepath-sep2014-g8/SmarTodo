@@ -129,7 +129,7 @@ public class LoginActivity extends Activity {
 		
 		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);
 		// loginBuilder.setFacebookLoginEnabled(false).setTwitterLoginEnabled(false);
-		loginBuilder.setAppLogo(R.drawable.ic_logo_smartodo);
+		loginBuilder.setAppLogo(R.drawable.ic_logo_pencil_smartodo);
 		startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);	
 	}
 	

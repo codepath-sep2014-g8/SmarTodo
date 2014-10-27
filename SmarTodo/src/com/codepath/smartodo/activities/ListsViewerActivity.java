@@ -168,10 +168,14 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	}
 	
 	private void showTodoListDialog(String objectID, int animationStyle, int colorId){
-		FragmentManager manager = getSupportFragmentManager();
-		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle, colorId);
-		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-		dialog.show(manager, "TAG");
+		Intent i = new Intent(ListsViewerActivity.this,
+				ItemsViewerActivity.class);
+		i.putExtra(AppConstants.OBJECTID_EXTRA, objectID);
+		startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
+//		FragmentManager manager = getSupportFragmentManager();
+//		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle, colorId);
+//		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+//		dialog.show(manager, "TAG");
 	}
 	
 	

@@ -16,9 +16,11 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
+import com.codepath.smartodo.interfaces.TouchActionsListener;
+import com.codepath.smartodo.model.TodoList;
 
 
-public class ItemsViewerActivity extends FragmentActivity {
+public class ItemsViewerActivity extends FragmentActivity implements TouchActionsListener{
 	
 	private ImageView ivBack;
 	
@@ -93,5 +95,39 @@ public class ItemsViewerActivity extends FragmentActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onPreviousListRequested() {
+//		System.out.println("onPreviousListRequested: " + currentListIndex);
+//		if(currentListIndex == -1 || currentListIndex == 0){
+//			currentListIndex = adapter.getCount() - 1;
+//		}
+//		else{
+//			currentListIndex --;
+//		}
+//		TodoList todoList = adapter.getItem(currentListIndex);
+//		showTodoListDialog(todoList.getObjectId(), 
+//				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+//					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
+		
+	}
+
+	@Override
+	public void onNextListRequested() {
+		
+//		System.out.println("onNextListRequested: " + currentListIndex);
+//		
+//		if(currentListIndex == adapter.getCount() -1 || currentListIndex == -1){
+//			currentListIndex = 0;
+//		}
+//		else{
+//			currentListIndex ++;
+//		}
+//		
+//		TodoList todoList = adapter.getItem(currentListIndex);
+//		showTodoListDialog(todoList.getObjectId(), 
+//				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+//					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
 	}
 }

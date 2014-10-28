@@ -99,6 +99,13 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         
         actionBar.setCustomView(view, params);
     }
+	
+	@Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,7 +119,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			
 			@Override
 			public void onClick(View v) {
-				finish();
+				onBackPressed();
 				
 			}
 		});

@@ -174,6 +174,8 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		i.putExtra(AppConstants.KEY_ANIMATION_STYLE, animationStyle);
 		i.putExtra(AppConstants.KEY_COLOR_ID, colorId);
 		startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
+	
+		overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 		
 //		FragmentManager manager = getSupportFragmentManager();
 //		TodoListFragment dialog = TodoListFragment.newInstance(objectID, animationStyle, colorId);

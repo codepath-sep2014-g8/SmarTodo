@@ -44,4 +44,14 @@
         android:textColor="#3C3B34"
         android:textSize="16sp"/>
 
+    <ImageView
+        android:id="@+id/ivShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="45dp"
+        android:layout_toRightOf="@+id/tvTitle_home"
+        android:src="@drawable/ic_social_share" 
+        android:visibility="gone"/>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.codepath.smartodo.activities;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,8 @@ import com.codepath.smartodo.model.TodoList;
 public class ItemsViewerActivity extends FragmentActivity implements TouchActionsListener{
 	
 	private ImageView ivBack;
+	private ImageView ivShare;
+	String objectId = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +34,14 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		setContentView(R.layout.activity_items_viewer);
 		
 		initialize();
+		
+		setupListeners();
 	}
 
 	private void initialize(){
 		initializeActionBar();
 
-		String objectId = null;
+		
 		if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
 			objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
 		}
@@ -56,6 +62,9 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         
         ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
         ivBack.setVisibility(View.VISIBLE);
+        
+        ivShare = (ImageView)view.findViewById(R.id.ivShare);
+        ivShare.setVisibility(View.VISIBLE);
         
         TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
         tvTitle_home.setText(Utils.buildTitleText());
@@ -82,6 +91,28 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.items_viewer, menu);
 		return true;
+	}
+	
+	private void setupListeners(){
+		ivBack.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+				
+			}
+		});
+		
+		ivShare.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(ItemsViewerActivity.this, ShareActivity.class);
+				intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+				startActivityForResult(intent, 200);	
+			}
+		});
 	}
 
 	@Override

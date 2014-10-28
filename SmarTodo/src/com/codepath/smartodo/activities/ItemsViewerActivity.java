@@ -27,6 +27,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private ImageView ivBack;
 	private ImageView ivShare;
 	String objectId = null;
+	private int animationStyle = R.style.DialogFromLeftAnimation;
+	private int colorId = R.color.todo_list_backcolor;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,22 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	}
 
 	private void initialize(){
-		initializeActionBar();
+		
 
 		
 		if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
 			objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
 		}
+		
+		if (getIntent().hasExtra(AppConstants.KEY_ANIMATION_STYLE)) {			
+			animationStyle = (int) getIntent().getIntExtra(AppConstants.KEY_ANIMATION_STYLE, 0);
+		}
+		
+		if (getIntent().hasExtra(AppConstants.KEY_COLOR_ID)) {			
+			colorId = getIntent().getIntExtra(AppConstants.KEY_COLOR_ID, 0);
+		}
+		
+		initializeActionBar();
 
 		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, R.color.todo_list_backcolor);
 		FragmentTransaction transaction = getSupportFragmentManager()
@@ -59,6 +71,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         ActionBar actionBar = getActionBar();
 
         View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
+        
+        view.setBackgroundColor(getResources().getColor(colorId));
         
         ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
         ivBack.setVisibility(View.VISIBLE);

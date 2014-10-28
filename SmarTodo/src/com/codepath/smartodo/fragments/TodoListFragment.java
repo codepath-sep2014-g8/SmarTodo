@@ -228,8 +228,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	public void onActivityCreated(Bundle arg0) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(arg0);
-		getDialog().getWindow()
-	    .getAttributes().windowAnimations = animationStyle;
+//		getDialog().getWindow()
+//	    .getAttributes().windowAnimations = animationStyle;
 		
 		listener = (TouchActionsListener)getActivity();
 	}
@@ -241,6 +241,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		Dialog dialog = super.onCreateDialog(savedInstanceState);
 		
 //		dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		getDialog().getWindow()
+	    .getAttributes().windowAnimations = animationStyle;
 		
 		return dialog;
 	}

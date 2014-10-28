@@ -44,4 +44,44 @@
         android:textColor="#3C3B34"
         android:textSize="16sp"/>
 
+    <ImageView
+        android:id="@+id/ivShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/tvTitle_home"
+        android:src="@drawable/ic_social_share" 
+        android:visibility="gone"/>
+    
+    <ImageView
+        android:id="@+id/ivNotifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/ivShare"
+        android:src="@drawable/ic_social_notifications" 
+        android:visibility="gone"/>
+    
+     <ImageView
+        android:id="@+id/ivMoreOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_navigation_more_vert" 
+        android:visibility="gone"/>
+     
+     <ImageView
+        android:id="@+id/ivDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_delete" 
+        android:visibility="gone"/>
+
 </RelativeLayout>

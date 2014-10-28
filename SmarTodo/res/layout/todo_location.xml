@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="35dp">
+
+    <ImageView
+        android:id="@+id/ivLocationImage"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_logo_pencil" />
+
+    <TextView
+        android:id="@+id/tvLocName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/ivLocationImage"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:text="@string/location_name"
+        android:textSize="16sp" />
+    
+</RelativeLayout>

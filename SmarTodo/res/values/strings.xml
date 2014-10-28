@@ -96,5 +96,6 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="title_activity_drawer">DrawerActivity</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="location_name">Location Name</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.codepath.smartodo.helpers;
 
+import java.util.List;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,6 +40,10 @@ public class Utils {
 	
 	public static boolean isNullOrEmpty(String str) {
 		return (str == null || str.trim().length() == 0);
+	}
+	
+	public static boolean isNullOrEmpty(List list) {
+		return (list == null || list.size() == 0);
 	}
 	
 	public static Boolean isNetworkAvailable(Context context) {

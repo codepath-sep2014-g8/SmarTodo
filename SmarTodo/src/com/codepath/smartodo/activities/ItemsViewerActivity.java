@@ -1,5 +1,7 @@
 package com.codepath.smartodo.activities;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,22 +17,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
+import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.parse.ParseException;
 
 
 public class ItemsViewerActivity extends FragmentActivity implements TouchActionsListener{
+	
+	private static final String TAG = ItemsViewerActivity.class.getSimpleName();
 	
 	private ImageView ivBack;
 	private ImageView ivShare;
 	private ImageView ivNotifications;
 	private ImageView ivMoreOptions;
+	private ImageView ivDelete;
+	
 	String objectId = null;
 	private int animationStyle = R.style.DialogFromLeftAnimation;
 	private int colorId = R.color.todo_list_backcolor;
+	private TodoList todoList = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +54,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 
 	private void initialize(){
 		
-
-		
-		if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
-			objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
-		}
+		initializeTodoList();
 		
 		if (getIntent().hasExtra(AppConstants.KEY_ANIMATION_STYLE)) {			
 			animationStyle = (int) getIntent().getIntExtra(AppConstants.KEY_ANIMATION_STYLE, 0);
@@ -65,6 +71,33 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				.beginTransaction();
 		transaction.replace(R.id.fragmentContainer, fragmentTodoList);
 		transaction.commit();
+	}
+	
+private void initializeTodoList(){
+		
+	if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
+		objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
+	}
+		
+		if(objectId == null || objectId.isEmpty()){	
+			todoList = new TodoList();
+			return;
+		}
+		
+		try {
+			todoList = TodoList.findTodoListByObjectId(objectId);
+		} catch (ParseException e1) {
+			
+			Log.d(TAG, "Excpetion while getting the todo list");
+			e1.printStackTrace();
+			
+			todoList = new TodoList();
+		}
+		
+		if(todoList == null){
+			todoList = new TodoList();
+		}
+		
 	}
 	
 	
@@ -86,7 +119,10 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         ivNotifications.setVisibility(View.VISIBLE);
         
         ivMoreOptions = (ImageView)view.findViewById(R.id.ivMoreOptions);
-        ivMoreOptions.setVisibility(View.VISIBLE);
+        //ivMoreOptions.setVisibility(View.VISIBLE);
+        
+        ivDelete = (ImageView)view.findViewById(R.id.ivDelete);
+        ivDelete.setVisibility(View.VISIBLE);
         
         TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
         tvTitle_home.setText(Utils.buildTitleText());
@@ -140,6 +176,22 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				Intent intent = new Intent(ItemsViewerActivity.this, ShareActivity.class);
 				intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
 				startActivityForResult(intent, 200);	
+			}
+		});
+		
+		ivDelete.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				try {
+					todoList.deleteEventually();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				finally{
+					onBackPressed();
+				}
 			}
 		});
 	}

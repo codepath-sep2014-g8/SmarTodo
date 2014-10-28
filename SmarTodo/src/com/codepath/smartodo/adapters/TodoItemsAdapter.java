@@ -28,6 +28,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private static final String TAG = TodoItemsAdapter.class.getSimpleName();
 	private TodoListDisplayMode mode = TodoListDisplayMode.GRID;
 	private TodoItem dummyItem = new TodoItem();
+	private int currentRow = -1;
 
 	private class ViewHolder {
 		ImageView ivImage;

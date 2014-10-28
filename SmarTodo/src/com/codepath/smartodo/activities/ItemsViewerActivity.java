@@ -26,6 +26,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	private ImageView ivBack;
 	private ImageView ivShare;
+	private ImageView ivNotifications;
+	private ImageView ivMoreOptions;
 	String objectId = null;
 	private int animationStyle = R.style.DialogFromLeftAnimation;
 	private int colorId = R.color.todo_list_backcolor;
@@ -79,6 +81,12 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         
         ivShare = (ImageView)view.findViewById(R.id.ivShare);
         ivShare.setVisibility(View.VISIBLE);
+        
+        ivNotifications = (ImageView)view.findViewById(R.id.ivNotifications);
+        ivNotifications.setVisibility(View.VISIBLE);
+        
+        ivMoreOptions = (ImageView)view.findViewById(R.id.ivMoreOptions);
+        ivMoreOptions.setVisibility(View.VISIBLE);
         
         TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
         tvTitle_home.setText(Utils.buildTitleText());

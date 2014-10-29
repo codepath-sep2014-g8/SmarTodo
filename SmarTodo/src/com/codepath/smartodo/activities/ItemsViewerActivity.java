@@ -244,8 +244,10 @@ private void initializeTodoList(){
 					
 					@Override
 					public boolean onMenuItemClick(MenuItem item) {
-						
-						return false;
+						if(item.getItemId() == R.id.deleteMenu){
+							deleteList();
+						}
+						return true;
 					}
 				});
 				
@@ -301,6 +303,18 @@ private void initializeTodoList(){
 				}
 			}
 		});
+	}
+	
+	private void deleteList(){
+
+		try {
+			todoList.deleteEventually();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally{
+			onBackPressed();
+		}
 	}
 
 	@Override

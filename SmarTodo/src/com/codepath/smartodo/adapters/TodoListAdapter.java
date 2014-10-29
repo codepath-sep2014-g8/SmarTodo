@@ -55,6 +55,7 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			tvTitle.append(":");
 			
 			if(todoList.getAddress() != null && todoList.getAddress().getName() != null){
+				tvLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_location_rounded, 0);
 				tvLocation.setText(todoList.getAddress().getName());
 			}
 			else{

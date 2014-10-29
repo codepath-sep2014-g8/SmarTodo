@@ -121,6 +121,7 @@
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="4dp"
+        android:choiceMode="singleChoice"
         />
 
     <RelativeLayout

@@ -8,7 +8,7 @@
         android:id="@+id/lvPeopleForShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnShare_isu"
+        android:layout_above="@+id/gvSharedWith"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
@@ -17,9 +17,9 @@
     <GridView
         android:id="@+id/gvSharedWith"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_above="@+id/btnShare_isu"
-        android:layout_below="@+id/lvPeopleForShare"
+        android:animateLayoutChanges="true"
         android:numColumns="3" >
 
     </GridView>

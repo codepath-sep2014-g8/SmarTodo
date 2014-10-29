@@ -5,14 +5,22 @@ import java.util.Collection;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
@@ -35,6 +43,10 @@ public class ShareActivity extends Activity {
 	private ListView lvUsers;
 	private String listName;
 	private TodoList todoList;
+
+	private GridView gvSharedWith;
+
+	private SharedWithAdapter gvSharedWithAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +71,45 @@ public class ShareActivity extends Activity {
 		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll()));
 		adapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(adapter);
+		
+		gvSharedWith = (GridView) findViewById(R.id.gvSharedWith);
+		gvSharedWithAdapter = new SharedWithAdapter(this, selectedUsers);
+		gvSharedWith.setAdapter(gvSharedWithAdapter);
 	}
 
+	class SharedWithAdapter extends ArrayAdapter<User> {
+
+		public SharedWithAdapter(Context context, List<User> objects) {
+			super(context, R.layout.view_share_user, objects);
+		}
+		
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v;
+			
+			if(convertView != null) {
+				v = convertView;
+			} else {
+				v = getLayoutInflater().inflate(R.layout.view_share_user, null);
+			}
+			
+			final User user = getItem(position);
+			
+			TextView tv = (TextView) v.findViewById(R.id.tvSuUserName);
+			tv.setText(user.getEmail());
+			
+			Button btn = (Button) v.findViewById(R.id.btnSuRemove);
+			btn.setOnClickListener(new OnClickListener() {
+				@Override public void onClick(View btnView) {
+					Log.i("info", "TODO remove user");
+					gvSharedWithAdapter.remove(user);
+				}
+			});
+			
+			return v;
+		}
+	}
+	
 	private Collection<ShareUser> convertToSharedUsers(Collection<User> users) {
 		Collection<ShareUser> sharedUsers = new ArrayList<ShareUser>();
 		for (User user:users) {
@@ -139,7 +188,15 @@ public class ShareActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private List<User> selectedUsers = new ArrayList<User>();
+	
 	public void selectUser(User user, boolean selected) {
 		Log.i("info", "Changing user selection for " + user.getEmail() + " to " + selected);
+		
+		if(selected) {
+			gvSharedWithAdapter.add(user);
+		} else {
+			gvSharedWithAdapter.remove(user);
+		}
 	}
 }

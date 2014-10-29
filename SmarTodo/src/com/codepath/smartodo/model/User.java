@@ -139,7 +139,12 @@ public class User {
 	}
 	
 	public boolean equals(Object o) {
-		return parseUser.equals(o);
+		if(o instanceof User) {
+			User op = (User) o;
+			return op.getEmail().equals(getEmail());
+		}
+		
+		return false;
 	}
 
 	public void setUsername(String username) {

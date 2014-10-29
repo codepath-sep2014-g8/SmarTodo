@@ -65,6 +65,16 @@
         android:visibility="gone"/>
     
      <ImageView
+        android:id="@+id/ivLocationReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/ivNotifications"
+        android:src="@drawable/ic_maps_place" 
+        android:visibility="gone"/>
+    
+     <ImageView
         android:id="@+id/ivMoreOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,6 +83,8 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_navigation_more_vert" 
         android:visibility="gone"/>
+     
+     
      
      <ImageView
         android:id="@+id/ivDelete"

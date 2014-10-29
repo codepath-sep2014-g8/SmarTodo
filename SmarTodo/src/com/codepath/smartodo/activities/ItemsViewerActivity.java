@@ -41,6 +41,7 @@ import android.widget.TimePicker;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.fragments.TodoListFragment;
+import com.codepath.smartodo.fragments.TodoListFragment.TimePickerFragment;
 import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
@@ -140,11 +141,11 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
        reminderLocations.add(new ReminderLocation(RIGHT_STUFF_LOCATION_NAME, RIGHT_STUFF_ADDR, RIGHT_STUFF_IMAGE_URL, R.drawable.ic_gym));		
 	}
 
-private void initializeTodoList(){
+    private void initializeTodoList(){
 		
-	if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
-		objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
-	}
+	    if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
+		    objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
+	    }
 		
 		if(objectId == null || objectId.isEmpty()){	
 			todoList = new TodoList();
@@ -291,15 +292,24 @@ private void initializeTodoList(){
 			}
 		});
 		
-		ivLocationReminder.setOnClickListener(new View.OnClickListener() {
-
+		ivNotifications.setOnClickListener(new OnClickListener() {
+			
 			@Override
 			public void onClick(View v) {
-				android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-				LocationDialogFragment dialog = new LocationDialogFragment(
-						todoList, reminderLocations);
+				DialogFragment dialog = new TimePickerFragment(todoList);
 				if (dialog != null) {
-					dialog.show(manager, "fragment_notification_selector");
+					dialog.show(getSupportFragmentManager(), "timePicker");	
+				}
+			}
+		});
+		
+		ivLocationReminder.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				LocationDialogFragment dialog = new LocationDialogFragment(todoList, reminderLocations);
+				if (dialog != null) {
+					dialog.show(getSupportFragmentManager(), "fragment_notification_selector");
 				}
 			}
 		});
@@ -365,9 +375,7 @@ private void initializeTodoList(){
 	}
 
 
-	public class TimePickerFragment extends DialogFragment implements
-			TimePickerDialog.OnTimeSetListener {
-
+	public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 		private TodoList todoList;
 		final Calendar c = Calendar.getInstance();
 

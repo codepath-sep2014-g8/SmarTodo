@@ -41,7 +41,6 @@ import android.widget.TimePicker;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.fragments.TodoListFragment;
-import com.codepath.smartodo.fragments.TodoListFragment.TimePickerFragment;
 import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;

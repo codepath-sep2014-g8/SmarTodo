@@ -2,7 +2,10 @@ package com.codepath.smartodo.model;
 
 import java.util.Date;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 @ParseClassName("TodoItem")
@@ -30,7 +33,12 @@ public class TodoItem extends ParseObject {
 	}
 	
 	public Address getAddress() {
-		return (Address) super.getParseObject(ADDRESS_KEY);
+		try {
+			return (Address) super.fetchIfNeeded().getParseObject(ADDRESS_KEY);
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+			return null;
+		}
 	}
 	
 	public void setAddress(Address value) {
@@ -50,7 +58,12 @@ public class TodoItem extends ParseObject {
 	}
 	
 	public TodoList getList() {
-		return (TodoList) super.getParseObject(LIST_KEY);
+		try {
+			return (TodoList) super.fetchIfNeeded().getParseObject(LIST_KEY);
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+			return null;
+		}
 	}
 
 	@Override

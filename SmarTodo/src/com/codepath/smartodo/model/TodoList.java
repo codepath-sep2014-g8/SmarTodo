@@ -39,7 +39,12 @@ public class TodoList extends ParseObject {
 	}
 	
 	public Address getAddress() {
-		return (Address) super.getParseObject(ADDRESS_KEY);
+		try {
+			return (Address) super.fetchIfNeeded().getParseObject(ADDRESS_KEY);
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+			return null;
+		}
 	}
 	
 	public void setAddress(Address value) {

@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_social_share" 
             android:layout_margin="5dp"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/ivColorPicker_ftdl"
@@ -43,7 +44,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_color_picker" 
             android:layout_margin="5dp"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:visibility="gone"/>
         
         <ImageView
             android:id="@+id/ivSave_ftdl"
@@ -59,7 +61,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_delete" 
             android:layout_margin="5dp"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
     

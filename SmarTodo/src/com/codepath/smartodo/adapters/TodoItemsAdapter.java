@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,8 +77,11 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
+		
+		
 
 		viewHolder.etItemText.setTag(todoItem);
+		viewHolder.ivRemove.setTag(todoItem);
 		
 		viewHolder.ivImage.setClickable(false);
 //		viewHolder.etItemText.setClickable(false);
@@ -89,7 +93,12 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 			viewHolder.ivImage.setClickable(true);
 //			viewHolder.etItemText.setClickable(true);
-			viewHolder.ivRemove.setVisibility(View.VISIBLE);
+			if(todoItem == dummyItem){
+				viewHolder.ivRemove.setVisibility(View.INVISIBLE);
+			}
+			else{
+				viewHolder.ivRemove.setVisibility(View.VISIBLE);
+			}
 			
 			// ?? Refactor later
 			viewHolder.ivImage.setOnClickListener(new OnClickListener() {
@@ -149,7 +158,22 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					
 				}
 			});
+			
+			viewHolder.ivRemove.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					
+					TodoItem item = (TodoItem)v.getTag();
+					Log.d(TAG, "Deleting item " + item.getText());
+					remove(item);
+					item.deleteEventually();
+				}
+			});
 		}
+		
+		
 		
 		viewHolder.etItemText.setText(todoItem.getText());
 		

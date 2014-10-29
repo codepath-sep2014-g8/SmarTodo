@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
@@ -120,10 +122,10 @@ private void initializeTodoList(){
         ivNotifications.setVisibility(View.VISIBLE);
         
         ivMoreOptions = (ImageView)view.findViewById(R.id.ivMoreOptions);
-        //ivMoreOptions.setVisibility(View.VISIBLE);
+        ivMoreOptions.setVisibility(View.VISIBLE);
         
         ivDelete = (ImageView)view.findViewById(R.id.ivDelete);
-        ivDelete.setVisibility(View.VISIBLE);
+        ivDelete.setVisibility(View.GONE);
         
         ivLocationReminder = (ImageView)view.findViewById(R.id.ivLocationReminder);
         ivLocationReminder.setVisibility(View.VISIBLE);
@@ -150,7 +152,9 @@ private void initializeTodoList(){
 	
 	@Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
+        Intent intent = new Intent();
+        intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+        setResult(RESULT_OK, intent);
         super.onBackPressed();
         overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
     }
@@ -163,6 +167,28 @@ private void initializeTodoList(){
 	}
 	
 	private void setupListeners(){
+		
+		ivMoreOptions.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+
+				PopupMenu popupMenu = new PopupMenu(ItemsViewerActivity.this, ivMoreOptions);
+				popupMenu.getMenuInflater().inflate(R.menu.poupup_menu, popupMenu.getMenu());
+				
+				popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+					
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						
+						return false;
+					}
+				});
+				
+				popupMenu.show();
+			}
+		});
+		
 		ivBack.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

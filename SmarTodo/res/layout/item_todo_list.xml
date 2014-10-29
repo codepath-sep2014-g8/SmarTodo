@@ -47,8 +47,6 @@
         android:background="@drawable/top_border_style"
         android:layout_marginTop="1dp"
         android:padding="10dp"
-        android:drawableLeft="@drawable/ic_notification_calender"
-        
         />
     
 </LinearLayout>

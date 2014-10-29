@@ -69,7 +69,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		
 		initializeActionBar();
 
-		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, R.color.todo_list_backcolor);
+		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, colorId);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.fragmentContainer, fragmentTodoList);

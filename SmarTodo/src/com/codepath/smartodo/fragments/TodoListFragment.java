@@ -763,7 +763,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			// lvLocationChooser.setSelector(getActivity().getResources().getColor(colorId));  // TODO: Check why this is not working
 			
 			lvLocationChooser.setSelector(colorId); 
-			final int selectedColor = getActivity().getResources().getColor(colorId);
 			final int defaultDrawingCacheBackgroundColor = lvLocationChooser.getDrawingCacheBackgroundColor();
 			int[] colors = {selectedColor, selectedColor}; 
 			lvLocationChooser.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
@@ -793,7 +792,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			builder.setPositiveButton("Done", this);
 			AlertDialog alertDialog = builder.create();
 
-/*			alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 				@Override
 				public void onShow(DialogInterface dialog) {
 					AlertDialog alertDialog = (AlertDialog) dialog;
@@ -806,9 +805,9 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 						setCustomtyle(button);
 					}
 				}
-			});	*/
+			});	
 			
-/*			alertDialog.show(); // Maybe needed for highlighting a row below by a programmatic click operation
+			alertDialog.show(); // Maybe needed for highlighting a row below by a programmatic click operation
 			
 			if (currentReminderLocation != null) {
 				//set the default choice according to the current value
@@ -822,7 +821,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 					
 					lvLocationChooser.performItemClick(lvLocationChooser.getAdapter().getView(position, null, null), position, position);
 				}
-			}*/
+			}
 			
 			return alertDialog;
 		}

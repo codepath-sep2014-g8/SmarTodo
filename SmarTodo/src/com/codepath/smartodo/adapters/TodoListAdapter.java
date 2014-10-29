@@ -1,12 +1,15 @@
 package com.codepath.smartodo.adapters;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.text.style.StrikethroughSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +19,14 @@ import android.widget.TextView;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
+import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.parse.ParseUser;
 
 public class TodoListAdapter extends ArrayAdapter<TodoList> {
 
+	private static final String TAG = TodoListAdapter.class.getSimpleName();
 	private static final StrikethroughSpan STRIKE_THROUGH_SPAN = new StrikethroughSpan();
 	private int[] colorsList;
 
@@ -48,6 +54,21 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			tvTitle.setText(todoList.getName());
 			tvTitle.append(":");
 			
+			if(todoList.getAddress() != null && todoList.getAddress().getName() != null){
+				tvLocation.setText(todoList.getAddress().getName());
+			}
+			else{
+				String time = getReminderDisplay(todoList);
+				if(time != null && !time.isEmpty()){
+					tvLocation.setText(time);
+					tvLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notification_calender, 0, 0, 0);
+				}
+				else{
+					tvLocation.setText("No reminders");
+					tvLocation.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+				}
+			}
+			
 			try {
 				
 				adapter.clear();
@@ -58,6 +79,28 @@ public class TodoListAdapter extends ArrayAdapter<TodoList> {
 			} catch (com.parse.ParseException e) {
 				e.printStackTrace();
 			}			
+		}
+		
+		private String getReminderDisplay(TodoList todoList){
+			
+			StringBuilder sb = new StringBuilder();
+			
+			try{
+				Date dt = todoList.getNotificationTime();
+				if (dt == null) {
+					Log.d(TAG, "In getReminderDisplay, notificationTime is null");
+					dt = new Date();
+				}
+				SimpleDateFormat formatter = new SimpleDateFormat("MMM-dd hh:mm");
+				 		    
+			    String displayName = formatter.format(dt);
+			    sb.append("   ").append(displayName);
+			}
+			catch(Exception ex){
+				return "";
+			}
+			
+			return sb.toString();
 		}
 		
 		private void setListViewHeight() {

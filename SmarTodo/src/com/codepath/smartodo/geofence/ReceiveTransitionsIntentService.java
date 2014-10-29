@@ -130,12 +130,14 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	String[] idArray = TextUtils.split(ids, GeofenceUtils.GEOFENCE_ID_DELIMITER.toString());
     	
     	ArrayList<TodoGeofence> todoGeofences = new ArrayList<TodoGeofence>();
-    	for (int i = 0; i <  idArray.length; i++) {
+    	for (int i = 0; i < idArray.length; i++) {
     		String geofenceId = idArray[i];
         	TodoGeofence todoGeofence = mPrefs.getGeofence(geofenceId);
-        	Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
-        	todoGeofences.add(todoGeofence);
-        	Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());	
+        	if (todoGeofence != null) {
+        	    Log.d(TAG, "In sendNotification: geofenceId is " + geofenceId + ", message is " + todoGeofence.getAlertMessage());
+            	todoGeofences.add(todoGeofence);
+        	    Log.d("Debug", "In sendNotification: todoGeofence retrieved from preferences is " + todoGeofence.toString());
+        	}
         	// Toast.makeText(this, todoGeofence.getAlertMessage(), Toast.LENGTH_LONG).show();
     	}
     		
@@ -188,6 +190,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
         	}
         	title = titleBuffer.toString();
         	contentText = contentTextBuffer.toString();
+        	ModelManagerService.getInstance().displayNotification(title, contentText);
         }
         
 /*		builder.setSmallIcon(R.drawable.ic_notification)
@@ -201,7 +204,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
         // Issue the notification
         mNotificationManager.notify(0, builder.build());*/
         
-        ModelManagerService.getInstance().displayNotification(title, contentText);
+        
     }
 
     /**

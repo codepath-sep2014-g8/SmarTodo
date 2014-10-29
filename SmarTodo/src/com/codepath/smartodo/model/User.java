@@ -71,13 +71,21 @@ public class User {
 		return lists;
 	}
 	
+	public static Collection<User> findAll() {
+		return findAllLike(null, false);
+	}
+	
+	public static Collection<User> findAllLike(String substring) {
+		return findAllLike(substring, true);
+	}
+	
 	/**
 	 * Supports only substring based search in the realname, email and username fields. Note that the search is case SENSITIVE.
 	 * 
 	 * @param substring
 	 * @return
 	 */
-	public static Collection<User> findAllLike(String substring) {
+	public static Collection<User> findAllLike(String substring, boolean doFilter) {
 		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
 		
 		String generousPattern = substring;//"*" + pattern + "*";
@@ -85,24 +93,30 @@ public class User {
 		
 		ParseQuery<ParseUser> itemQuery;
 		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
-			itemQuery.whereContains(REALNAME_KEY, generousPattern);
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			if(doFilter) {
+				itemQuery.whereContains(REALNAME_KEY, generousPattern);
+			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
 			Log.e("error", e.getMessage(), e);
 		}
 		
 		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
-			itemQuery.whereContains("email", generousPattern);
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			if(doFilter) {
+				itemQuery.whereContains("email", generousPattern);
+			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
 			Log.e("error", e.getMessage(), e);
 		}
 		
 		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class);
-			itemQuery.whereContains("username", generousPattern);
+			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			if(doFilter) {
+				itemQuery.whereContains("username", generousPattern);
+			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
 			Log.e("error", e.getMessage(), e);

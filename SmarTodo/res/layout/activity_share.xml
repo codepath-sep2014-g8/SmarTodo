@@ -8,21 +8,29 @@
         android:id="@+id/lvPeopleForShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/btnShare_isu"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
     </ListView>
+
+    <GridView
+        android:id="@+id/gvSharedWith"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnShare_isu"
+        android:layout_below="@+id/lvPeopleForShare"
+        android:numColumns="3" >
+
+    </GridView>
 
     <Button
         android:id="@+id/btnShare_isu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="107dp"
-        android:text="Share" 
-        android:onClick="onShareRequested"/>
+        android:layout_centerHorizontal="true"
+        android:onClick="onShareRequested"
+        android:text="Share" />
 
 </RelativeLayout>

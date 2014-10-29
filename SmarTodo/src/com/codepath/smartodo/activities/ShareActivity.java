@@ -1,17 +1,19 @@
 package com.codepath.smartodo.activities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.ShareListAdapter;
@@ -54,9 +56,17 @@ public class ShareActivity extends Activity {
 		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
-		users = new ArrayList<ShareUser>();
+		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll()));
 		adapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(adapter);
+	}
+
+	private Collection<ShareUser> convertToSharedUsers(Collection<User> users) {
+		Collection<ShareUser> sharedUsers = new ArrayList<ShareUser>();
+		for (User user:users) {
+			sharedUsers.add(new ShareUser(user));
+		}
+		return sharedUsers;
 	}
 
 	@Override
@@ -127,5 +137,9 @@ public class ShareActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void selectUser(User user, boolean selected) {
+		Log.i("info", "Changing user selection for " + user.getEmail() + " to " + selected);
 	}
 }

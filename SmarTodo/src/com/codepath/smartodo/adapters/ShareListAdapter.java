@@ -15,6 +15,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.activities.ShareActivity;
 import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.User;
 import com.parse.ParseException;
@@ -22,6 +23,8 @@ import com.parse.ParseException;
 
 public class ShareListAdapter extends ArrayAdapter<ShareUser> {
 	
+	private ShareActivity shareActivity;
+
 	private class ViewHolder{
 		CheckBox cbCheck;
 		TextView tvUserName;
@@ -42,11 +45,14 @@ public class ShareListAdapter extends ArrayAdapter<ShareUser> {
 			}
 			tvUserEmail.setText(user.getUser().getEmail());
 			cbCheck.setChecked(user.isSelected());
+			
+			shareActivity.selectUser(user.getUser(), user.isSelected());
 		}
 	}
 	
 	public ShareListAdapter(Context context, List<ShareUser> objects) {
 		super(context, R.layout.item_share_user, objects);
+		shareActivity = (ShareActivity) context;
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public class ShareListAdapter extends ArrayAdapter<ShareUser> {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				
 				user.setSelected(isChecked);
-				
+				shareActivity.selectUser(user.getUser(), isChecked);
 			}
 		});
 		

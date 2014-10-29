@@ -763,7 +763,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			// lvLocationChooser.setSelector(getActivity().getResources().getColor(colorId));  // TODO: Check why this is not working
 			
 			lvLocationChooser.setSelector(colorId); 
-			final int selectedColor = getActivity().getResources().getColor(colorId);
 			final int defaultDrawingCacheBackgroundColor = lvLocationChooser.getDrawingCacheBackgroundColor();
 			int[] colors = {selectedColor, selectedColor}; 
 			lvLocationChooser.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));

@@ -57,6 +57,23 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		}
 	}
 	
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		if(currentRow != -1){
+			View view = getView(getCount() -1, null, null);
+			boolean vS = view.requestFocus();
+			System.out.println("View Focus:" + vS);
+			EditText et = (EditText)view.findViewById(R.id.tvItemText_ftl);
+			boolean eS = et.requestFocus();
+			System.out.println("ET Focus:" + eS);
+			//et.setSelection(1);
+			currentRow = -1;
+		}
+		else{
+			
+		}
+	}
 	
 
 	@Override
@@ -130,6 +147,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					}
 					TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
 					if(origTodoItem == dummyItem){
+						currentRow = 10;
 						Log.d(TAG, "Creating New Item");
 						String str = viewHolder.etItemText.getText().toString();
 						TodoItem ti = dummyItem;

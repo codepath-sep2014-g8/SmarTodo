@@ -109,11 +109,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private EditText etNewItem;
 	private ListView lvItems;
 	private LinearLayout llActions;
-	private ImageView ivNotifications;
-	private ImageView ivShare;
 	private ImageView ivColorPicker;
 	private ImageView ivSave;
-	private ImageView ivDelete;
 	private LinearLayout llFooter;
 	private ImageView ivFooterReminder;
 	private TextView tvReminder;
@@ -302,11 +299,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		btnAdd = (Button)view.findViewById(R.id.btnAdd_ftdl);
 		lvItems = (ListView)view.findViewById(R.id.lvToDoItemsList_ftdl);
 		llActions = (LinearLayout)view.findViewById(R.id.llAction_ftdl);
-		ivNotifications = (ImageView)view.findViewById(R.id.ivNotification_ftdl);
-		ivShare = (ImageView)view.findViewById(R.id.ivShare_ftdl);
 		ivColorPicker = (ImageView)view.findViewById(R.id.ivColorPicker_ftdl);
 		ivSave = (ImageView)view.findViewById(R.id.ivSave_ftdl);
-		ivDelete = (ImageView)view.findViewById(R.id.ivDelete_ftdl);
 		llFooter = (LinearLayout)view.findViewById(R.id.llfooter_ftdl);
 		ivFooterReminder = (ImageView)view.findViewById(R.id.ivFooterReminder_ftdl);
 		tvReminder = (TextView)view.findViewById(R.id.tvReminder_ftdl);
@@ -475,42 +469,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			}
 		});
 		
-		
-		ivNotifications.setOnClickListener(new View.OnClickListener() {
-			
-/*			@Override
-			public void onClick(View v) {
-				FragmentManager manager = getActivity().getFragmentManager();
-				
-				NotificationSelectorDialog dialog = NotificationSelectorDialog.newInstance();
-				dialog.show(manager, "fragment_notification_selector");
-				
-				
-			}*/
-			
-			@Override
-			public void onClick(View v) {
-				android.support.v4.app.FragmentManager manager = getActivity()
-						.getSupportFragmentManager();
-				LocationDialogFragment dialog = new LocationDialogFragment(todoList, reminderLocations);
- 			    if (dialog != null) {
-				    dialog.show(manager, "fragment_notification_selector");
-				}
-			}
-		});
-		
-		ivShare.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// Show Share activity
-				Intent intent = new Intent(getActivity(), ShareActivity.class);
-				intent.putExtra(AppConstants.OBJECTID_EXTRA, listObjectId);
-				startActivityForResult(intent, 200);				
-			}
-		});
-		
-		
 		ivColorPicker.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -539,21 +497,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 					i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
 					TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
 				}
-			}
-		});
-		
-		ivDelete.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				try {
-					todoList.delete();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				dismiss();
 			}
 		});
 		

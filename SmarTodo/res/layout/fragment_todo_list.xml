@@ -16,28 +16,7 @@
          android:visibility="visible"
          android:layout_weight="0.1"
         >
-
-        <ImageView
-            android:id="@+id/ivNotification_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_notification" 
-            android:layout_marginLeft="5dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:clickable="true"/>
         
-        <ImageView
-            android:id="@+id/ivShare_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_social_share" 
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            android:visibility="gone"/>
-
         <ImageView
             android:id="@+id/ivColorPicker_ftdl"
             android:layout_width="wrap_content"
@@ -54,15 +33,6 @@
             android:src="@drawable/ic_save" 
             android:layout_margin="5dp"
             android:padding="5dp"/>
-        
-        <ImageView
-            android:id="@+id/ivDelete_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete" 
-            android:layout_margin="5dp"
-            android:padding="5dp"
-            android:visibility="gone"/>
 
     </LinearLayout>
     
@@ -83,7 +53,6 @@
         android:background="@drawable/title_selector"
         android:layout_marginBottom="10dp"
         android:textColor="@color/todo_list_title">
-        <requestFocus />
     </EditText>
 
     <LinearLayout

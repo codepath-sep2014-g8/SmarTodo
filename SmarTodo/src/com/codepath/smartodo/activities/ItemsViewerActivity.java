@@ -36,6 +36,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private ImageView ivNotifications;
 	private ImageView ivMoreOptions;
 	private ImageView ivDelete;
+	private ImageView ivLocationReminder;
 	
 	String objectId = null;
 	private int animationStyle = R.style.DialogFromLeftAnimation;
@@ -123,6 +124,9 @@ private void initializeTodoList(){
         
         ivDelete = (ImageView)view.findViewById(R.id.ivDelete);
         ivDelete.setVisibility(View.VISIBLE);
+        
+        ivLocationReminder = (ImageView)view.findViewById(R.id.ivLocationReminder);
+        ivLocationReminder.setVisibility(View.VISIBLE);
         
         TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
         tvTitle_home.setText(Utils.buildTitleText());

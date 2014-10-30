@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -122,6 +123,13 @@ public class ShareActivity extends Activity {
         
         actionBar.setCustomView(view, params);
     }
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+    }
+
 	
 	private Collection<ShareUser> convertToSharedUsers(Collection<User> users, boolean skipCurrentUser) {
 		Collection<ShareUser> sharedUsers = new ArrayList<ShareUser>();

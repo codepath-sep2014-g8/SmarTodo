@@ -273,6 +273,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
 				intent.putExtra(AppConstants.KEY_COLOR_ID, colorId);
 				startActivityForResult(intent, 200);	
+				overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 			}
 		});
 		

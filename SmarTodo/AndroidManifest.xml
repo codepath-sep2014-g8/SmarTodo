@@ -90,7 +90,8 @@
         <activity
             android:name=".activities.ItemsViewerActivity"
             android:label="@string/title_activity_items_viewer"
-            android:parentActivityName=".activities.ListsViewerActivity" >
+            android:parentActivityName=".activities.ListsViewerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.codepath.smartodo.activities.ListsViewerActivity" />

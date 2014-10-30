@@ -106,8 +106,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	
 	//UI elements
 	private EditText etTitle;
-	//private Button btnAdd;
-	//private EditText etNewItem;
 	private ListView lvItems;
 	private LinearLayout llActions;
 	private ImageView ivColorPicker;
@@ -298,8 +296,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private void initializeViews(View view){
 		
 		etTitle = (EditText)view.findViewById(R.id.etTitle_ftdl);
-//		etNewItem = (EditText)view.findViewById(R.id.etNewItem_ftdl);
-//		btnAdd = (Button)view.findViewById(R.id.btnAdd_ftdl);
 		lvItems = (ListView)view.findViewById(R.id.lvToDoItemsList_ftdl);
 		llActions = (LinearLayout)view.findViewById(R.id.llAction_ftdl);
 		ivColorPicker = (ImageView)view.findViewById(R.id.ivColorPicker_ftdl);
@@ -424,55 +420,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	}
 	
 	private void setupListeners(){
-		
-//		etNewItem.addTextChangedListener(new TextWatcher() {
-//			
-//			@Override
-//			public void onTextChanged(CharSequence s, int start, int before, int count) {
-//				
-//				String itemText = etNewItem.getText().toString();
-//				
-//				if(itemText == null || itemText.isEmpty() || itemText.trim().isEmpty()){
-//					btnAdd.setEnabled(false);
-//				}
-//				else{
-//					btnAdd.setEnabled(true);
-//				}
-//			}
-//			
-//			@Override
-//			public void beforeTextChanged(CharSequence s, int start, int count,
-//					int after) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			@Override
-//			public void afterTextChanged(Editable s) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
-//		
-//		btnAdd.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				
-//				String itemText = etNewItem.getText().toString();
-//						
-//				if(itemText == null || itemText.isEmpty() || itemText.trim().isEmpty()){
-//					return;
-//				}
-//				
-//				TodoItem todoItem = new TodoItem();
-//				todoItem.setText(itemText);
-//				
-//				adapter.add(todoItem);
-//				
-//				etNewItem.setText("");
-//			}
-//		});
 		
 		ivColorPicker.setOnClickListener(new View.OnClickListener() {
 			

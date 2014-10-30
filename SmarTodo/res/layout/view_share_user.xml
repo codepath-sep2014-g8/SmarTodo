@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="5dp"
         android:src="@drawable/ic_default_user" />
 
     <TextView
@@ -18,20 +20,23 @@
         android:layout_width="200dp"
         android:layout_height="30dp"
         android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/btnSuRemove"
+        android:layout_toLeftOf="@+id/ivSuRemove"
         android:layout_toRightOf="@+id/ivUserPhoto"
         android:gravity="center_vertical"
         android:text="TextView"
         android:textSize="10sp" />
 
-    <ImageButton
-        android:id="@+id/btnSuRemove"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+    <ImageView
+        android:id="@+id/ivSuRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:clickable="false"
+        android:src="@drawable/ic_content_clear" />
 
 </RelativeLayout>

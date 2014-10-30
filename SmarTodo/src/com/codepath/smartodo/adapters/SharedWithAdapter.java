@@ -62,11 +62,12 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 		
 		loadImageFromGithub(v, user, R.id.ivUserPhoto);
 
-		ImageButton btn = (ImageButton) v.findViewById(R.id.btnSuRemove);
+		ImageView btn = (ImageView) v.findViewById(R.id.ivSuRemove);
 
 		if(readonly) {
 			btn.setVisibility(Button.GONE); // Don't let it take up space
 		} else {
+			btn.setClickable(true);
 			btn.setOnClickListener(new OnClickListener() {
 				@Override public void onClick(View btnView) {
 					ShareActivity shareActivity = (ShareActivity) activity;
@@ -105,7 +106,7 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 						if(jsonObj != null) {
 							try {
 								Log.i("info", "Loading Github photo for user " + githubUsername);
-								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(R.drawable.ic_users_share).resize(50, 50).into(ivUserPhoto);
+								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(R.drawable.ic_default_user).resize(50, 50).into(ivUserPhoto);
 							} catch (JSONException e) {
 								Log.e("error", e.getMessage(), e);
 							}

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -146,20 +147,20 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 						return;
 					}
 					TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
-					if(origTodoItem == dummyItem){
-						currentRow = 10;
-						Log.d(TAG, "Creating New Item");
-						String str = viewHolder.etItemText.getText().toString();
-						TodoItem ti = dummyItem;
-						//itemsList.add(getCount() - 1,  ti);
-						//notifyDataSetChanged();
-						dummyItem = new TodoItem();
-						add(dummyItem);
-						ti.setText(str);
-						viewHolder.etItemText.setTag(ti);
-						viewHolder.etItemText.requestFocus();
-						
-					}
+//					if(origTodoItem == dummyItem){
+//						currentRow = 10;
+//						Log.d(TAG, "Creating New Item");
+//						String str = viewHolder.etItemText.getText().toString();
+//						TodoItem ti = dummyItem;
+//						//itemsList.add(getCount() - 1,  ti);
+//						//notifyDataSetChanged();
+//						dummyItem = new TodoItem();
+//						add(dummyItem);
+//						ti.setText(str);
+//						viewHolder.etItemText.setTag(ti);
+//						viewHolder.etItemText.requestFocus();
+//						
+//					}
 					origTodoItem.setText(viewHolder.etItemText.getText().toString());
 				}
 				
@@ -173,6 +174,32 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 				@Override
 				public void afterTextChanged(Editable s) {
 					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			viewHolder.etItemText.setOnFocusChangeListener(new OnFocusChangeListener() {
+				
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) {
+					
+					if(hasFocus == false){
+						TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
+						if(origTodoItem == dummyItem){
+							currentRow = 10;
+							Log.d(TAG, "Creating New Item");
+							String str = viewHolder.etItemText.getText().toString();
+							TodoItem ti = dummyItem;
+							//itemsList.add(getCount() - 1,  ti);
+							//notifyDataSetChanged();
+							dummyItem = new TodoItem();
+							add(dummyItem);
+							ti.setText(str);
+							viewHolder.etItemText.setTag(ti);
+							viewHolder.etItemText.requestFocus();
+							
+						}
+					}
 					
 				}
 			});

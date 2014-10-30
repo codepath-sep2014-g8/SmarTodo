@@ -271,6 +271,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				
 				Intent intent = new Intent(ItemsViewerActivity.this, ShareActivity.class);
 				intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+				intent.putExtra(AppConstants.KEY_COLOR_ID, colorId);
 				startActivityForResult(intent, 200);	
 			}
 		});

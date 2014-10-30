@@ -5,15 +5,19 @@ import java.util.Collection;
 import java.util.List;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.ShareListAdapter;
 import com.codepath.smartodo.adapters.SharedWithAdapter;
 import com.codepath.smartodo.helpers.AppConstants;
+import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
@@ -38,10 +43,11 @@ public class ShareActivity extends Activity {
 	private ListView lvUsers;
 	private String listName;
 	private TodoList todoList;
-
 	private GridView gvSharedWith;
-
 	public SharedWithAdapter gvSharedWithAdapter;
+	private ImageView ivBack;
+	
+	private int colorId = R.color.todo_list_backcolor;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +76,53 @@ public class ShareActivity extends Activity {
 		gvSharedWith = (GridView) findViewById(R.id.gvSharedWith);
 		gvSharedWithAdapter = new SharedWithAdapter(this, selectedUsers, false);
 		gvSharedWith.setAdapter(gvSharedWithAdapter);
+		
+		if (getIntent().hasExtra(AppConstants.KEY_COLOR_ID)) {			
+			colorId = getIntent().getIntExtra(AppConstants.KEY_COLOR_ID, 0);
+		}
+		
+		initializeActionBar();
 	}
 
+	// TODO blatant copy&paste from ItemsViewerActivity; generalize&reuse instead
+	private void initializeActionBar(){
+
+        ActionBar actionBar = getActionBar();
+
+        View view = getLayoutInflater().inflate(R.layout.action_bar_grid_view, null);
+        
+        view.setBackgroundColor(getResources().getColor(colorId));
+        
+        ivBack = (ImageView)view.findViewById(R.id.ivBackButton_grid_view);
+        ivBack.setVisibility(View.VISIBLE);
+
+        // Hide almost everything
+        view.findViewById(R.id.ivShare).setVisibility(View.GONE);
+        view.findViewById(R.id.ivNotifications).setVisibility(View.GONE);
+        view.findViewById(R.id.ivMoreOptions).setVisibility(View.GONE);
+        view.findViewById(R.id.ivDelete).setVisibility(View.GONE);
+        view.findViewById(R.id.ivLocationReminder).setVisibility(View.GONE);
+        
+        TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
+        tvTitle_home.setText(Utils.buildTitleText());
+        
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER);
+
+
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(true);
+        
+      //Hack to hide the home icon -- Otherwise the action bar was getting displayed on top of Tabs
+        View homeIcon = findViewById(android.R.id.home);
+        ((View) homeIcon.getParent()).setVisibility(View.GONE);
+        
+        actionBar.setCustomView(view, params);
+    }
+	
 	private Collection<ShareUser> convertToSharedUsers(Collection<User> users, boolean skipCurrentUser) {
 		Collection<ShareUser> sharedUsers = new ArrayList<ShareUser>();
 		for (User user:users) {
@@ -88,27 +139,30 @@ public class ShareActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Search currently disabled because it wasn't playing nicely with the custom action bar
+		// and the items refresh from the selection summary view at the bottom
+		
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.share, menu);
-		MenuItem searchItem = menu.findItem(R.id.action_search);
-	    searchView = (SearchView) searchItem.getActionView();
-	    searchView.setOnQueryTextListener(new OnQueryTextListener() {
-	    	
-	       @Override
-	       public boolean onQueryTextSubmit(String query) {
-	            
-	    	   getMatchingUsers(query);
-	            return true;
-	       }
-
-	       @Override
-	       public boolean onQueryTextChange(String newText) {
-	    	   
-	    	   getMatchingUsers(newText);
-	    	   
-	           return false;
-	       }
-	   });
+//		getMenuInflater().inflate(R.menu.share, menu);
+//		MenuItem searchItem = menu.findItem(R.id.action_search);
+//	    searchView = (SearchView) searchItem.getActionView();
+//	    searchView.setOnQueryTextListener(new OnQueryTextListener() {
+//	    	
+//	       @Override
+//	       public boolean onQueryTextSubmit(String query) {
+//	            
+//	    	   getMatchingUsers(query);
+//	            return true;
+//	       }
+//
+//	       @Override
+//	       public boolean onQueryTextChange(String newText) {
+//	    	   
+//	    	   getMatchingUsers(newText);
+//	    	   
+//	           return false;
+//	       }
+//	   });
 	   return super.onCreateOptionsMenu(menu);
 	}
 	

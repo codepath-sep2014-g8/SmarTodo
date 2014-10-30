@@ -90,22 +90,27 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 
 	public static void loadImageFromGithub(final View v, final User user, final int imgViewResourceId) {
 		try {
-			String githubUsername = user.getGithubUsername();
+			final String githubUsername = user.getGithubUsername();
 			
 			if(githubUsername != null) {
-				final ImageView ivUserPhoto = (ImageView)v.findViewById(R.id.ivUserPhoto);
+				final ImageView ivUserPhoto = (ImageView)v.findViewById(imgViewResourceId);
 				
-				String githubApiUserUrl = "https://api.github.com/users/" + githubUsername;
+				String githubApiUserUrl = "https://api.github.com/users/" + githubUsername + "?client_id=01440aa96706d632aff3&client_secret=7a0df3f37aafc328b45babd6c025ff100a238eef";
 				AsyncHttpClient client = new AsyncHttpClient();
+				
+				Log.i("info", "Loading Github profile: " + githubApiUserUrl);
 				client.get(githubApiUserUrl, new JsonHttpResponseHandler() {
 					@Override
 					public void onSuccess(JSONObject jsonObj) {
 						if(jsonObj != null) {
 							try {
+								Log.i("info", "Loading Github photo for user " + githubUsername);
 								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(imgViewResourceId).resize(50, 50).into(ivUserPhoto);
 							} catch (JSONException e) {
 								Log.e("error", e.getMessage(), e);
 							}
+						} else {
+							Log.w("warning", "Could not load Github profile for user " + githubUsername);
 						}
 					}
 				});

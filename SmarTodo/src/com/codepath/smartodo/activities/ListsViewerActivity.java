@@ -188,7 +188,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	         try {
 	        	 Log.i("info", "Starting sleep...");
 	        	 long initTime = System.currentTimeMillis();
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				Log.i("info", "Finishing sleep after ms " + (System.currentTimeMillis() - initTime));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

@@ -123,6 +123,9 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 				@Override
 				public void onClick(View v) {
+					if(todoItem == dummyItem){
+						return;
+					}
 					todoItem.setCompleted(!todoItem.isCompleted());
 					todoItem.saveEventually();
 

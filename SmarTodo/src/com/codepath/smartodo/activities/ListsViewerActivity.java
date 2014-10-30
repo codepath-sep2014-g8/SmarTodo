@@ -4,9 +4,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
-import com.codepath.smartodo.fragments.TodoListFragment;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
@@ -203,41 +200,73 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		return super.onOptionsItemSelected(item);
 	}
 
+	private class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
+		private Runnable runnable;
+
+		public MyAsyncTask(Runnable runnable) {
+			this.runnable = runnable;
+		}
+		
+	     @Override
+	     protected Integer doInBackground(Void... dummy) {
+	         try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	 
+	    	 return 0;
+	     }
+
+	     @Override
+	     protected void onPostExecute(Integer result) {
+	         // This method is executed in the UIThread
+	         // with access to the result of the long running task
+	    	 runnable.run();
+	     }
+	}
+	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 		switch (requestCode) {
 		case REQUEST_CODE_EDIT_LIST:
 		case REQUEST_CODE_NEW_LIST:
-			try {
 				if (data != null) {
-					String objectId = data
-							.getStringExtra(AppConstants.OBJECTID_EXTRA);
-
-					if (objectId != null) {
-						// Refresh the model with only the modified/added list
-						// without triggering a full refresh
-						TodoList newList = TodoList
-								.findTodoListByObjectId(objectId);
-						int existingListIdx = ModelManagerService
-								.findExistingListIdxByObjectId(objectId);
-
-						if (existingListIdx == -1) {
-							ModelManagerService.getLists().add(newList);
-						} else {
-							ModelManagerService.getLists().set(existingListIdx,
-									newList);
+					// TODO This is hacky.We're enforcing a delay before refreshing the item, allowing for enough time to save the data in the previous perspective
+					MyAsyncTask task = new MyAsyncTask(new Runnable() {
+						public void run() {
+							try {
+								String objectId = data.getStringExtra(AppConstants.OBJECTID_EXTRA);
+			
+								if (objectId != null) {
+									// Refresh the model with only the modified/added list
+									// without triggering a full refresh
+									TodoList newList = TodoList
+											.findTodoListByObjectId(objectId);
+									int existingListIdx = ModelManagerService
+											.findExistingListIdxByObjectId(objectId);
+			
+									if (existingListIdx == -1) {
+										ModelManagerService.getLists().add(newList);
+									} else {
+										ModelManagerService.getLists().set(existingListIdx,
+												newList);
+									}
+			
+									// adapter.clear();
+									// adapter.addAll(ModelManagerService.getLists());
+									adapter.notifyDataSetChanged();
+								}
+						} catch (ParseException e) {
+							Log.e("error", e.getMessage(), e);
+							Toast.makeText(ListsViewerActivity.this, "Failed refresh", Toast.LENGTH_LONG).show();
 						}
-
-						// adapter.clear();
-						// adapter.addAll(ModelManagerService.getLists());
-						adapter.notifyDataSetChanged();
-					}
+						}
+					});
+					
+					task.execute();
 				}
-			} catch (ParseException e) {
-				Log.e("error", e.getMessage(), e);
-				Toast.makeText(this, "Failed refresh", Toast.LENGTH_LONG)
-						.show();
-			}
 			break;
 		default:
 			super.onActivityResult(requestCode, resultCode, data);

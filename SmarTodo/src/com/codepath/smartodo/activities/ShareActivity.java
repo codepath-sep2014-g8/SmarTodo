@@ -78,7 +78,10 @@ public class ShareActivity extends Activity {
 			if(skipCurrentUser==true && user.equals(ModelManagerService.getUser())) {
 				continue; // Skip the current user
 			}
-			sharedUsers.add(new ShareUser(user));
+			
+			ShareUser shareUser = new ShareUser(user);
+			shareUser.setSelected(todoList.getSharing().contains(user)); // Select those whom we've shared with already
+			sharedUsers.add(shareUser);
 		}
 		return sharedUsers;
 	}

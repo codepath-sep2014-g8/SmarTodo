@@ -149,14 +149,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		return false;
 	}
 
-
-	private void setViewColor(View view){
-		LayerDrawable sld = (LayerDrawable)view.getBackground();
-		GradientDrawable shape = (GradientDrawable) (sld.findDrawableByLayerId(R.id.drop_shadow_backcolor));
-        shape.setColor(getActivity().getResources().getColor(colorId));
-		
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -174,10 +166,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		populateData();
 		setupListeners();
 		
-		Drawable drawable = llActions.getBackground();
-		
-		setViewColor(llActions);
-		//llActions.setBackgroundColor(getResources().getColor(colorId));
 //		view.setOnTouchListener(this);
 //		lvItems.setOnTouchListener(new OnSwipeTouchListener(getActivity().getApplicationContext()){
 //
@@ -438,19 +426,19 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		});
 		
 		
-		ivSave.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				String objectId = updateTodoList();
-				
-				if(objectId != null) {
-					Intent i = new Intent();
-					i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
-					TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
-				}
-			}
-		});
+//		ivSave.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				String objectId = updateTodoList();
+//				
+//				if(objectId != null) {
+//					Intent i = new Intent();
+//					i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+//					TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
+//				}
+//			}
+//		});
 		
 		ivFooterReminder.setOnClickListener(new OnClickListener() {
 			
@@ -460,6 +448,22 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			    newFragment.show(getFragmentManager(), "timePicker");	
 			}
 		});
+	}
+	
+	@Override
+	public void onStop() {
+		saveTodoList();
+		super.onStop();
+	}
+	
+	private void saveTodoList(){
+		String objectId = updateTodoList();
+		
+		if(objectId != null) {
+			Intent i = new Intent();
+			i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
+			TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
+		}
 	}
 	
 	
@@ -490,12 +494,12 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			
 			@Override
 			public void done(ParseException e) {
-				if(e == null) {
-					Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
-				} else {
-					Log.e("error", e.getMessage(), e);
-					Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
-				}
+//				if(e == null) {
+//					Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
+//				} else {
+//					Log.e("error", e.getMessage(), e);
+//					Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+//				}
 				
 			}
 		});

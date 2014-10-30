@@ -137,6 +137,7 @@ public class TodoList extends ParseObject {
 	public List<TodoItem> getAllItems() throws ParseException {
 		ParseQuery<TodoItem> itemQuery = LocalParseQuery.getQuery(TodoItem.class);
 		itemQuery.whereEqualTo(TodoItem.LIST_KEY, this);
+		itemQuery.orderByAscending("objectId");
 		return itemQuery.find();
 	}
 	

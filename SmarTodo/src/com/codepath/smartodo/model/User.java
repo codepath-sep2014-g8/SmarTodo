@@ -101,6 +101,7 @@ public class User {
 			itemQuery = ParseQuery.getQuery(ParseUser.class);
 			if(doFilter) {
 				itemQuery.whereContains(REALNAME_KEY, generousPattern);
+				itemQuery.orderByAscending("objectId");
 			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
@@ -111,6 +112,7 @@ public class User {
 			itemQuery = ParseQuery.getQuery(ParseUser.class);
 			if(doFilter) {
 				itemQuery.whereContains("email", generousPattern);
+				itemQuery.orderByAscending("objectId");
 			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {
@@ -121,6 +123,7 @@ public class User {
 			itemQuery = ParseQuery.getQuery(ParseUser.class);
 			if(doFilter) {
 				itemQuery.whereContains("username", generousPattern);
+				itemQuery.orderByAscending("objectId");
 			}
 			users.addAll(itemQuery.find());
 		} catch (ParseException e) {

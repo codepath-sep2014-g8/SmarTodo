@@ -28,11 +28,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -459,7 +461,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			return null;
 		}
 
-		private void setCustomtyle(TextView view) {
+		private void setCustomStyle(TextView view) {
 			view.setBackgroundColor(selectedColor);
 			view.setAlpha(0.8f);
 			view.setTextColor(getResources().getColor(R.color.white));
@@ -470,9 +472,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 
 		private TextView getCustomTitle() {
 			TextView title = new TextView(getActivity());
-			setCustomtyle(title);
-			title.setText(getString(R.string.title_location_reminding_dialog,
-					todoList.getName()));
+			setCustomStyle(title);
+			title.setText(getString(R.string.title_location_reminding_dialog /*, todoList.getName() */));
 			return title;
 		}
 
@@ -483,19 +484,33 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			}
 			// must be set in the beginning
 			selectedColor = getActivity().getResources().getColor(colorId); 
-			// Create and initialize an adapter
-
-			ReminderLocationsAdapter dataAdapter = new ReminderLocationsAdapter(getActivity(), reminderLocations);
-
-			View view = getActivity().getLayoutInflater().inflate(R.layout.location_chooser, null);
-			lvLocationChooser = (ListView) view.findViewById(R.id.lvLocationChooser);
-			lvLocationChooser.setAdapter(dataAdapter);
+					
+			View locationChooserView = getActivity().getLayoutInflater().inflate(R.layout.location_chooser, null);
+			locationChooserView.setBackgroundColor(getResources().getColor(R.color.white));
 			
+			lvLocationChooser = (ListView) locationChooserView.findViewById(R.id.lvLocationChooser);		
 			lvLocationChooser.setSelector(colorId);
 			final int defaultDrawingCacheBackgroundColor = lvLocationChooser.getDrawingCacheBackgroundColor();
 			int[] colors = { selectedColor, selectedColor };
 			lvLocationChooser.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
+			
+			LinearLayout llHeaderBand = (LinearLayout) locationChooserView.findViewById(R.id.llHeaderBand);
+			llHeaderBand.setBackgroundColor(selectedColor);
+			LinearLayout llFooterBand = (LinearLayout) locationChooserView.findViewById(R.id.llFooterBand);
+			llFooterBand.setBackgroundColor(selectedColor);
 			lvLocationChooser.setDividerHeight(3);
+			
+			
+/*			View listViewBorder = new View(getActivity());
+			listViewBorder.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 3));
+			listViewBorder.setBackgroundColor(selectedColor);
+			lvLocationChooser.addHeaderView(listViewBorder);
+			lvLocationChooser.addFooterView(listViewBorder);*/
+			
+			// Create and initialize an adapter
+			ReminderLocationsAdapter dataAdapter = new ReminderLocationsAdapter(getActivity(), reminderLocations);
+			lvLocationChooser.setAdapter(dataAdapter);		
+			
 			lvLocationChooser.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
@@ -514,14 +529,20 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 					}
 				}
 			});
-
-			// Create an AlertDialog and associate the listview for location
-			// names
+			
+			TextView tvLocationChooserTitle = (TextView) locationChooserView.findViewById(R.id.tvLocationChooserTitle);
+			setCustomStyle(tvLocationChooserTitle);
+			
+			Button btnDone = (Button) locationChooserView.findViewById(R.id.btnDone);
+			setCustomStyle(btnDone);
+			
+			// Create an AlertDialog and associate the view for location names
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialogTheme);
-			builder.setCustomTitle(getCustomTitle());
-			builder.setView(lvLocationChooser);
-			builder.setPositiveButton("Done", this);
-			AlertDialog alertDialog = builder.create();
+			// builder.setCustomTitle(getCustomTitle());
+			builder.setView(locationChooserView);
+			// builder.setPositiveButton("Done", this);
+			final AlertDialog alertDialog = builder.create();
+			alertDialog.getWindow().setBackgroundDrawableResource(colorId);
 
 			alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 				@Override
@@ -529,14 +550,16 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 					AlertDialog alertDialog = (AlertDialog) dialog;
 					Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 					if (button != null) {
-						setCustomtyle(button);
+						setCustomStyle(button);
 					}
 					button = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 					if (button != null) {
-						setCustomtyle(button);
+						setCustomStyle(button);
 					}
 				}
 			});
+			
+			// alertDialog.getWindow().setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			alertDialog.show(); // Maybe needed for highlighting a row below by a programmatic click operation
 
@@ -553,6 +576,51 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 							.getView(position, null, null), position, position);
 				}
 			}
+			
+			btnDone.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					int selectedPosition = lvLocationChooser.getCheckedItemPosition();
+					if (selectedPosition < 0) {
+						// Log.d(TAG, "In onClick, selectedPosition is " + selectedPosition);
+						alertDialog.dismiss();
+						return;
+					}
+					ReminderLocation selectedReminderLocation = reminderLocations.get(selectedPosition);
+
+					if (null == selectedReminderLocation) {
+						// Log.d(TAG, "In onClick, selectedReminderLocation is null");
+						alertDialog.dismiss();
+						return;
+					}
+					Log.d(TAG, "In onClick, locationKey is:" + selectedReminderLocation.getName());
+
+					if (!Utils.isNullOrEmpty(currentLocation)
+							&& (selectedReminderLocation.getName()
+									.equalsIgnoreCase(currentLocation))) {
+						alertDialog.dismiss();
+						return; // Nothing much to do; same old location has been chosen.
+					}
+
+					String streetAddress = selectedReminderLocation.getStreetAddress();
+					// Log.d(TAG, "In onClick, streetAddress is:" + streetAddress);
+					// The following should not happen because a street address
+					// would always be associated with a location name
+					if (Utils.isNullOrEmpty(streetAddress)) {
+						alertDialog.dismiss();
+						return;
+					}
+
+					HandleGeofencingAddress(selectedReminderLocation.getName(),
+							streetAddress);
+
+					alertDialog.dismiss();
+					return;
+					
+				}
+			});
+			
 			return alertDialog;
 		}
 
@@ -572,9 +640,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				dialog.dismiss();
 				return;
 			}
-			Log.d(TAG,
-					"In onClick, locationKey is:"
-							+ selectedReminderLocation.getName());
+			Log.d(TAG, "In onClick, locationKey is:" + selectedReminderLocation.getName());
 
 			if (!Utils.isNullOrEmpty(currentLocation)
 					&& (selectedReminderLocation.getName()

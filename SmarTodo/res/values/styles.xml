@@ -32,13 +32,14 @@
         <item name="android:windowExitAnimation">@anim/slide_out_from_bottom</item>
     </style>
 
-    <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
+    <style name="CustomDialogTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
         <!-- <item name="android:windowIsFloating">true</item> -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@style/DialogFromBottomAnimation</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:background">@color/white</item>
+       <!--  <item name="android:fitsSystemWindows">true</item> -->
+        <item name="android:background">@android:color/transparent</item>
+       <!--  <item name="android:background">@color/white</item> -->
     </style>
 
 </resources>

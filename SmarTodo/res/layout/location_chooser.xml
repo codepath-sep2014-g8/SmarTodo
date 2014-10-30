@@ -1,9 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@drawable/login_background"
+    tools:context="${packageName}.${activityClass}" >
 
-        <ListView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/lvLocationChooser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
-            android:choiceMode="singleChoice">
-        </ListView>
+    <TextView
+        android:id="@+id/tvLocationChooserTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/location_chooser_title"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" >
+    </TextView>
+    
+    <LinearLayout
+        android:id="@+id/llHeaderBand"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="3dp"
+        android:layout_below="@id/tvLocationChooserTitle"
+        android:background="@drawable/login_background"
+        android:orientation="horizontal" >
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/lvLocationChooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/llHeaderBand"
+        android:dividerHeight="2dp"
+        android:choiceMode="singleChoice" >
+    </ListView>
+    
+    <LinearLayout
+        android:id="@+id/llFooterBand"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="3dp"
+        android:layout_below="@+id/lvLocationChooser"
+        android:background="@drawable/login_background"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/lvLocationChooser"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/done_text"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>

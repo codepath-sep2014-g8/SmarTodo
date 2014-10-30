@@ -25,6 +25,7 @@ import com.parse.SignUpCallback;
  * @author renyedi
  */
 public class User {
+	private static final String GITHUB_USERNAME_KEY = "githubUsername";
 	private static final String PHONENUMBER_KEY = "phonenumber";
 	public static final String REALNAME_KEY = "realname";
 	private ParseUser parseUser;
@@ -47,6 +48,10 @@ public class User {
 	
 	public String getRealName() throws ParseException {
 		return parseUser.fetchIfNeeded().getString(REALNAME_KEY);
+	}
+	
+	public String getGithubUsername() throws ParseException {
+		return parseUser.fetchIfNeeded().getString(GITHUB_USERNAME_KEY);
 	}
 	
 	public ParseUser getParseUser() {

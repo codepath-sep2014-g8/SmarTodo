@@ -5,22 +5,33 @@
     android:layout_margin="5dp"
     android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/btnSuRemove"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+    <ImageView
+        android:id="@+id/ivUserPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="X" />
+        android:src="@drawable/ic_default_user" />
 
     <TextView
         android:id="@+id/tvSuUserName"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/btnSuRemove"
-        android:text="TextView" />
+        android:layout_toRightOf="@+id/ivUserPhoto"
+        android:gravity="center_vertical"
+        android:text="TextView"
+        android:textSize="10sp" />
+
+    <ImageButton
+        android:id="@+id/btnSuRemove"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
 </RelativeLayout>

@@ -15,16 +15,6 @@
 
     </ListView>
 
-    <GridView
-        android:id="@+id/gvSharedWith"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_above="@+id/btnShare_isu"
-        android:animateLayoutChanges="true"
-        android:numColumns="3" >
-
-    </GridView>
-
     <com.faizmalkani.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnShare_isu"
         android:layout_width="48dp"
@@ -36,5 +26,17 @@
         android:onClick="onShareRequested"
         app:drawable="@drawable/ic_users_share"
         app:color="#ffffff" />
+
+    <GridView
+        android:id="@+id/gvSharedWith"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/btnShare_isu"
+        android:layout_toLeftOf="@+id/btnShare_isu"
+        android:animateLayoutChanges="true"
+        android:numColumns="3" >
+
+    </GridView>
 
 </RelativeLayout>

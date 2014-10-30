@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,12 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -30,8 +33,11 @@ import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
 
 public class ShareActivity extends Activity {
 
@@ -94,11 +100,41 @@ public class ShareActivity extends Activity {
 			}
 			
 			final User user = getItem(position);
-			
+
 			TextView tv = (TextView) v.findViewById(R.id.tvSuUserName);
-			tv.setText(user.getEmail());
+
+			try {
+				tv.setText(user.getRealName());
+			} catch (ParseException e) {
+				tv.setText(user.getEmail());
+			}
 			
-			Button btn = (Button) v.findViewById(R.id.btnSuRemove);
+			try {
+				String githubUsername = user.getGithubUsername();
+				
+				if(githubUsername != null) {
+					final ImageView ivUserPhoto = (ImageView)v.findViewById(R.id.ivUserPhoto);
+					
+					String githubApiUserUrl = "https://api.github.com/users/" + githubUsername;
+					AsyncHttpClient client = new AsyncHttpClient();
+					client.get(githubApiUserUrl, new JsonHttpResponseHandler() {
+						@Override
+						public void onSuccess(JSONObject jsonObj) {
+							if(jsonObj != null) {
+								try {
+									Picasso.with(ShareActivity.this).load(jsonObj.getString("avatar_url")).placeholder(R.drawable.ic_users_share).resize(50, 50).into(ivUserPhoto);
+								} catch (JSONException e) {
+									Log.e("error", e.getMessage(), e);
+								}
+							}
+						}
+					});
+				}
+			} catch (ParseException e) {
+				Log.e("error", e.getMessage(), e);
+			}
+			
+			ImageButton btn = (ImageButton) v.findViewById(R.id.btnSuRemove);
 			btn.setOnClickListener(new OnClickListener() {
 				@Override public void onClick(View btnView) {
 					gvSharedWithAdapter.remove(user);

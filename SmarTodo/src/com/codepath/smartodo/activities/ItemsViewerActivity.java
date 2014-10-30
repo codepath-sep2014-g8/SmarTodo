@@ -185,7 +185,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         ivShare.setVisibility(View.VISIBLE);
         
         ivNotifications = (ImageView)view.findViewById(R.id.ivNotifications);
-        ivNotifications.setVisibility(View.VISIBLE);
+//        ivNotifications.setVisibility(View.VISIBLE);
         
         ivMoreOptions = (ImageView)view.findViewById(R.id.ivMoreOptions);
         ivMoreOptions.setVisibility(View.VISIBLE);
@@ -198,6 +198,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
         
         TextView tvTitle_home = (TextView) view.findViewById(R.id.tvTitle_home);
         tvTitle_home.setText(Utils.buildTitleText());
+        //tvTitle_home.setTextColor(getResources().getColor(R.color.white));
         
         ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT,
@@ -248,6 +249,13 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 					public boolean onMenuItemClick(MenuItem item) {
 						if(item.getItemId() == R.id.deleteMenu){
 							deleteList();
+						}
+						
+						if(item.getItemId() == R.id.timeReminderMenu){
+							DialogFragment dialog = new TimePickerFragment(todoList);
+							if (dialog != null) {
+								dialog.show(getSupportFragmentManager(), "timePicker");	
+							}
 						}
 						return true;
 					}

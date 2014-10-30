@@ -1,5 +1,11 @@
     <menu xmlns:android="http://schemas.android.com/apk/res/android">
         
+         <item  
+        android:id="@+id/timeReminderMenu"  
+        android:icon="@drawable/ic_social_notifications"
+        android:title="Reminder"
+        />  
+        
         <item  
         android:id="@+id/deleteMenu"  
         android:icon="@drawable/ic_action_delete"

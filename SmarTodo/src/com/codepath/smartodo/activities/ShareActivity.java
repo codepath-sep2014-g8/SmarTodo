@@ -68,7 +68,7 @@ public class ShareActivity extends Activity {
 		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
-		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll()));
+		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll(), true));
 		shareListAdapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(shareListAdapter);
 		
@@ -119,9 +119,12 @@ public class ShareActivity extends Activity {
 		}
 	}
 	
-	private Collection<ShareUser> convertToSharedUsers(Collection<User> users) {
+	private Collection<ShareUser> convertToSharedUsers(Collection<User> users, boolean skipCurrentUser) {
 		Collection<ShareUser> sharedUsers = new ArrayList<ShareUser>();
 		for (User user:users) {
+			if(skipCurrentUser==true && user.equals(ModelManagerService.getUser())) {
+				continue; // Skip the current user
+			}
 			sharedUsers.add(new ShareUser(user));
 		}
 		return sharedUsers;
@@ -158,6 +161,9 @@ public class ShareActivity extends Activity {
 			List<User> users = new ArrayList<User>( User.findAllLike(newText));
 			List<ShareUser> shareUsers = new ArrayList<ShareUser>();
 			for(User user : users){
+				if(user.equals(ModelManagerService.getUser())) {
+					continue; // Skip the current user 
+				}
 				shareUsers.add(new ShareUser(user));
 			}
 			shareListAdapter.clear();
@@ -204,7 +210,17 @@ public class ShareActivity extends Activity {
 		Log.i("info", "Changing user selection for " + user.getEmail() + " to " + selected);
 		
 		if(selected) {
-			gvSharedWithAdapter.add(user);
+			// Add only if it doesn't already exist
+			boolean found = false;
+			for(int i=0;i<gvSharedWithAdapter.getCount();i++) {
+				User u = gvSharedWithAdapter.getItem(i);
+				if(u.equals(user)) {
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found) gvSharedWithAdapter.add(user);
 		} else {
 			gvSharedWithAdapter.remove(user);
 		}

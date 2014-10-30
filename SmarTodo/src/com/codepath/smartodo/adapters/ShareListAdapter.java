@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.smartodo.R;
@@ -26,12 +27,14 @@ public class ShareListAdapter extends ArrayAdapter<ShareUser> {
 	private ShareActivity shareActivity;
 
 	private class ViewHolder{
+		View view;
+		
 		CheckBox cbCheck;
 		TextView tvUserName;
 		TextView tvUserEmail;
 		
 		void init(View convertView){
-			
+			this.view = convertView;
 			cbCheck = (CheckBox)convertView.findViewById(R.id.cbSelectUser_isu);
 			tvUserName = (TextView)convertView.findViewById(R.id.tvUserName_isu);
 			tvUserEmail = (TextView)convertView.findViewById(R.id.tvUserEmial_isu);
@@ -47,6 +50,8 @@ public class ShareListAdapter extends ArrayAdapter<ShareUser> {
 			cbCheck.setChecked(user.isSelected());
 			
 			shareActivity.selectUser(user.getUser(), user.isSelected());
+			
+			SharedWithAdapter.loadImageFromGithub(view, user.getUser(), R.id.ivUserForShare);
 		}
 	}
 	

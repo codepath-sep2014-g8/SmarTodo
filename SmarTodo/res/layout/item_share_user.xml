@@ -1,44 +1,62 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentPanel"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/contentPanel">
+    android:layout_height="fill_parent" >
 
-     <CheckBox
+    <CheckBox
         android:id="@+id/cbSelectUser_isu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        />
-    
-    <TextView
-        android:id="@+id/tvUserName_isu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/cbSelectUser_isu"
-        android:hint="@string/hint_todo_item"
-        android:textSize="12sp"
-        android:layout_marginLeft="5dp"     
-        android:gravity="center_vertical"
-        android:text="User Name"
-        />
-    
-    <TextView
-        android:id="@+id/tvUserEmial_isu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvUserName_isu"
-        android:layout_toRightOf="@+id/cbSelectUser_isu"
-        android:hint="@string/hint_todo_item"
-        android:textSize="12sp"
-        android:layout_marginLeft="5dp"
-        android:layout_centerVertical="true"       
-        android:gravity="center_vertical" 
-        android:text="Email"
-        />
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="2dp" />
 
-   
-    
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/ivUserForShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_default_user" />
+
+    <LinearLayout
+        android:id="@+id/llShareUserDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cbSelectUser_isu"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@+id/cbSelectUser_isu"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvUserName_isu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/cbSelectUser_isu"
+            android:gravity="center_vertical"
+            android:hint="@string/hint_todo_item"
+            android:text="User Name"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tvUserEmial_isu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvUserName_isu"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/cbSelectUser_isu"
+            android:gravity="center_vertical"
+            android:hint="@string/hint_todo_item"
+            android:text="Email"
+            android:textColor="@color/bg_list_gray"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+</LinearLayout>

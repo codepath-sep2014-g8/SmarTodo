@@ -60,30 +60,7 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 			tv.setText(user.getEmail());
 		}
 		
-		try {
-			String githubUsername = user.getGithubUsername();
-			
-			if(githubUsername != null) {
-				final ImageView ivUserPhoto = (ImageView)v.findViewById(R.id.ivUserPhoto);
-				
-				String githubApiUserUrl = "https://api.github.com/users/" + githubUsername;
-				AsyncHttpClient client = new AsyncHttpClient();
-				client.get(githubApiUserUrl, new JsonHttpResponseHandler() {
-					@Override
-					public void onSuccess(JSONObject jsonObj) {
-						if(jsonObj != null) {
-							try {
-								Picasso.with(getContext()).load(jsonObj.getString("avatar_url")).placeholder(R.drawable.ic_users_share).resize(50, 50).into(ivUserPhoto);
-							} catch (JSONException e) {
-								Log.e("error", e.getMessage(), e);
-							}
-						}
-					}
-				});
-			}
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-		}
+		loadImageFromGithub(v, user, R.drawable.ic_users_share);
 
 		ImageButton btn = (ImageButton) v.findViewById(R.id.btnSuRemove);
 
@@ -109,5 +86,32 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 		}
 		
 		return v;
+	}
+
+	public static void loadImageFromGithub(final View v, final User user, final int imgViewResourceId) {
+		try {
+			String githubUsername = user.getGithubUsername();
+			
+			if(githubUsername != null) {
+				final ImageView ivUserPhoto = (ImageView)v.findViewById(R.id.ivUserPhoto);
+				
+				String githubApiUserUrl = "https://api.github.com/users/" + githubUsername;
+				AsyncHttpClient client = new AsyncHttpClient();
+				client.get(githubApiUserUrl, new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONObject jsonObj) {
+						if(jsonObj != null) {
+							try {
+								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(imgViewResourceId).resize(50, 50).into(ivUserPhoto);
+							} catch (JSONException e) {
+								Log.e("error", e.getMessage(), e);
+							}
+						}
+					}
+				});
+			}
+		} catch (ParseException e) {
+			Log.e("error", e.getMessage(), e);
+		}
 	}
 }

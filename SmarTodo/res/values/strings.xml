@@ -104,4 +104,5 @@
     <string name="confirm_item_remove">Are sure you want to remove the item?</string>
     <string name="confirm_title_item_remove">Remove item</string>
 	 <string name="confirm_todo_list_remove">Are sure you want to remove the todo list?</string>
+	 <string name="confirm_title_todo_list_remove">Remove Todo list</string>
 </resources>

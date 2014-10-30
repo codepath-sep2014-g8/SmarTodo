@@ -49,6 +49,7 @@ import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.ReminderLocation;
+import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
@@ -270,7 +271,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 					@Override
 					public boolean onMenuItemClick(MenuItem item) {
 						if(item.getItemId() == R.id.deleteMenu){
-							deleteList();
+							//deleteList();
+							showDeleteConfirmationDialog();
 						}
 						
 						if(item.getItemId() == R.id.timeReminderMenu){
@@ -346,6 +348,35 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				}
 			}
 		});
+	}
+	
+	private void showDeleteConfirmationDialog(){
+		new AlertDialog.Builder(this)
+        .setTitle(getResources().getString(R.string.confirm_title_todo_list_remove))
+        .setMessage(
+        		getResources().getString(R.string.confirm_todo_list_remove))
+        .setIcon(
+        		getResources().getDrawable(
+                        android.R.drawable.ic_dialog_alert))
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "Deleting todo list " + todoList.getName());
+				deleteList();
+				
+			}
+		}) 
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		})
+		.show();
+		
 	}
 	
 	private void deleteList(){

@@ -8,7 +8,9 @@ import com.codepath.smartodo.model.TodoItem;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
@@ -58,25 +60,37 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		}
 	}
 	
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		if(currentRow != -1){
-			View view = getView(getCount() -1, null, null);
-			boolean vS = view.requestFocus();
-			System.out.println("View Focus:" + vS);
-			EditText et = (EditText)view.findViewById(R.id.tvItemText_ftl);
-			boolean eS = et.requestFocus();
-			System.out.println("ET Focus:" + eS);
-			//et.setSelection(1);
-			currentRow = -1;
-		}
-		else{
+	
+	private void showDialog(final TodoItem item){
+		new AlertDialog.Builder(getContext())
+        .setTitle(getContext().getResources().getString(R.string.confirm_title_item_remove))
+        .setMessage(
+        		getContext().getResources().getString(R.string.confirm_item_remove))
+        .setIcon(
+        		getContext().getResources().getDrawable(
+                        android.R.drawable.ic_dialog_alert))
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			
-		}
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d(TAG, "Deleting item " + item.getText());
+				remove(item);
+				item.deleteEventually();
+				
+			}
+		}) 
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				
+			}
+		})
+		.show();
+		
 	}
 	
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final ViewHolder viewHolder;
@@ -102,7 +116,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		viewHolder.ivRemove.setTag(todoItem);
 		
 		viewHolder.ivImage.setClickable(false);
-//		viewHolder.etItemText.setClickable(false);
 		viewHolder.ivRemove.setVisibility(View.GONE);
 		if (mode == TodoListDisplayMode.CREATE
 				|| mode == TodoListDisplayMode.UPDATE) {
@@ -150,20 +163,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 						return;
 					}
 					TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
-//					if(origTodoItem == dummyItem){
-//						currentRow = 10;
-//						Log.d(TAG, "Creating New Item");
-//						String str = viewHolder.etItemText.getText().toString();
-//						TodoItem ti = dummyItem;
-//						//itemsList.add(getCount() - 1,  ti);
-//						//notifyDataSetChanged();
-//						dummyItem = new TodoItem();
-//						add(dummyItem);
-//						ti.setText(str);
-//						viewHolder.etItemText.setTag(ti);
-//						viewHolder.etItemText.requestFocus();
-//						
-//					}
 					origTodoItem.setText(viewHolder.etItemText.getText().toString());
 				}
 				
@@ -212,9 +211,10 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 
 					
 					TodoItem item = (TodoItem)v.getTag();
-					Log.d(TAG, "Deleting item " + item.getText());
-					remove(item);
-					item.deleteEventually();
+					showDialog(item);
+//					Log.d(TAG, "Deleting item " + item.getText());
+//					remove(item);
+//					item.deleteEventually();
 				}
 			});
 		}

@@ -189,15 +189,13 @@
         android:minHeight="60dp"
         >
 
-        <ImageView
-            android:id="@+id/ivSharedWith_ftdl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:src="@drawable/ic_action_reminder_time" />
+        <GridView
+            android:id="@+id/gvViewSharedWith"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3" >
+
+        </GridView>
         
         </LinearLayout>
 </LinearLayout>

@@ -44,6 +44,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -53,7 +54,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
-import com.codepath.smartodo.activities.ShareActivity;
+import com.codepath.smartodo.adapters.SharedWithAdapter;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
@@ -129,6 +130,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private TouchActionsListener listener = null;
 	// private HashMap<String, String> locationsMap;
 	private List<ReminderLocation> reminderLocations;
+
+	private GridView gvViewSharedWith;
 	
 	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
@@ -305,10 +308,12 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		ivFooterReminder = (ImageView)view.findViewById(R.id.ivFooterReminder_ftdl);
 		tvReminder = (TextView)view.findViewById(R.id.tvReminder_ftdl);
 		
-		
 		tvSharedWithList = (TextView)view.findViewById(R.id.tvSharedWith_ftdl);
 		
+		gvViewSharedWith = (GridView)view.findViewById(R.id.gvViewSharedWith);
+		
 		lvItems.setAdapter(adapter);
+		gvViewSharedWith.setAdapter(new SharedWithAdapter(getActivity(), todoList.getSharing(), true));
 	}
 	
 	private void populateData(){

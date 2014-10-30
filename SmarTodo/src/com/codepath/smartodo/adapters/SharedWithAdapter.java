@@ -88,7 +88,7 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 		ImageButton btn = (ImageButton) v.findViewById(R.id.btnSuRemove);
 
 		if(readonly) {
-			btn.setVisibility(Button.INVISIBLE);
+			btn.setVisibility(Button.GONE); // Don't let it take up space
 		} else {
 			btn.setOnClickListener(new OnClickListener() {
 				@Override public void onClick(View btnView) {

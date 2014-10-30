@@ -99,5 +99,9 @@
     <string name="location_name">Location Name</string>
     <string name="location_chooser_title">Select a location for reminder</string>
     <string name="done_text">Done</string>
-
+    
+    <!--  Confirmations -->
+    <string name="confirm_item_remove">Are sure you want to remove the item?</string>
+    <string name="confirm_title_item_remove">Remove item</string>
+	 <string name="confirm_todo_list_remove">Are sure you want to remove the todo list?</string>
 </resources>

@@ -60,7 +60,7 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 			tv.setText(user.getEmail());
 		}
 		
-		loadImageFromGithub(v, user, R.drawable.ic_users_share);
+		loadImageFromGithub(v, user, R.id.ivUserPhoto);
 
 		ImageButton btn = (ImageButton) v.findViewById(R.id.btnSuRemove);
 
@@ -105,7 +105,7 @@ public class SharedWithAdapter extends ArrayAdapter<User> {
 						if(jsonObj != null) {
 							try {
 								Log.i("info", "Loading Github photo for user " + githubUsername);
-								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(imgViewResourceId).resize(50, 50).into(ivUserPhoto);
+								Picasso.with(v.getContext()).load(jsonObj.getString("avatar_url")).placeholder(R.drawable.ic_users_share).resize(50, 50).into(ivUserPhoto);
 							} catch (JSONException e) {
 								Log.e("error", e.getMessage(), e);
 							}

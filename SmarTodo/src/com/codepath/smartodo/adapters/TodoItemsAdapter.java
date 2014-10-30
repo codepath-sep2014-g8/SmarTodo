@@ -196,8 +196,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 							add(dummyItem);
 							ti.setText(str);
 							viewHolder.etItemText.setTag(ti);
-							viewHolder.etItemText.requestFocus();
-							
 						}
 					}
 					

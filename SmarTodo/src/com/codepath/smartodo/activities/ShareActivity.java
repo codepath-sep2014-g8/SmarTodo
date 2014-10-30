@@ -38,7 +38,7 @@ public class ShareActivity extends Activity {
 	private static final String TAG = ShareActivity.class.getSimpleName();
 	
 	private SearchView searchView;
-	private ShareListAdapter adapter;
+	private ShareListAdapter shareListAdapter;
 	private List<ShareUser> users;
 	private ListView lvUsers;
 	private String listName;
@@ -69,8 +69,8 @@ public class ShareActivity extends Activity {
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
 		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll()));
-		adapter = new ShareListAdapter(this, users);
-		lvUsers.setAdapter(adapter);
+		shareListAdapter = new ShareListAdapter(this, users);
+		lvUsers.setAdapter(shareListAdapter);
 		
 		gvSharedWith = (GridView) findViewById(R.id.gvSharedWith);
 		gvSharedWithAdapter = new SharedWithAdapter(this, selectedUsers);
@@ -101,8 +101,17 @@ public class ShareActivity extends Activity {
 			Button btn = (Button) v.findViewById(R.id.btnSuRemove);
 			btn.setOnClickListener(new OnClickListener() {
 				@Override public void onClick(View btnView) {
-					Log.i("info", "TODO remove user");
 					gvSharedWithAdapter.remove(user);
+					
+					// Uncheck the user in the list above
+					for(int i=0;i<shareListAdapter.getCount();i++) {
+						ShareUser su = shareListAdapter.getItem(i);
+						if(su.getUser().equals(user)) {
+							su.setSelected(false);
+							shareListAdapter.notifyDataSetChanged();
+							break;
+						}
+					}
 				}
 			});
 			
@@ -151,14 +160,14 @@ public class ShareActivity extends Activity {
 			for(User user : users){
 				shareUsers.add(new ShareUser(user));
 			}
-			adapter.clear();
-			adapter.addAll(shareUsers);
+			shareListAdapter.clear();
+			shareListAdapter.addAll(shareUsers);
 		}
 	}
 	
 	public void onShareRequested(final View view){
 		
-		final List<User> users = adapter.getSelectedUsers();
+		final List<User> users = shareListAdapter.getSelectedUsers();
 		
 		todoList.addToSharing(users);
 
@@ -167,6 +176,7 @@ public class ShareActivity extends Activity {
 			@Override
 			public void done(ParseException e) {
 				if(e == null) {
+					Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
 					finish();
 				} else {
 					Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();

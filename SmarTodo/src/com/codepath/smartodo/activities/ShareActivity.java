@@ -193,20 +193,35 @@ public class ShareActivity extends Activity {
 		
 		final List<User> users = shareListAdapter.getSelectedUsers();
 		
-		todoList.addToSharing(users);
-
+		todoList.removeAllFromSharing(todoList.getSharing()); // clear
+		
 		ModelManagerService.saveList(todoList, null, new SaveCallback() {
-
-			@Override
 			public void done(ParseException e) {
-				if(e == null) {
-					Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
-					finish();
-				} else {
-					Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+				if(e != null) {
+					Log.e("error", e.getMessage(), e);
+					return;
 				}
+				
+				todoList.addToSharing(users); // add new
+		
+				ModelManagerService.saveList(todoList, null, new SaveCallback() {
+		
+					@Override
+					public void done(ParseException e) {
+						if(e == null) {
+							if(users.size()>0) {
+								Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
+							}
+							setResult(RESULT_OK);
+					        finish();
+					        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+						} else {
+							Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+						}
+					}
+					
+				});
 			}
-			
 		});
 	}
 

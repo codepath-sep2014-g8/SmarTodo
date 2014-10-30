@@ -130,6 +130,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private List<ReminderLocation> reminderLocations;
 
 	private GridView gvViewSharedWith;
+
+	public SharedWithAdapter sharedWithListAdapter;
 	
 	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
@@ -297,7 +299,8 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		gvViewSharedWith = (GridView)view.findViewById(R.id.gvViewSharedWith);
 		
 		lvItems.setAdapter(adapter);
-		gvViewSharedWith.setAdapter(new SharedWithAdapter(getActivity(), todoList.getSharing(), true));
+		sharedWithListAdapter = new SharedWithAdapter(getActivity(), todoList.getSharing(), true);
+		gvViewSharedWith.setAdapter(sharedWithListAdapter);
 	}
 	
 	private void populateData(){

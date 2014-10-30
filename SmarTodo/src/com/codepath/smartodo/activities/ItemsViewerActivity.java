@@ -86,6 +86,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private static final String RIGHT_STUFF_ADDR = "1730 W Campbell Ave, Campbell, CA 95008";
 	private static final String RIGHT_STUFF_IMAGE_URL = "someUrl";
 	
+	public static final int RESULT_SHARE = 678;
+	
 	private ImageView ivBack;
 	private ImageView ivShare;
 	private ImageView ivNotifications;
@@ -98,6 +100,8 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private int colorId = R.color.todo_list_backcolor;
 	private TodoList todoList = null;
 	private List<ReminderLocation> reminderLocations;
+
+	private TodoListFragment fragmentTodoList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +127,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		
 		initializeActionBar();
 
-		TodoListFragment fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, colorId);
+		fragmentTodoList = TodoListFragment.newInstance(objectId, R.style.DialogFromLeftAnimation, colorId);
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 		transaction.replace(R.id.fragmentContainer, fragmentTodoList);
@@ -226,6 +230,24 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
     }
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && requestCode == RESULT_SHARE) {
+			Log.i("info", "Refreshing the shared view");
+			refreshTodoList();
+		}
+	}
+	
+	private void refreshTodoList() {
+		try {
+			todoList = TodoList.findTodoListByObjectId(objectId);
+			fragmentTodoList.sharedWithListAdapter.clear();
+			fragmentTodoList.sharedWithListAdapter.addAll(todoList.getSharing());
+		} catch (ParseException e) {
+			Log.e("error", "Error refresshing todo item", e);
+		}
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.items_viewer, menu);
@@ -274,7 +296,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 				Intent intent = new Intent(ItemsViewerActivity.this, ShareActivity.class);
 				intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
 				intent.putExtra(AppConstants.KEY_COLOR_ID, colorId);
-				startActivityForResult(intent, 200);	
+				startActivityForResult(intent, RESULT_SHARE);	
 				overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 			}
 		});

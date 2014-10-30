@@ -55,31 +55,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
         swipeContainer.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-            	AsyncTask task = new AsyncTask() {
-
-					@Override
-					protected Object doInBackground(Object... params) {
-						try {
-							ModelManagerService.refreshFromUser(ModelManagerService.getUser());
-						} catch (ParseException e) {
-							Log.e("error", e.getMessage(), e);
-						}
-						return null;
-					}
-            		
-					@Override
-					protected void onPostExecute(Object result) {
-						adapter.clear();
-						adapter.addAll(ModelManagerService.getLists());
-						adapter.notifyDataSetChanged();
-						swipeContainer.setRefreshing(false);
-					}
-            	};
-            	
-            	task.execute();
+                doRefresh();
             } 
         });
         // Configure the refreshing colors
@@ -210,7 +186,10 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	     @Override
 	     protected Integer doInBackground(Void... dummy) {
 	         try {
-				Thread.sleep(1000);
+	        	 Log.i("info", "Starting sleep...");
+	        	 long initTime = System.currentTimeMillis();
+				Thread.sleep(2000);
+				Log.i("info", "Finishing sleep after ms " + (System.currentTimeMillis() - initTime));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -233,35 +212,39 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		case REQUEST_CODE_EDIT_LIST:
 		case REQUEST_CODE_NEW_LIST:
 				if (data != null) {
+					swipeContainer.setRefreshing(true);
+					
 					// TODO This is hacky.We're enforcing a delay before refreshing the item, allowing for enough time to save the data in the previous perspective
 					MyAsyncTask task = new MyAsyncTask(new Runnable() {
 						public void run() {
-							try {
-								String objectId = data.getStringExtra(AppConstants.OBJECTID_EXTRA);
-			
-								if (objectId != null) {
-									// Refresh the model with only the modified/added list
-									// without triggering a full refresh
-									TodoList newList = TodoList
-											.findTodoListByObjectId(objectId);
-									int existingListIdx = ModelManagerService
-											.findExistingListIdxByObjectId(objectId);
-			
-									if (existingListIdx == -1) {
-										ModelManagerService.getLists().add(newList);
-									} else {
-										ModelManagerService.getLists().set(existingListIdx,
-												newList);
-									}
-			
-									// adapter.clear();
-									// adapter.addAll(ModelManagerService.getLists());
-									adapter.notifyDataSetChanged();
-								}
-						} catch (ParseException e) {
-							Log.e("error", e.getMessage(), e);
-							Toast.makeText(ListsViewerActivity.this, "Failed refresh", Toast.LENGTH_LONG).show();
-						}
+							doRefresh();
+							
+//							try {
+//								String objectId = data.getStringExtra(AppConstants.OBJECTID_EXTRA);
+//			
+//								if (objectId != null) {
+//									// Refresh the model with only the modified/added list
+//									// without triggering a full refresh
+//									TodoList newList = TodoList
+//											.findTodoListByObjectId(objectId);
+//									int existingListIdx = ModelManagerService
+//											.findExistingListIdxByObjectId(objectId);
+//			
+//									if (existingListIdx == -1) {
+//										ModelManagerService.getLists().add(newList);
+//									} else {
+//										ModelManagerService.getLists().set(existingListIdx,
+//												newList);
+//									}
+//			
+//									// adapter.clear();
+//									// adapter.addAll(ModelManagerService.getLists());
+//									adapter.notifyDataSetChanged();
+//								}
+//						} catch (ParseException e) {
+//							Log.e("error", e.getMessage(), e);
+//							Toast.makeText(ListsViewerActivity.this, "Failed refresh", Toast.LENGTH_LONG).show();
+//						}
 						}
 					});
 					
@@ -305,6 +288,34 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		showTodoListDialog(todoList.getObjectId(), 
 				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
 					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
+	}
+
+	public void doRefresh() {
+		// Your code to refresh the list here.
+		// Make sure you call swipeContainer.setRefreshing(false)
+		// once the network request has completed successfully.
+		AsyncTask task = new AsyncTask() {
+
+			@Override
+			protected Object doInBackground(Object... params) {
+				try {
+					ModelManagerService.refreshFromUser(ModelManagerService.getUser());
+				} catch (ParseException e) {
+					Log.e("error", e.getMessage(), e);
+				}
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Object result) {
+				adapter.clear();
+				adapter.addAll(ModelManagerService.getLists());
+				adapter.notifyDataSetChanged();
+				swipeContainer.setRefreshing(false);
+			}
+		};
+		
+		task.execute();
 	}
 	
 	

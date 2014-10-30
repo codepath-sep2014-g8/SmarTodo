@@ -87,6 +87,7 @@ public class LoginActivity extends Activity {
 		
 		Intent intent = new Intent(LoginActivity.this, ListsViewerActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 		finish();
 	}
 	
@@ -130,7 +131,9 @@ public class LoginActivity extends Activity {
 		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);
 		// loginBuilder.setFacebookLoginEnabled(false).setTwitterLoginEnabled(false);
 		loginBuilder.setAppLogo(R.drawable.ic_logo_pencil_smartodo);
-		startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);	
+		
+		startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
+		overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 	}
 	
 	@Override

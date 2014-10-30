@@ -18,7 +18,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/com_parse_ui_xlarge_vertical_spacing"
         android:hint="@string/com_parse_ui_login_help_email_input_hint"
-        android:inputType="textEmailAddress"></EditText>
+        android:textColorHint="@color/light_white"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/login_underline_background">
+        
+    </EditText>
 
     <Button
         android:id="@+id/login_help_submit"

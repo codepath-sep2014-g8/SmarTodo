@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/ParseLoginUI.EditText"
-        android:hint="@string/com_parse_ui_username_input_hint"></EditText>
+        android:hint="@string/com_parse_ui_username_input_hint"
+        android:textColorHint="@color/light_white" 
+        android:background="@drawable/login_underline_background">
+    </EditText>
 
     <EditText
         android:id="@+id/signup_password_input"
@@ -19,8 +22,10 @@
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:fontFamily="sans-serif"
         android:hint="@string/com_parse_ui_password_input_hint"
+        android:textColorHint="@color/light_white"
         android:inputType="textPassword"
-        android:selectAllOnFocus="true" />
+        android:selectAllOnFocus="true" 
+        android:background="@drawable/login_underline_background"/>
 
     <EditText
         android:id="@+id/signup_confirm_password_input"
@@ -30,8 +35,10 @@
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:fontFamily="sans-serif"
         android:hint="@string/com_parse_ui_confirm_password_input_hint"
+        android:textColorHint="@color/light_white"
         android:inputType="textPassword"
-        android:selectAllOnFocus="true" />
+        android:selectAllOnFocus="true"
+        android:background="@drawable/login_underline_background" />
 
     <EditText
         android:id="@+id/signup_email_input"
@@ -40,7 +47,9 @@
         style="@style/ParseLoginUI.EditText"
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:hint="@string/com_parse_ui_email_input_hint"
-        android:inputType="textEmailAddress" />
+        android:textColorHint="@color/light_white"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/login_underline_background" />
 
     <EditText
         android:id="@+id/signup_name_input"
@@ -49,7 +58,9 @@
         style="@style/ParseLoginUI.EditText"
         android:layout_marginTop="@dimen/com_parse_ui_small_vertical_spacing"
         android:hint="@string/com_parse_ui_name_input_hint"
-        android:inputType="textPersonName" />
+        android:textColorHint="@color/light_white"
+        android:inputType="textPersonName" 
+        android:background="@drawable/login_underline_background"/>
 
     <Button
         android:id="@+id/create_account"

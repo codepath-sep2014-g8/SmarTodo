@@ -51,6 +51,7 @@ import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -472,6 +473,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			c.set(Calendar.MINUTE, minute);
 			todoList.setNotificationTime(c.getTime());
+			ModelManagerService.processListNotifications(todoList);
 			// tvReminder.setText(getReminderDisplay()); // refresh
 			// Save the todoList now?
 		};

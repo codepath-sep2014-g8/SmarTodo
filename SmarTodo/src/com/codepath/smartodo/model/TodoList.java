@@ -91,12 +91,16 @@ public class TodoList extends ParseObject {
 	
 	@SuppressWarnings("unchecked")
 	public List<User> getSharing() {
-		List<ParseUser> parseUsers = (List<ParseUser>) super.get(SHARING_KEY);
-		
-		if(parseUsers == null) {
-			return new ArrayList<User>();
-		} else {
+		Object result = super.get(SHARING_KEY);
+
+		// TODO working around inconsistent parse.com behavior (returning JSONObject on occasion)
+		if(result instanceof List) {
+			List<ParseUser> parseUsers = (List<ParseUser>) result;
+			
 			return convertToUsers(parseUsers);
+		} else {
+			Log.w("warning", "Unexpected return type: " + result);
+			return new ArrayList<User>();
 		}
 	}
 

@@ -234,7 +234,11 @@ public class ModelManagerService extends Service {
 						NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
 					}
 					
-					callback.done(null);
+					try {
+						callback.done(null);
+					} catch(Throwable th) {
+						Log.e("error", "Error while executing callback", th);
+					}
 				}
 			}
 		});

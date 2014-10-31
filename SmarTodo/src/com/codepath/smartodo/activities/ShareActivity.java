@@ -190,39 +190,43 @@ public class ShareActivity extends Activity {
 	}
 	
 	public void onShareRequested(final View view){
-		
-		final List<User> users = shareListAdapter.getSelectedUsers();
-		
-		todoList.removeAllFromSharing(todoList.getSharing()); // clear
-		
-		ModelManagerService.saveList(todoList, null, new SaveCallback() {
-			public void done(ParseException e) {
-				if(e != null) {
-					Log.e("error", e.getMessage(), e);
-					return;
-				}
-				
-				todoList.addToSharing(users); // add new
-		
-				ModelManagerService.saveList(todoList, null, new SaveCallback() {
-		
-					@Override
-					public void done(ParseException e) {
-						if(e == null) {
-							if(users.size()>0) {
-								Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
-							}
-							setResult(RESULT_OK);
-					        finish();
-					        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
-						} else {
-							Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
-						}
+		try {
+			final List<User> users = shareListAdapter.getSelectedUsers();
+			
+			todoList.removeAllFromSharing(todoList.getSharing()); // clear
+			
+			ModelManagerService.saveList(todoList, null, new SaveCallback() {
+				public void done(ParseException e) {
+					if(e != null) {
+						Log.e("error", e.getMessage(), e);
+						return;
 					}
 					
-				});
-			}
-		});
+					todoList.addToSharing(users); // add new
+			
+					ModelManagerService.saveList(todoList, null, new SaveCallback() {
+			
+						@Override
+						public void done(ParseException e) {
+							if(e == null) {
+								if(users.size()>0) {
+									Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
+								}
+								setResult(RESULT_OK);
+						        finish();
+						        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+							} else {
+								Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
+							}
+						}
+						
+					});
+				}
+			});
+		} catch (Throwable th) {
+			Log.e("error", th.getMessage(), th);
+			Toast.makeText(this, "Error sharing. Please retry.", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

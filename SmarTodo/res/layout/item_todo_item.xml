@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivCheckbox_ftl"
+        android:layout_toLeftOf="@+id/ivRemove_todoitem"
         android:hint="@string/hint_todo_item"
         android:textSize="14sp"
         android:layout_marginLeft="10dp"
@@ -43,7 +44,7 @@
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_content_clear" 
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="10dp"
         android:clickable="true"
         />
    

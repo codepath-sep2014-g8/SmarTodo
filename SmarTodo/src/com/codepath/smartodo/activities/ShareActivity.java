@@ -139,7 +139,9 @@ public class ShareActivity extends Activity {
 			}
 			
 			ShareUser shareUser = new ShareUser(user);
-			shareUser.setSelected(todoList.getSharing().contains(user)); // Select those whom we've shared with already
+			if(todoList.getSharing() != null) {
+				shareUser.setSelected(todoList.getSharing().contains(user)); // Select those whom we've shared with already
+			}
 			sharedUsers.add(shareUser);
 		}
 		return sharedUsers;

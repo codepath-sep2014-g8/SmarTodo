@@ -2,55 +2,39 @@ package com.codepath.smartodo.fragments;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
@@ -58,9 +42,7 @@ import com.codepath.smartodo.adapters.SharedWithAdapter;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
-import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.helpers.AppConstants;
-import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.ReminderLocation;
@@ -68,16 +50,14 @@ import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.services.ModelManagerService;
-import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
 public class TodoListFragment extends DialogFragment implements OnTouchListener {
 
-	private static final String TAG = TodoListFragment.class.getSimpleName();
+	static final String TAG = TodoListFragment.class.getSimpleName();
 
 	// Some dummy addresses for demo. Todo: They should eventually come from some Settings/Preferences
 	private static final String HOME_LOCATION_NAME = "Home";
@@ -112,7 +92,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private ImageView ivSave;
 	private LinearLayout llFooter;
 	private ImageView ivFooterReminder;
-	private TextView tvReminder;
+	TextView tvReminder;
 	
 	private TextView tvSharedWithList;
 	
@@ -122,7 +102,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private String listObjectId = null;
 	
 	private int animationStyle = R.style.DialogFromLeftAnimation;
-	private int colorId;
+	int colorId;
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
 	private TouchActionsListener listener = null;
@@ -333,7 +313,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		});
 	}
 	
-	private String getReminderDisplay(){
+	String getReminderDisplay(){
 		
 		StringBuilder sb = new StringBuilder();
 		
@@ -447,7 +427,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			
 			@Override
 			public void onClick(View v) {
-				DialogFragment newFragment = new TimePickerFragment(todoList);
+				DialogFragment newFragment = new TimePickerFragment(TodoListFragment.this, todoList);
 			    newFragment.show(getFragmentManager(), "timePicker");	
 			}
 		});
@@ -545,456 +525,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 	}
 	
-	public class TimePickerFragment extends DialogFragment implements
-			TimePickerDialog.OnTimeSetListener {	
-
-		private TodoList todoList;
-		final Calendar c = Calendar.getInstance();
-
-		public TimePickerFragment(TodoList todoList) {
-			super();
-			this.todoList = todoList;	
-			initCurrentDate();
-		}
-		
-		private void initCurrentDate() {
-			Date notificationTime = todoList.getNotificationTime();
-			if (notificationTime == null) {
-				notificationTime = new Date();
-			}
-			c.setTime(notificationTime);		
-		}
-
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			// Use the current time as the default values for the picker
-			int hour = c.get(Calendar.HOUR_OF_DAY);
-	        int minute = c.get(Calendar.MINUTE);
-
-			// Create a new instance of TimePickerDialog and return it
-			return new TimePickerDialog(getActivity(), this, hour, minute,
-					DateFormat.is24HourFormat(getActivity()));
-		}
-
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {		
-			c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-			c.set(Calendar.MINUTE, minute);
-			todoList.setNotificationTime(c.getTime());	
-			tvReminder.setText(getReminderDisplay()); // refresh
-			// Save the todoList now?
-		};
-	}
-	
-	public class LocationDialogFragment extends DialogFragment implements android.content.DialogInterface.OnClickListener {	
-		private TodoList todoList;
-		private List<ReminderLocation> reminderLocations;
-		private ReminderLocation currentReminderLocation;
-		private Address currentAddress;		
-		private String currentLocation;
-		private ListView lvLocationChooser;
-		private int selectedColor;
-		private View lastSelectedView = null;
-
-		public LocationDialogFragment(TodoList todoList, List<ReminderLocation> reminderLocations) {
-			super();
-			this.todoList = todoList;
-			this.reminderLocations = reminderLocations;
-			initCurrentLocation();
-		}
-		
-	    private void initCurrentLocation() {    
-	    	if (todoList == null || Utils.isNullOrEmpty(reminderLocations)) {
-	    		return;
-	    	}
-	    	// Log.d(TAG, "In LocationDialogFragment:initCurrentLocation: total location keys are " + reminderLocations.size());	
-			
-		    currentAddress = todoList.getAddress();
-	    	if (currentAddress != null) {
-	    	    currentLocation = currentAddress.getName(); 
-	    	    currentReminderLocation = findCurrentReminderLocation(reminderLocations, currentLocation);
-	    	} else {
-	    		currentLocation = null;
-	    		currentReminderLocation = null;
-	    	}
-	    	Log.d(TAG, "In LocationDialogFragment:initCurrentLocation: currentLocation is " + currentLocation);		
-		}
-	    
-	    private ReminderLocation findCurrentReminderLocation(
-				List<ReminderLocation> remLocations, String currLocation) {
-	    	for (ReminderLocation remLocation : remLocations) {
-	    		if (currLocation.equalsIgnoreCase(remLocation.getName())) {
-	    			return remLocation;
-	    		}
-	    	}
-	    	return null;
-		}
-	    
-	    private void setCustomtyle(TextView view) {
-	    	view.setBackgroundColor(selectedColor);
-	    	view.setAlpha(0.8f);
-	    	view.setTextColor(getResources().getColor(R.color.white));
-	    	view.setTextSize(16);
-	    	view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-	    	view.setGravity(Gravity.CENTER_HORIZONTAL);
-	    }
-
-		private TextView getCustomTitle() {
-	    	TextView title = new TextView(getActivity());
-	    	setCustomtyle(title);
-	    	title.setText(getString(R.string.title_location_reminding_dialog, todoList.getName()));    	    		    	
-	    	return title;
-	    }
-		
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	    	if (todoList == null || Utils.isNullOrEmpty(reminderLocations)) {
-	    		return null;
-	    	}
-	    	selectedColor = getActivity().getResources().getColor(colorId);  // must be set in the beginning
-			// Create and initialize an adapter
-	    	
-	    	ReminderLocationsAdapter dataAdapter = new ReminderLocationsAdapter(getActivity(), reminderLocations);
-	    	
-	    	// View view = LayoutInflater.from(getActivity()).inflate(R.layout.location_chooser, null); 
-	    	View view = getActivity().getLayoutInflater().inflate(R.layout.location_chooser, null);
-			lvLocationChooser = (ListView) view.findViewById(R.id.lvLocationChooser);
-			
-			//Log.d(TAG, "In LocationDialogFragment:onCreateDialog: choicemode is " + lvLocationChooser.getChoiceMode());
-			//Log.d(TAG, "In LocationDialogFragment:onCreateDialog: ListView.CHOICE_MODE_SINGLE is " + ListView.CHOICE_MODE_SINGLE);	
-					 
-			lvLocationChooser.setAdapter(dataAdapter);
-			
-			// lvLocationChooser.setSelector(getActivity().getResources().getColor(colorId));  // TODO: Check why this is not working
-			
-			lvLocationChooser.setSelector(colorId); 
-			final int defaultDrawingCacheBackgroundColor = lvLocationChooser.getDrawingCacheBackgroundColor();
-			int[] colors = {selectedColor, selectedColor}; 
-			lvLocationChooser.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
-			lvLocationChooser.setDividerHeight(3);
-			lvLocationChooser.setOnItemClickListener(new OnItemClickListener() {
-
-	            @Override
-	            public void onItemClick(AdapterView<?> parent, View view,
-	                            int position, long id) {
-	            	 // Log.d(TAG, "In onItemClick, position is " + position);
-	                 if (position != -1) {            
-	                   lvLocationChooser.setItemChecked(position, true);
-	                   view.setSelected(true); 
-	                   if (lastSelectedView != null && lastSelectedView != view) {
-	                	   lastSelectedView.setBackgroundColor(defaultDrawingCacheBackgroundColor);
-	                   }
-	                   view.setBackgroundColor(selectedColor);
-	                   lastSelectedView = view;
-	                 }
-	            }
-	          });
-				
-			// Create an AlertDialog and associate the listview for location names
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialogTheme);
-			builder.setCustomTitle(getCustomTitle());		 			
-			builder.setView(lvLocationChooser); 
-			builder.setPositiveButton("Done", this);
-			AlertDialog alertDialog = builder.create();
-
-			alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-				@Override
-				public void onShow(DialogInterface dialog) {
-					AlertDialog alertDialog = (AlertDialog) dialog;
-					Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-					if (button != null) {
-						setCustomtyle(button);;
-					}
-					button = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-					if (button != null) {
-						setCustomtyle(button);
-					}
-				}
-			});	
-			
-			alertDialog.show(); // Maybe needed for highlighting a row below by a programmatic click operation
-			
-			if (currentReminderLocation != null) {
-				//set the default choice according to the current value
-				int position = reminderLocations.indexOf(currentReminderLocation);
-				if (position != -1) {
-					// Log.d(TAG, "About to perform click for position " + position);
-					lvLocationChooser.setItemChecked(position, true);	
-					lvLocationChooser.setSelection(position);
-					// lvLocationChooser.getAdapter().getView(position, null, null).setBackgroundColor(selectedColor);
-					// lvLocationChooser.getAdapter().getView(position, null, null).performClick();
-					
-					lvLocationChooser.performItemClick(lvLocationChooser.getAdapter().getView(position, null, null), position, position);
-				}
-			}
-			
-			return alertDialog;
-		}
-	    
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			
-			 int selectedPosition = lvLocationChooser.getCheckedItemPosition();
-			 if (selectedPosition < 0) {
-				 // Log.d(TAG, "In onClick, selectedPosition is " + selectedPosition);
-					dialog.dismiss();
-					return;
-			 }
-			 ReminderLocation selectedReminderLocation = reminderLocations.get(selectedPosition);
-						
-			if (null == selectedReminderLocation) {
-				// Log.d(TAG, "In onClick, selectedReminderLocation is null");
-				dialog.dismiss();
-				return;
-			}
-			Log.d(TAG, "In onClick, locationKey is:" + selectedReminderLocation.getName());
-
-			if (!Utils.isNullOrEmpty(currentLocation)
-					&& (selectedReminderLocation.getName().equalsIgnoreCase(currentLocation))) {
-				dialog.dismiss();
-				return; // Nothing much to do; same old location has been chosen.
-			}
-
-			String streetAddress = selectedReminderLocation.getStreetAddress();
-			// Log.d(TAG, "In onClick, streetAddress is:" + streetAddress);
-			// The following should not happen because a street address
-			// would always be associated with a location name
-			if (Utils.isNullOrEmpty(streetAddress)) { 
-				dialog.dismiss();
-				return;
-			}
-			
-			HandleGeofencingAddress(selectedReminderLocation.getName(), streetAddress);
-
-			dialog.dismiss();;
-			return;	
-		}
-	   		    
-		void HandleGeofencingAddress(String locationKey, String newStreetAddress) {		
-			Log.d(TAG, "In HandleGeofencingAddress, newStreetAddress is:" + newStreetAddress);
-			ParseUser parseUser = ParseUser.getCurrentUser();
-			Address newAddress;
-			if (null == currentAddress) {
-				newAddress = new Address();
-				newAddress.setUser(parseUser);
-
-			} else {
-				newAddress = currentAddress;
-			}
-
-			newAddress.setName(locationKey);
-			newAddress.setStreetAddress(newStreetAddress);
-			newAddress.setLocation(new ParseGeoPoint(10, 10)); // need not do this; streetaddress is sufficient
-			todoList.setAddress(newAddress);
-			
-			// Now set up a geofence around the new street address
-			int radius = 50; // meters
-		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
-						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
-			
-			tvReminder.setText(getReminderDisplay()); // refresh              			
-		}
-	}
-	
-	public class LocationDialogFragmentWithSpinner extends DialogFragment implements android.content.DialogInterface.OnClickListener {	
-		private Spinner locationSpinner;
-		private TodoList todoList;
-		private HashMap<String, String> locationsMap;
-		private List<String> locationList;
-		private Address currentAddress;
-		private String currentLocation;
-		private ArrayAdapter<String> dataAdapter;
-
-		public LocationDialogFragmentWithSpinner(TodoList todoList, HashMap<String, String> locationsMap) {
-			super();
-			this.todoList = todoList;
-			this.locationsMap = locationsMap;
-			initCurrentLocation();
-		}
-		
-	    private void initCurrentLocation() {    
-	    	if (todoList == null || locationsMap == null) {
-	    		return;
-	    	}
-		    currentAddress = todoList.getAddress();
-	    	if (currentAddress != null) {
-	    	    currentLocation = currentAddress.getName();    	        	       
-	    	} else {
-	    		currentLocation = null;
-	    	}
-	    	// Create a list of location names
-	    	locationList = new ArrayList<String>();		
-	    	locationList.addAll(locationsMap.keySet());
-	    	Collections.sort(locationList, String.CASE_INSENSITIVE_ORDER);
-	    	// Log.d(TAG, "In LocationDialogFragment: total location keys are " + locationList.size());
-		}
-	    
-	    private TextView getCustomTitle() {
-	    	TextView title = new TextView(getActivity());
-	    	title.setText(getString(R.string.title_location_reminding_dialog, todoList.getName()));
-	    	title.setGravity(Gravity.CENTER_HORIZONTAL);
-	    	title.setTextSize(16);
-	    	title.setBackgroundColor(getActivity().getResources().getColor(colorId));
-	    	title.setAlpha(0.8f);
-	    	title.setTextColor(getResources().getColor(R.color.white));
-	    	return title;
-	    }
-		
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	    	if (todoList == null || locationsMap == null) {
-	    		return null;
-	    	}
-			// Create and initialize an adapter
-			dataAdapter = new ArrayAdapter<String>(
-					getActivity(), android.R.layout.simple_spinner_item, locationList);
-			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			
-			// Create and initialize a spinner
-			locationSpinner = new Spinner(getActivity());
-			// locationSpinner.setBackgroundResource(R.drawable.drop_shadow);
-			locationSpinner.setAdapter(dataAdapter);
-			if (currentLocation != null) {
-				//set the default choice according to the current value
-				int spinnerPosition = dataAdapter.getPosition(currentLocation);			
-				locationSpinner.setSelection(spinnerPosition);		
-			}
-
-			// Create an AlertDialog and associate the spinner for location names
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomDialogTheme);
-			builder.setCustomTitle(getCustomTitle());		 			
-			builder.setView(locationSpinner); 
-			builder.setPositiveButton("OK", this).setNegativeButton("CANCEL", null);	
-			return builder.create();
-		}
-	    
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			String locationKey = (String) locationSpinner.getSelectedItem();
-					
-			// Log.d(TAG, "In onClick, locationKey is:" + locationKey);
-			if (Utils.isNullOrEmpty(locationKey)) {
-				dialog.dismiss();
-				return;
-			}
-
-			if (!Utils.isNullOrEmpty(currentLocation)
-					&& (locationKey.equalsIgnoreCase(currentLocation))) {
-				dialog.dismiss();
-				return; // Nothing much to do; same old location has been chosen.
-			}
-
-			String streetAddress = locationsMap.get(locationKey);
-			// Log.d(TAG, "In onClick, streetAddress is:" + streetAddress);
-			// The following should not happen because a street address
-			// would always be associated with a location name
-			if (Utils.isNullOrEmpty(streetAddress)) { 
-				dialog.dismiss();
-				return;
-			}
-			
-			HandleGeofencingAddress(locationKey, streetAddress);
-
-			dialog.dismiss();;
-			return;	
-		}
-	   		    
-		void HandleGeofencingAddress(String locationKey, String newStreetAddress) {		
-			Log.d(TAG, "In HandleGeofencingAddress, newStreetAddress is:" + newStreetAddress);
-			ParseUser parseUser = ParseUser.getCurrentUser();
-			Address newAddress;
-			if (null == currentAddress) {
-				newAddress = new Address();
-				newAddress.setUser(parseUser);
-
-			} else {
-				newAddress = currentAddress;
-			}
-
-			newAddress.setName(locationKey);
-			newAddress.setStreetAddress(newStreetAddress);
-			newAddress.setLocation(new ParseGeoPoint(10, 10)); // need not do this; streetaddress is sufficient
-			todoList.setAddress(newAddress);
-			
-			// Now set up a geofence around the new street address
-			int radius = 50; // meters
-		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
-						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
-			
-			tvReminder.setText(getReminderDisplay()); // refresh              			
-		}
-	}
-	
-	public class LocationDialogFragmentOld extends DialogFragment implements android.content.DialogInterface.OnClickListener {
-
-		private TodoList todoList;
-		private Address currentAddress;
-		private String currentStreetAddress;
-		private EditText etStreetAddress;
-
-		public LocationDialogFragmentOld(TodoList todoList) {
-			super();
-			this.todoList = todoList;	
-			initCurrentLocation();
-		}
-		
-	    private void initCurrentLocation() {    	
-		    currentAddress = todoList.getAddress();
-	    	if (currentAddress != null) {
-	    	    currentStreetAddress = currentAddress.getStreetAddress();    	        	       
-	    	}
-		}
-		
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	    	etStreetAddress = new EditText(getActivity());
-    	    etStreetAddress.setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
-    	    if (!Utils.isNullOrEmpty(currentStreetAddress)) {
-    		    etStreetAddress.setText(currentStreetAddress);
-    	    } 
-	        return new AlertDialog.Builder(getActivity()).setTitle("Please specify an address for " + todoList.getName())
-	        		.setMessage("Please enter an address for reminder")
-	                .setPositiveButton("OK", this).setNegativeButton("CANCEL", null).setView(etStreetAddress).create();
-	    }
-
-	    @Override
-	    public void onClick(DialogInterface dialog, int position) {
-
-	        String newStreetAddress = etStreetAddress.getText().toString();
-	        if (Utils.isNullOrEmpty(newStreetAddress)) {
-	        	return; // Nothing much to do
-	        }
-	        if (!Utils.isNullOrEmpty(currentStreetAddress) &&
-	            (newStreetAddress.equalsIgnoreCase(currentStreetAddress))) {
-	        	currentAddress.setStreetAddress(newStreetAddress);	 // Update it anyway
-	        	return; // Nothing much to do
-	        }
-	        
-	        // Now we have a new street address specified
-	        ParseUser parseUser = ParseUser.getCurrentUser();
-	        Address newAddress;        
-	        if (null == currentAddress) {
-	        	newAddress = new Address();	 
-	        	newAddress.setUser(parseUser);	    
-	        	newAddress.setName(newStreetAddress);  // Defaulting to the address itself instead of (Home, Office, Safeway, etc.). Todo: Get this also in a text view        	    	
-			} else {
-			    newAddress = currentAddress;
-			}
-	        						
-			newAddress.setStreetAddress(newStreetAddress);
-			newAddress.setLocation(new ParseGeoPoint(10, 10));  // need not do this; street address is sufficient
-			todoList.setAddress(newAddress);
-			
-			// Now set up a geofence around the new street address
-			int radius = 50; // meters
-		    GeofenceUtils.setupTestGeofences(getActivity(), parseUser.getObjectId(), newAddress.getStreetAddress(), radius,
-						Geofence.GEOFENCE_TRANSITION_ENTER, ("Close to " + newAddress.getName()), todoList.getName(), "All Todo items");
-			
-			tvReminder.setText(getReminderDisplay()); // refresh                
-	        dialog.dismiss();
-	    }
-	}
-	
-	private class ReminderLocationsAdapter extends ArrayAdapter<ReminderLocation> {
+	class ReminderLocationsAdapter extends ArrayAdapter<ReminderLocation> {
 
 		public ReminderLocationsAdapter(Context context, List<ReminderLocation> reminderLocations) {
 			super(context, R.layout.todo_location, reminderLocations);

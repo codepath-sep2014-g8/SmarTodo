@@ -77,6 +77,7 @@ public class LoginActivity extends Activity {
 		// TODO Display progress bar, run outside of UI thread
 		try {
 			ModelManagerService.refreshFromUser(new User(currentUser));
+			ModelManagerService.registerInstallation();
 		} catch (ParseException e) {
 			// TODO Display in UI, add retry option
 			Log.e("error", e.getMessage(), e);

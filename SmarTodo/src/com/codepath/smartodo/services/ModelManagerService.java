@@ -85,16 +85,6 @@ public class ModelManagerService extends Service {
 	}
 
 	public static void refreshFromUser(User user) throws ParseException {
-		refreshFromUser(user, null);
-	}
-	
-	/**
-	 * Call this whenever a user logs in.
-	 * 
-	 * @param user
-	 * @throws ParseException 
-	 */
-	public static void refreshFromUser(User user, final Runnable runAtEnd) throws ParseException {
 		Log.i("info", "Refreshing data from current user " + user.getUsername());
 		ModelManagerService.user = user;
 		ModelManagerService.lists = user.findAllLists();
@@ -108,11 +98,9 @@ public class ModelManagerService extends Service {
 			}
 			processListNotifications(list);
 		}
-		
-		if(runAtEnd!=null) {
-			runAtEnd.run();
-		}
-		
+	}
+
+	public static void registerInstallation() {
 		// Log.d("DEBUG", "In LoginActivity.lauchMainApp");	
 		// Register with ParseInstallation the current user under SHARED_USER_KEY 
 		// so that push notifications can be received on behalf of the current user 
@@ -133,6 +121,13 @@ public class ModelManagerService extends Service {
 			}
 		});
 	}
+	
+	/**
+	 * Call this whenever a user logs in.
+	 * 
+	 * @param user
+	 * @throws ParseException 
+	 */
 
 	public static void processListNotifications(TodoList list) {
 		// Clean up any previous alarms

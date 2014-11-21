@@ -123,11 +123,12 @@ public class ParseDbTest {
 		final TodoItem item = new TodoItem();
 		item.setAddress(a);
 		item.setCompleted(true);
-		item.setList(list);
 		item.setNotificationTime(new Date());
 		item.setText("testitem321");
+
+		list.addItem(item);
 		
-		runNext(item, new Runnable() {
+		runNext(list, new Runnable() {
 			public void run() {
 				testGetAllItems(list, item);
 			}

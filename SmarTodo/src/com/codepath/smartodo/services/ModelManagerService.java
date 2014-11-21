@@ -1,8 +1,9 @@
 package com.codepath.smartodo.services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -17,12 +18,12 @@ import android.util.Log;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ListsViewerActivity;
-import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -184,10 +185,15 @@ public class ModelManagerService extends Service {
 		// TODO
 	}
 	
-	public static String saveList(final TodoList todoList, final List<TodoItem> newTodoItemsList, final SaveCallback callback) {
+	public static String saveList(final TodoList todoList, final SaveCallback callback) {
 		Log.i("info", "Saving list");
 
-		todoList.saveInBackground(new SaveCallback() {
+		// Batch save
+		List<ParseObject> allObjects = new ArrayList<ParseObject>();
+		allObjects.add(todoList);
+		allObjects.addAll(todoList.getItems());
+		
+		ParseObject.saveAllInBackground(allObjects, new SaveCallback() {
 			@Override
 			public void done(ParseException ex) {
 				if(ex != null) {
@@ -197,36 +203,6 @@ public class ModelManagerService extends Service {
 						todoList.pin();
 					} catch (ParseException ex2) {
 						Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
-					}
-					
-					if(newTodoItemsList != null) {
-						Log.i("info", "Saving " + newTodoItemsList.size() + " list items");
-						for(TodoItem item : newTodoItemsList) {
-							if(item.getText() == null || item.getText().trim().isEmpty()){
-								continue;
-							}
-								
-							item.setList(todoList);
-							
-							try {
-								item.pin();
-							} catch (ParseException ex2) {
-								Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
-							}
-							
-							item.saveInBackground(new SaveCallback() {
-		
-								@Override
-								public void done(ParseException e) {
-									if(e!=null) {
-										Log.e("error", e.getMessage(), e);
-									}
-								}
-								
-							});
-						}
-						
-						Log.i("info", "Items saved");
 					}
 					
 					for(User sharedWith : todoList.getSharing()) {

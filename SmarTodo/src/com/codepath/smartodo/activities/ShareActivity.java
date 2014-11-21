@@ -195,35 +195,24 @@ public class ShareActivity extends Activity {
 		try {
 			final List<User> users = shareListAdapter.getSelectedUsers();
 			
-			todoList.removeAllFromSharing(todoList.getSharing()); // clear
+			todoList.setSharing(users); // add new
 			
-			ModelManagerService.saveList(todoList, null, new SaveCallback() {
+			ModelManagerService.saveList(todoList, new SaveCallback() {
 				public void done(ParseException e) {
 					if(e != null) {
 						Log.e("error", e.getMessage(), e);
+						Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
 						return;
 					}
 					
-					todoList.addToSharing(users); // add new
-			
-					ModelManagerService.saveList(todoList, null, new SaveCallback() {
-			
-						@Override
-						public void done(ParseException e) {
-							if(e == null) {
-								if(users.size()>0) {
-									Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
-								}
-								setResult(RESULT_OK);
-						        finish();
-						        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
-							} else {
-								Toast.makeText(view.getContext(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
-							}
-						}
+					if(users.size()>0) {
+						Toast.makeText(ShareActivity.this, "Share notifications sent", Toast.LENGTH_SHORT).show();
+					}
+					setResult(RESULT_OK);
+			        finish();
+			        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
 						
-					});
-				}
+					}
 			});
 		} catch (Throwable th) {
 			Log.e("error", th.getMessage(), th);

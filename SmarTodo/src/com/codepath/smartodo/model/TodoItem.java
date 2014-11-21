@@ -14,7 +14,6 @@ public class TodoItem extends ParseObject {
 	private static final String COMPLETED_KEY = "completed";
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
-	public static final String LIST_KEY = "list";
 
 	public boolean isCompleted() {
 		return getBoolean(COMPLETED_KEY);
@@ -51,19 +50,6 @@ public class TodoItem extends ParseObject {
 	
 	public Date getNotificationTime() {
 		return super.getDate(NOTIFICATIONTIME_KEY);
-	}
-	
-	public void setList(TodoList value) {
-		super.put(LIST_KEY, value);
-	}
-	
-	public TodoList getList() {
-		try {
-			return (TodoList) super.fetchIfNeeded().getParseObject(LIST_KEY);
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-			return null;
-		}
 	}
 
 	@Override

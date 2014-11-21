@@ -21,6 +21,7 @@ public class TodoList extends ParseObject {
 	public static final String SHARING_KEY = "sharing";
 	public static final String OWNER_KEY = "owner";
 	private static final String COLOR_KEY = "color";
+	private static final String ITEMS_KEY = "items";
 
 	public boolean isCompleted() {
 		return getBoolean(COMPLETED_KEY);
@@ -135,14 +136,64 @@ public class TodoList extends ParseObject {
 	}
 	
 	/**
+	 * <p>Appends the items to the current list.
+	 * <p>Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call save in between every different kind of array operation.
+	 * 
+	 * @param users
+	 */
+	public void addToItems(List<TodoItem> items) {
+		super.addAll(ITEMS_KEY, items);
+	}
+
+	public void addItem(TodoItem item) {
+		super.add(ITEMS_KEY, item);
+	}
+	
+	public void setItems(List<TodoItem> todoItemsList) {
+		remove(ITEMS_KEY);
+		addToItems(todoItemsList);
+	}
+
+	
+	/**
+	 * <p>Appends the item to the current list.
+	 * <p>Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call save in between every different kind of array operation.
+	 * 
+	 * @param user
+	 */
+	public void addToSharing(TodoItem item) {
+		super.add(ITEMS_KEY, item);
+	}
+	
+	/**
+	 * <p>Remove the items from the existing list.
+	 * <p>Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call save in between every different kind of array operation.
+	 * 
+	 * @param users
+	 */
+	public void removeAllFromItems(List<TodoItem> items) {
+		super.removeAll(ITEMS_KEY, items);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<TodoItem> getItems() {
+		Object result = super.get(ITEMS_KEY);
+
+		// TODO working around inconsistent parse.com behavior (returning JSONObject on occasion)
+		if(result instanceof List) {
+			return (List<TodoItem>) result;
+		} else {
+			Log.w("warning", "Unexpected return type: " + result);
+			return new ArrayList<TodoItem>();
+		}
+	}
+	
+	/**
 	 * @return an unmodifiable list of items that belong to this list. Do not add items to it! Instead create a new TodoItem and call setItem().
 	 * @throws ParseException
 	 */
 	public List<TodoItem> getAllItems() throws ParseException {
-		ParseQuery<TodoItem> itemQuery = LocalParseQuery.getQuery(TodoItem.class);
-		itemQuery.whereEqualTo(TodoItem.LIST_KEY, this);
-		itemQuery.orderByAscending("objectId");
-		return itemQuery.find();
+		return getItems();
 	}
 	
 	// TODO Merge the implementation with findTodoListByName
@@ -217,5 +268,10 @@ public class TodoList extends ParseObject {
 		} else {
 			return false;
 		}
+	}
+
+	public void setSharing(List<User> users) {
+		remove(SHARING_KEY);
+		addToSharing(users); // add new
 	}
 }

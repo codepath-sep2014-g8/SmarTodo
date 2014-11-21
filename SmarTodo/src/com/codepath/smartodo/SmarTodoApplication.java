@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.codepath.smartodo.geofence.ReceiveTransitionsIntentService;
+import com.codepath.smartodo.model.ParseDbTest;
 import com.codepath.smartodo.services.ModelManagerService;
 
 public class SmarTodoApplication extends Application {
@@ -22,7 +23,7 @@ public class SmarTodoApplication extends Application {
     startService(new Intent(this, ReceiveTransitionsIntentService.class));
 	
 	// TODO For testing purposes only, DO NOT COMMIT when uncommented!
-//    ParseDbTest.test();
+    ParseDbTest.test();
   }
   
 }

@@ -32,7 +32,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private static final String TAG = TodoItemsAdapter.class.getSimpleName();
 	private TodoListDisplayMode mode = TodoListDisplayMode.GRID;
 	private TodoItem dummyItem = new TodoItem();
-	private int currentRow = -1;
+	int currentlyEditedItemIdx = -1;
 
 	private class ViewHolder {
 		ImageView ivImage;
@@ -92,7 +92,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	}
 	
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder viewHolder;
 		final TodoItem todoItem = getItem(position);
 
@@ -109,8 +109,6 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		
-		
 
 		viewHolder.etItemText.setTag(todoItem);
 		viewHolder.ivRemove.setTag(todoItem);
@@ -162,7 +160,21 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					if(viewHolder.etItemText.isFocused() == false){
 						return;
 					}
+					
 					TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
+					
+					if(origTodoItem == dummyItem && start == 0 && before == 0) {
+						currentlyEditedItemIdx = position;
+						TodoItem tmpItem = dummyItem;
+						// Create new item
+						dummyItem = new TodoItem();
+						add(dummyItem);
+						origTodoItem = tmpItem; // Graduate the previous dummy item to a regular item
+						viewHolder.etItemText.setTag(origTodoItem);
+					} else {
+						currentlyEditedItemIdx = -1;
+					}
+					
 					origTodoItem.setText(viewHolder.etItemText.getText().toString());
 				}
 				
@@ -180,29 +192,28 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 				}
 			});
 			
-			viewHolder.etItemText.setOnFocusChangeListener(new OnFocusChangeListener() {
-				
-				@Override
-				public void onFocusChange(View v, boolean hasFocus) {
-					
-					if(hasFocus == false){
-						TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
-						if(origTodoItem == dummyItem){
-							currentRow = 10;
-							Log.d(TAG, "Creating New Item");
-							String str = viewHolder.etItemText.getText().toString();
-							TodoItem ti = dummyItem;
-							//itemsList.add(getCount() - 1,  ti);
-							//notifyDataSetChanged();
-							dummyItem = new TodoItem();
-							add(dummyItem);
-							ti.setText(str);
-							viewHolder.etItemText.setTag(ti);
-						}
-					}
-					
-				}
-			});
+//			viewHolder.etItemText.setOnFocusChangeListener(new OnFocusChangeListener() {
+//				
+//				@Override
+//				public void onFocusChange(View v, boolean hasFocus) {
+//					
+//					if(hasFocus == false){
+//						TodoItem origTodoItem = (TodoItem)viewHolder.etItemText.getTag();
+//						if(origTodoItem == dummyItem){
+//							Log.d(TAG, "Creating New Item");
+//							String str = viewHolder.etItemText.getText().toString();
+//							TodoItem ti = dummyItem;
+//							//itemsList.add(getCount() - 1,  ti);
+//							//notifyDataSetChanged();
+//							dummyItem = new TodoItem();
+//							add(dummyItem);
+//							ti.setText(str);
+//							viewHolder.etItemText.setTag(ti);
+//						}
+//					}
+//					
+//				}
+//			});
 			
 			viewHolder.ivRemove.setOnClickListener(new OnClickListener() {
 				
@@ -225,6 +236,13 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 		
 		updateImage(viewHolder, todoItem);
 		updateCompletedStatus(viewHolder, todoItem);
+		
+		if(currentlyEditedItemIdx == position) {
+			Log.i("info", "Requesting focus for index " + position);
+			viewHolder.etItemText.requestFocus();
+			viewHolder.etItemText.setSelected(true);
+			viewHolder.etItemText.setSelection(viewHolder.etItemText.getText().length());
+		}
 		
 		if(todoItem == dummyItem){
 			viewHolder.ivImage.setImageResource(R.drawable.ic_content_new_hint);

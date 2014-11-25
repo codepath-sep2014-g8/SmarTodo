@@ -473,7 +473,9 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
 		
-		todoList.setItems(todoItemsList);
+		List<TodoItem> listWithoutDummy = new ArrayList<TodoItem>();
+		listWithoutDummy.addAll(todoItemsList.subList(0, todoItemsList.size() - 1));
+		todoList.setItems(listWithoutDummy);
 		
 		String objectId = ModelManagerService.saveList(todoList, new SaveCallback() {
 			

@@ -13,7 +13,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 public class SplashScreenActivity extends Activity {
 	// Splash screen timer
-	private static int SPLASH_TIME_OUT = 2000; // milliseconds
+	private static int SPLASH_TIME_OUT = /*200*/0; // milliseconds
+	
+	// TODO Restore splash screen at some point
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

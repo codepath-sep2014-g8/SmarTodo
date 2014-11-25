@@ -16,7 +16,12 @@ public class TodoItem extends ParseObject {
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";
 
 	public boolean isCompleted() {
-		return getBoolean(COMPLETED_KEY);
+		try {
+			return fetchIfNeeded().getBoolean(COMPLETED_KEY);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public void setCompleted(boolean value) {
@@ -24,7 +29,12 @@ public class TodoItem extends ParseObject {
 	}
 	
 	public String getText() {
-		return super.getString(TEXT_KEY);
+		try {
+			return super.fetchIfNeeded().getString(TEXT_KEY);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public void setText(String value) {

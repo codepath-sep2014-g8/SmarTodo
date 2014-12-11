@@ -135,7 +135,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		}
 		
 		try {
-			todoList = TodoList.findTodoListByObjectId(objectId);
+			todoList = TodoList.findTodoListByObjectId(this, objectId);
 		} catch (ParseException e1) {
 			
 			Log.d(TAG, "Excpetion while getting the todo list");
@@ -217,7 +217,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	private void refreshTodoList() {
 		try {
-			todoList = TodoList.findTodoListByObjectId(objectId);
+			todoList = TodoList.findTodoListByObjectId(this, objectId);
 			fragmentTodoList.sharedWithListAdapter.clear();
 			fragmentTodoList.sharedWithListAdapter.addAll(todoList.getSharing());
 		} catch (ParseException e) {

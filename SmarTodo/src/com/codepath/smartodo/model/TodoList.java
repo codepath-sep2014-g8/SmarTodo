@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.parse.ParseClassName;
@@ -197,9 +198,8 @@ public class TodoList extends ParseObject {
 	}
 	
 	// TODO Merge the implementation with findTodoListByName
-	public static TodoList findTodoListByNameAndUser(String listName, User user) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
-		itemQuery.fromLocalDatastore();
+	public static TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException {
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
 		
@@ -216,8 +216,8 @@ public class TodoList extends ParseObject {
 		}
 	}
 	
-	public static TodoList findTodoListByName(String listName) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
+	public static TodoList findTodoListByName(Context context, String listName) throws ParseException {
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		
 		List<TodoList> list = itemQuery.find();
@@ -233,8 +233,8 @@ public class TodoList extends ParseObject {
 		}
 	}
 	
-	public static TodoList findTodoListByObjectId(String objectId) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class);
+	public static TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException {
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo("objectId", objectId);
 		
 		List<TodoList> list = itemQuery.find();
@@ -263,7 +263,7 @@ public class TodoList extends ParseObject {
 
 	@Override
 	public boolean equals(Object o) {
-		if(o instanceof TodoList) {
+		if(o instanceof TodoList && getObjectId() != null) {
 			return getObjectId().equals(((TodoList)o).getObjectId());
 		} else {
 			return false;

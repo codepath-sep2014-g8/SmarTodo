@@ -299,7 +299,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected Object doInBackground(Object... params) {
 				try {
-					ModelManagerService.refreshFromUser(ModelManagerService.getUser());
+					ModelManagerService.refreshFromUser(ListsViewerActivity.this, ModelManagerService.getUser());
 				} catch (ParseException e) {
 					Log.e("error", e.getMessage(), e);
 				}

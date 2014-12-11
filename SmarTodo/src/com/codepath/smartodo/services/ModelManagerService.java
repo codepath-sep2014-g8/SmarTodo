@@ -8,6 +8,7 @@ import java.util.List;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -84,10 +85,10 @@ public class ModelManagerService extends Service {
 		running = false;
 	}
 
-	public static void refreshFromUser(User user) throws ParseException {
+	public static void refreshFromUser(Context context, User user) throws ParseException {
 		Log.i("info", "Refreshing data from current user " + user.getUsername());
 		ModelManagerService.user = user;
-		ModelManagerService.lists = user.findAllLists();
+		ModelManagerService.lists = user.findAllLists(context);
 		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");
 		
 		for(TodoList list : ModelManagerService.lists) {
@@ -188,9 +189,17 @@ public class ModelManagerService extends Service {
 		allObjects.add(todoList);
 		allObjects.addAll(todoList.getItems());
 		
+		try {
+			ParseObject.pinAll(allObjects);
+		} catch (ParseException ex) {
+			Log.e("error", "Pin error: " + ex.getMessage(), ex);
+		}
+		
 		ParseObject.saveAllInBackground(allObjects, new SaveCallback() {
 			@Override
 			public void done(ParseException ex) {
+				Log.i("info", "Save complete");
+				
 				if(ex != null) {
 					Log.e("error", "Save error: " + ex.getMessage(), ex);
 				} else {

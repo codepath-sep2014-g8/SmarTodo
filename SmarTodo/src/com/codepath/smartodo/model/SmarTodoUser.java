@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.parse.ParseClassName;
@@ -28,12 +29,12 @@ public class SmarTodoUser extends ParseUser {
 		super();
 	}
 	
-	public List<TodoList> findAllLists() throws ParseException { // TODO: rename findAllRelevantTodoLists
-		ParseQuery<TodoList> todoListsQuery = ParseQuery.getQuery(TodoList.class);
+	public List<TodoList> findAllLists(Context context) throws ParseException { // TODO: rename findAllRelevantTodoLists
+		ParseQuery<TodoList> todoListsQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		todoListsQuery.whereEqualTo(TodoList.OWNER_KEY, this);
 		List<TodoList> relevantTodoLists = todoListsQuery.find();
 		
-		ParseQuery<TodoList> sharedTodoListsQuery = ParseQuery.getQuery(TodoList.class);
+		ParseQuery<TodoList> sharedTodoListsQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		sharedTodoListsQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new SmarTodoUser[]{this})); // TODO: check this
 		relevantTodoLists.addAll(sharedTodoListsQuery.find());
 		
@@ -42,13 +43,13 @@ public class SmarTodoUser extends ParseUser {
 		return relevantTodoLists;
 	}
 	
-	public static Collection<SmarTodoUser> findAll() {
-		return findAllLike(null, false);
+	public static Collection<SmarTodoUser> findAll(Context context) {
+		return findAllLike(context, null, false);
 		
 	}
 	
-	public static Collection<SmarTodoUser> findAllLike(String substring) {
-		return findAllLike(substring, true);
+	public static Collection<SmarTodoUser> findAllLike(Context context, String substring) {
+		return findAllLike(context, substring, true);
 	}
 	
 	/**
@@ -57,7 +58,7 @@ public class SmarTodoUser extends ParseUser {
 	 * @param substring
 	 * @return
 	 */
-	public static Collection<SmarTodoUser> findAllLike(String substring, boolean doFilter) {
+	public static Collection<SmarTodoUser> findAllLike(Context context, String substring, boolean doFilter) {
 		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
 		// It may work now because of subclassing from the ParseUser class.
 		
@@ -66,7 +67,7 @@ public class SmarTodoUser extends ParseUser {
 		
 		ParseQuery<SmarTodoUser> smarTodoUserQuery;
 		try {
-			smarTodoUserQuery = ParseQuery.getQuery(SmarTodoUser.class);
+			smarTodoUserQuery = LocalParseQuery.getQuery(SmarTodoUser.class, context);
 			if(doFilter) {
 				smarTodoUserQuery.whereContains(REALNAME_KEY, generousPattern);
 				smarTodoUserQuery.orderByAscending(OBJECTID_KEY);
@@ -77,7 +78,7 @@ public class SmarTodoUser extends ParseUser {
 		}
 		
 		try {
-			smarTodoUserQuery = ParseQuery.getQuery(SmarTodoUser.class);
+			smarTodoUserQuery = LocalParseQuery.getQuery(SmarTodoUser.class, context);
 			if(doFilter) {
 				smarTodoUserQuery.whereContains(EMAIL_KEY, generousPattern);
 				smarTodoUserQuery.orderByAscending(OBJECTID_KEY);
@@ -88,7 +89,7 @@ public class SmarTodoUser extends ParseUser {
 		}
 		
 		try {
-			smarTodoUserQuery = ParseQuery.getQuery(SmarTodoUser.class);
+			smarTodoUserQuery = LocalParseQuery.getQuery(SmarTodoUser.class, context);
 			if(doFilter) {
 				smarTodoUserQuery.whereContains(USERNAME_KEY, generousPattern);
 				smarTodoUserQuery.orderByAscending(OBJECTID_KEY);

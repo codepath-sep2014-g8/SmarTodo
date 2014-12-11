@@ -84,7 +84,7 @@ public class ParseDbTest {
 	
 	protected static void testSharingRead(final TodoList list, final Address a) {
 		try {
-			TodoList readList = TodoList.findTodoListByName(list.getName());
+			TodoList readList = TodoList.findTodoListByName(null, list.getName());
 			
 			softAssertEquals(list, readList);
 			
@@ -103,13 +103,13 @@ public class ParseDbTest {
 	}
 
 	protected static void testFindUsersAllLike(final TodoList list, final Address a) {
-		Collection<User> users = User.findAllLike("sure.co");
+		Collection<User> users = User.findAllLike(null, "sure.co");
 		softAssertEquals(3, users.size());
 		
-		users = User.findAllLike("notsu");
+		users = User.findAllLike(null, "notsu");
 		softAssertEquals(3, users.size());
 		
-		users = User.findAllLike(" Sure ");
+		users = User.findAllLike(null, " Sure ");
 		softAssertEquals(3, users.size());
 		
 		runNext(list, new Runnable() {

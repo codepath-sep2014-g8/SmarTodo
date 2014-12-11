@@ -62,7 +62,7 @@ public class ShareActivity extends Activity {
 		
 		listName = getIntent().getExtras().getString(AppConstants.OBJECTID_EXTRA);
 		try {
-			todoList = TodoList.findTodoListByObjectId(listName);
+			todoList = TodoList.findTodoListByObjectId(this, listName);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,7 +70,7 @@ public class ShareActivity extends Activity {
 		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
-		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll(), true));
+		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll(this), true));
 		shareListAdapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(shareListAdapter);
 		
@@ -178,7 +178,7 @@ public class ShareActivity extends Activity {
 	
 	private void getMatchingUsers(String newText){
 		if(newText != null && !newText.isEmpty()){
-			List<User> users = new ArrayList<User>( User.findAllLike(newText));
+			List<User> users = new ArrayList<User>( User.findAllLike(this, newText));
 			List<ShareUser> shareUsers = new ArrayList<ShareUser>();
 			for(User user : users){
 				if(user.equals(ModelManagerService.getUser())) {

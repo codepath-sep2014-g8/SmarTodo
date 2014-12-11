@@ -240,7 +240,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			todoList = TodoList.findTodoListByObjectId(listObjectId);
+			todoList = TodoList.findTodoListByObjectId(getActivity(), listObjectId);
 			todoItemsList = todoList.getAllItems();
 		} catch (ParseException e1) {
 			
@@ -507,7 +507,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			if(mode == TodoListDisplayMode.CREATE && TodoList.findTodoListByNameAndUser(title, ModelManagerService.getUser()) != null) {
+			if(mode == TodoListDisplayMode.CREATE && TodoList.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
 				return "The list name is not unique!";
 			}
 		} catch (ParseException e) {

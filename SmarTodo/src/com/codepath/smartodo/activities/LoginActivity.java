@@ -76,7 +76,7 @@ public class LoginActivity extends Activity {
 		// Populate the model with the logged in user's data
 		// TODO Display progress bar, run outside of UI thread
 		try {
-			ModelManagerService.refreshFromUser(new User(currentUser));
+			ModelManagerService.refreshFromUser(this, new User(currentUser));
 			ModelManagerService.registerInstallation();
 		} catch (ParseException e) {
 			// TODO Display in UI, add retry option

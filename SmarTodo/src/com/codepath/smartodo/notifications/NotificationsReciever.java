@@ -44,7 +44,7 @@ public class NotificationsReciever extends BroadcastReceiver {
 					ModelManagerService.getInstance().displayNotification("List " + todoListName + " was shared with you", "by " + sharedByUserName);
 					
 					try {
-						TodoList sharedTodoList = TodoList.findTodoListByName(todoListName);
+						TodoList sharedTodoList = TodoList.findTodoListByName(context, todoListName);
 						ModelManagerService.processListNotifications(sharedTodoList);
 						ModelManagerService.getLists().add(sharedTodoList);
 					} catch (ParseException e) {

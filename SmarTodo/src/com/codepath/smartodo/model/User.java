@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.parse.DeleteCallback;
@@ -62,12 +63,12 @@ public class User {
 		return parseUser.isAuthenticated();
 	}
 
-	public List<TodoList> findAllLists() throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQuery.getQuery(TodoList.class);
+	public List<TodoList> findAllLists(Context context) throws ParseException {
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
 		List<TodoList> lists = itemQuery.find();
 		
-		itemQuery = ParseQuery.getQuery(TodoList.class);
+		itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new ParseUser[]{this.parseUser}));
 		lists.addAll(itemQuery.find());
 		
@@ -76,12 +77,12 @@ public class User {
 		return lists;
 	}
 	
-	public static Collection<User> findAll() {
-		return findAllLike(null, false);
+	public static Collection<User> findAll(Context context) {
+		return findAllLike(context, null, false);
 	}
 	
-	public static Collection<User> findAllLike(String substring) {
-		return findAllLike(substring, true);
+	public static Collection<User> findAllLike(Context context, String substring) {
+		return findAllLike(context, substring, true);
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class User {
 	 * @param substring
 	 * @return
 	 */
-	public static Collection<User> findAllLike(String substring, boolean doFilter) {
+	public static Collection<User> findAllLike(Context context, String substring, boolean doFilter) {
 		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
 		
 		String generousPattern = substring;//"*" + pattern + "*";
@@ -98,7 +99,7 @@ public class User {
 		
 		ParseQuery<ParseUser> itemQuery;
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
 			if(doFilter) {
 				itemQuery.whereContains(REALNAME_KEY, generousPattern);
 				itemQuery.orderByAscending("objectId");
@@ -109,7 +110,7 @@ public class User {
 		}
 		
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
 			if(doFilter) {
 				itemQuery.whereContains("email", generousPattern);
 				itemQuery.orderByAscending("objectId");
@@ -120,7 +121,7 @@ public class User {
 		}
 		
 		try {
-			itemQuery = ParseQuery.getQuery(ParseUser.class);
+			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
 			if(doFilter) {
 				itemQuery.whereContains("username", generousPattern);
 				itemQuery.orderByAscending("objectId");

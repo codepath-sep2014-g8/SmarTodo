@@ -7,6 +7,7 @@ import com.codepath.smartodo.model.Address;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.parse.Parse;
+import com.parse.ParseCrashReporting;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -22,6 +23,7 @@ public class ParseConfig {
 		Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 		
 		Parse.enableLocalDatastore(context);
+		ParseCrashReporting.enable(context);
 		Parse.initialize(context, context.getString(R.string.parse_app_id),
 				context.getString(R.string.parse_client_key));
 		
@@ -33,6 +35,5 @@ public class ParseConfig {
 	    // remove this line (and other related ParseTwitterUtils calls)
 	    //ParseTwitterUtils.initialize(getString(R.string.twitter_consumer_key),
 	    //   getString(R.string.twitter_consumer_secret));
-		
 	}
 }

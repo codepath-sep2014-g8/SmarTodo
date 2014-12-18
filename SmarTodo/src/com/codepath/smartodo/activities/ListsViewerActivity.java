@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
@@ -23,6 +22,7 @@ import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.etsy.android.grid.StaggeredGridView;
 import com.parse.ParseException;
@@ -73,7 +73,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		// }
 
 		adapter = new TodoListAdapter(getBaseContext(),
-				ModelManagerService.getLists());
+				ParsePersistenceManager.getLists());
 
 		staggeredGridView.setAdapter(adapter);
 	}
@@ -299,7 +299,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected Object doInBackground(Object... params) {
 				try {
-					ModelManagerService.refreshFromUser(ListsViewerActivity.this, ModelManagerService.getUser());
+					ParsePersistenceManager.refreshFromUser(ListsViewerActivity.this, ModelManagerService.getUser());
 				} catch (ParseException e) {
 					Log.e("error", e.getMessage(), e);
 				}
@@ -309,7 +309,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected void onPostExecute(Object result) {
 				adapter.clear();
-				adapter.addAll(ModelManagerService.getLists());
+				adapter.addAll(ParsePersistenceManager.getLists());
 				adapter.notifyDataSetChanged();
 				swipeContainer.setRefreshing(false);
 			}

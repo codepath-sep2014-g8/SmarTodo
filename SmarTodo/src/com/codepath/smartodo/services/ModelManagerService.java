@@ -1,14 +1,11 @@
 package com.codepath.smartodo.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -24,7 +21,6 @@ import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
-import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -35,8 +31,8 @@ public class ModelManagerService extends Service {
 
 	private static final int NOTIFICATION_ID = 1;
 	
-	private static User user;
-	private static List<TodoList> lists;
+	public static User user;
+	public static List<TodoList> lists;
 	private static Handler handler;
 
 	public ModelManagerService() {
@@ -83,22 +79,6 @@ public class ModelManagerService extends Service {
 	public void onDestroy() {
 		Log.i("info", "Stopping " + getClass().getSimpleName());
 		running = false;
-	}
-
-	public static void refreshFromUser(Context context, User user) throws ParseException {
-		Log.i("info", "Refreshing data from current user " + user.getUsername());
-		ModelManagerService.user = user;
-		ModelManagerService.lists = user.findAllLists(context);
-		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");
-		
-		for(TodoList list : ModelManagerService.lists) {
-			if(list == null) {
-				// TODO Why is the list null?!
-				Log.w("warning", "Encountered a null list. Skipping it.");
-				continue;
-			}
-			processListNotifications(list);
-		}
 	}
 
 	public static void registerInstallation() {
@@ -181,53 +161,6 @@ public class ModelManagerService extends Service {
 		// TODO
 	}
 	
-	public static String saveList(final TodoList todoList, final SaveCallback callback) {
-		Log.i("info", "Saving list");
-
-		// Batch save
-		List<ParseObject> allObjects = new ArrayList<ParseObject>();
-		allObjects.add(todoList);
-		allObjects.addAll(todoList.getItems());
-		
-		try {
-			ParseObject.pinAll(allObjects);
-		} catch (ParseException ex) {
-			Log.e("error", "Pin error: " + ex.getMessage(), ex);
-		}
-		
-		ParseObject.saveAllInBackground(allObjects, new SaveCallback() {
-			@Override
-			public void done(ParseException ex) {
-				Log.i("info", "Save complete");
-				
-				if(ex != null) {
-					Log.e("error", "Save error: " + ex.getMessage(), ex);
-				} else {
-					try {
-						todoList.pin();
-					} catch (ParseException ex2) {
-						Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
-					}
-					
-					for(User sharedWith : todoList.getSharing()) {
-						Log.i("info", "Sending push message to " + sharedWith.getUsername());
-						NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
-					}
-					
-					try {
-						callback.done(null);
-					} catch(Throwable th) {
-						Log.e("error", "Error while executing callback", th);
-					}
-				}
-			}
-		});
-		
-		Log.i("info", "List save started in background");
-		
-		return todoList.getObjectId();
-	}
-	
 	private static boolean running = false;
 	
 	// https://groups.google.com/forum/#!topic/android-developers/jEvXMWgbgzE
@@ -242,21 +175,6 @@ public class ModelManagerService extends Service {
 
 	public static User getUser() {
 		return user;
-	}
-
-	public static List<TodoList> getLists() {
-		return lists;
-	}
-
-	public static int findExistingListIdxByObjectId(String objectId) {
-		for(int i=0;i< getLists().size();i++) {
-			TodoList list = getLists().get(i);
-			if(list.getObjectId().equals(objectId)) {
-				return i;
-			}
-		}
-		
-		return -1;
 	}
 
 	public void displayNotification(String title, String text) {

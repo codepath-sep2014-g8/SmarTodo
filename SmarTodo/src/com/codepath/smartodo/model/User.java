@@ -1,21 +1,13 @@
 package com.codepath.smartodo.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import android.content.Context;
-import android.util.Log;
 
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.RefreshCallback;
 import com.parse.SaveCallback;
@@ -61,90 +53,6 @@ public class User {
 
 	public boolean isAuthenticated() {
 		return parseUser.isAuthenticated();
-	}
-
-	public List<TodoList> findAllLists(Context context) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereEqualTo(TodoList.OWNER_KEY, this.parseUser);
-		List<TodoList> lists = itemQuery.find();
-		
-		itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereContainsAll(TodoList.SHARING_KEY, Arrays.asList(new ParseUser[]{this.parseUser}));
-		lists.addAll(itemQuery.find());
-		
-		ParseObject.pinAll(lists);
-		
-		return lists;
-	}
-	
-	public static Collection<User> findAll(Context context) {
-		return findAllLike(context, null, false);
-	}
-	
-	public static Collection<User> findAllLike(Context context, String substring) {
-		return findAllLike(context, substring, true);
-	}
-	
-	/**
-	 * Supports only substring based search in the realname, email and username fields. Note that the search is case SENSITIVE.
-	 * 
-	 * @param substring
-	 * @return
-	 */
-	public static Collection<User> findAllLike(Context context, String substring, boolean doFilter) {
-		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
-		
-		String generousPattern = substring;//"*" + pattern + "*";
-		List<ParseUser> users = new ArrayList<ParseUser>();
-		
-		ParseQuery<ParseUser> itemQuery;
-		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
-			if(doFilter) {
-				itemQuery.whereContains(REALNAME_KEY, generousPattern);
-				itemQuery.orderByAscending("objectId");
-			}
-			users.addAll(itemQuery.find());
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-		}
-		
-		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
-			if(doFilter) {
-				itemQuery.whereContains("email", generousPattern);
-				itemQuery.orderByAscending("objectId");
-			}
-			users.addAll(itemQuery.find());
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-		}
-		
-		try {
-			itemQuery = LocalParseQuery.getQuery(ParseUser.class, context);
-			if(doFilter) {
-				itemQuery.whereContains("username", generousPattern);
-				itemQuery.orderByAscending("objectId");
-			}
-			users.addAll(itemQuery.find());
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-		}
-		
-		Map<String, User> uniqueUsers = new HashMap<String, User>();
-		
-		for(ParseUser tmpUser : users) {
-			uniqueUsers.put(tmpUser.getUsername(), new User(tmpUser));
-		}
-		
-		List<User> tmpList = new ArrayList<User>(uniqueUsers.values());
-		try {
-			ParseObject.pinAll(extractParseUsers(tmpList));
-		} catch (ParseException e) {
-			Log.e("error", e.getMessage(), e);
-		}
-		
-		return tmpList;
 	}
 	
 	public boolean equals(Object o) {

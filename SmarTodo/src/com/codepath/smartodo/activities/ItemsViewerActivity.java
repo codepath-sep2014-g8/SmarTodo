@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -29,8 +28,8 @@ import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.ReminderLocation;
-import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.parse.ParseException;
 
 
@@ -135,7 +134,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		}
 		
 		try {
-			todoList = TodoList.findTodoListByObjectId(this, objectId);
+			todoList = ParsePersistenceManager.findTodoListByObjectId(this, objectId);
 		} catch (ParseException e1) {
 			
 			Log.d(TAG, "Excpetion while getting the todo list");
@@ -217,7 +216,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	private void refreshTodoList() {
 		try {
-			todoList = TodoList.findTodoListByObjectId(this, objectId);
+			todoList = ParsePersistenceManager.findTodoListByObjectId(this, objectId);
 			fragmentTodoList.sharedWithListAdapter.clear();
 			fragmentTodoList.sharedWithListAdapter.addAll(todoList.getSharing());
 		} catch (ParseException e) {

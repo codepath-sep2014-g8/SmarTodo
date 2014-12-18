@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 @ParseClassName("TodoList")
@@ -197,59 +195,6 @@ public class TodoList extends ParseObject {
 		return getItems();
 	}
 	
-	// TODO Merge the implementation with findTodoListByName
-	public static TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
-		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
-		
-		List<TodoList> list = itemQuery.find();
-		
-		if(list.isEmpty()) {
-			return null;
-		} else { 
-			if(list.size() > 1) {
-				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
-			}
-			
-			return list.get(0);
-		}
-	}
-	
-	public static TodoList findTodoListByName(Context context, String listName) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
-		
-		List<TodoList> list = itemQuery.find();
-		
-		if(list.isEmpty()) {
-			return null;
-		} else { 
-			if(list.size() > 1) {
-				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
-			}
-			
-			return list.get(0);
-		}
-	}
-	
-	public static TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereEqualTo("objectId", objectId);
-		
-		List<TodoList> list = itemQuery.find();
-		
-		if(list.isEmpty()) {
-			return null;
-		} else { 
-			if(list.size() > 1) {
-				Log.w("warning", "Found " + list.size() + " lists with the same name: " + objectId + ". Returning only the first one");
-			}
-			
-			return list.get(0);
-		}
-	}
-
 	public int getUniqueId() {
 		String objectId = getObjectId();
 		

@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.util.Log;
 
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -84,7 +85,7 @@ public class ParseDbTest {
 	
 	protected static void testSharingRead(final TodoList list, final Address a) {
 		try {
-			TodoList readList = TodoList.findTodoListByName(null, list.getName());
+			TodoList readList = ParsePersistenceManager.findTodoListByName(null, list.getName());
 			
 			softAssertEquals(list, readList);
 			
@@ -103,13 +104,13 @@ public class ParseDbTest {
 	}
 
 	protected static void testFindUsersAllLike(final TodoList list, final Address a) {
-		Collection<User> users = User.findAllLike(null, "sure.co");
+		Collection<User> users = ParsePersistenceManager.findAllLike(null, "sure.co");
 		softAssertEquals(3, users.size());
 		
-		users = User.findAllLike(null, "notsu");
+		users = ParsePersistenceManager.findAllLike(null, "notsu");
 		softAssertEquals(3, users.size());
 		
-		users = User.findAllLike(null, " Sure ");
+		users = ParsePersistenceManager.findAllLike(null, " Sure ");
 		softAssertEquals(3, users.size());
 		
 		runNext(list, new Runnable() {

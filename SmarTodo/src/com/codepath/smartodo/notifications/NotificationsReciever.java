@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 
@@ -44,9 +45,9 @@ public class NotificationsReciever extends BroadcastReceiver {
 					ModelManagerService.getInstance().displayNotification("List " + todoListName + " was shared with you", "by " + sharedByUserName);
 					
 					try {
-						TodoList sharedTodoList = TodoList.findTodoListByName(context, todoListName);
+						TodoList sharedTodoList = ParsePersistenceManager.findTodoListByName(context, todoListName);
 						ModelManagerService.processListNotifications(sharedTodoList);
-						ModelManagerService.getLists().add(sharedTodoList);
+						ParsePersistenceManager.getLists().add(sharedTodoList);
 					} catch (ParseException e) {
 						Log.e("error", e.getMessage(), e);
 					}

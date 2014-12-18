@@ -13,6 +13,7 @@ import com.codepath.smartodo.geofence.GeofenceUtils;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
 import com.parse.ParseException;
@@ -76,7 +77,7 @@ public class LoginActivity extends Activity {
 		// Populate the model with the logged in user's data
 		// TODO Display progress bar, run outside of UI thread
 		try {
-			ModelManagerService.refreshFromUser(this, new User(currentUser));
+			ParsePersistenceManager.refreshFromUser(this, new User(currentUser));
 			ModelManagerService.registerInstallation();
 		} catch (ParseException e) {
 			// TODO Display in UI, add retry option

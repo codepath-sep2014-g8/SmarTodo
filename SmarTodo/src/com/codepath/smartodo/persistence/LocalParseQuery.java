@@ -1,4 +1,4 @@
-package com.codepath.smartodo.model;
+package com.codepath.smartodo.persistence;
 
 import android.content.Context;
 

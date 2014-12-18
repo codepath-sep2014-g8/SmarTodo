@@ -49,6 +49,7 @@ import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -240,7 +241,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			todoList = TodoList.findTodoListByObjectId(getActivity(), listObjectId);
+			todoList = ParsePersistenceManager.findTodoListByObjectId(getActivity(), listObjectId);
 			todoItemsList = todoList.getAllItems();
 		} catch (ParseException e1) {
 			
@@ -477,7 +478,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		listWithoutDummy.addAll(todoItemsList.subList(0, todoItemsList.size() - 1));
 		todoList.setItems(listWithoutDummy);
 		
-		String objectId = ModelManagerService.saveList(todoList, new SaveCallback() {
+		String objectId = ParsePersistenceManager.saveList(todoList, new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
@@ -507,7 +508,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			if(mode == TodoListDisplayMode.CREATE && TodoList.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
+			if(mode == TodoListDisplayMode.CREATE && ParsePersistenceManager.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
 				return "The list name is not unique!";
 			}
 		} catch (ParseException e) {

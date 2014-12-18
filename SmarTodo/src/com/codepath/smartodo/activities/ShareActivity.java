@@ -30,6 +30,7 @@ import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
+import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
@@ -62,7 +63,7 @@ public class ShareActivity extends Activity {
 		
 		listName = getIntent().getExtras().getString(AppConstants.OBJECTID_EXTRA);
 		try {
-			todoList = TodoList.findTodoListByObjectId(this, listName);
+			todoList = ParsePersistenceManager.findTodoListByObjectId(this, listName);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,7 +71,7 @@ public class ShareActivity extends Activity {
 		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
-		users = new ArrayList<ShareUser>(convertToSharedUsers(User.findAll(this), true));
+		users = new ArrayList<ShareUser>(convertToSharedUsers(ParsePersistenceManager.findAll(this), true));
 		shareListAdapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(shareListAdapter);
 		
@@ -178,7 +179,7 @@ public class ShareActivity extends Activity {
 	
 	private void getMatchingUsers(String newText){
 		if(newText != null && !newText.isEmpty()){
-			List<User> users = new ArrayList<User>( User.findAllLike(this, newText));
+			List<User> users = new ArrayList<User>( ParsePersistenceManager.findAllLike(this, newText));
 			List<ShareUser> shareUsers = new ArrayList<ShareUser>();
 			for(User user : users){
 				if(user.equals(ModelManagerService.getUser())) {
@@ -197,7 +198,7 @@ public class ShareActivity extends Activity {
 			
 			todoList.setSharing(users); // add new
 			
-			ModelManagerService.saveList(todoList, new SaveCallback() {
+			ParsePersistenceManager.saveList(todoList, new SaveCallback() {
 				public void done(ParseException e) {
 					if(e != null) {
 						Log.e("error", e.getMessage(), e);

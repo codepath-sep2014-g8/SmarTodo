@@ -20,13 +20,18 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-public class ParsePersistenceManager {
+/**
+ * This class provide the persistence functionality for the app using the Parse 
+ * package for both the local and the cloud storage.
+ *
+ */
+public class ParsePersistenceManager implements PersistenceManager {
 	
-	public static List<TodoList> getLists() {
+	public List<TodoList> getTodoLists() {
 		return ModelManagerService.lists;
 	}
 	
-	public static String saveList(final TodoList todoList, final SaveCallback callback) {
+	public String saveTodoList(final TodoList todoList, final SaveCallback callback) {
 		Log.i("info", "Saving list");
 	
 		// Batch save
@@ -73,10 +78,10 @@ public class ParsePersistenceManager {
 		return todoList.getObjectId();
 	}
 	
-	public static void refreshFromUser(Context context, User user) throws ParseException {
+	public void refreshTodoListsForUser(Context context, User user) throws ParseException {
 		Log.i("info", "Refreshing data from current user " + user.getUsername());
 		ModelManagerService.user = user;
-		ModelManagerService.lists = findAllLists(context, user);
+		ModelManagerService.lists = findAllTodoLists(context, user);
 		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");
 		
 		for(TodoList list : ModelManagerService.lists) {
@@ -89,7 +94,7 @@ public class ParsePersistenceManager {
 		}
 	}
 	
-	public static List<TodoList> findAllLists(Context context, User user) throws ParseException {
+	public List<TodoList> findAllTodoLists(Context context, User user) throws ParseException {
 		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo(TodoList.OWNER_KEY, user.getParseUser());
 		List<TodoList> lists = itemQuery.find();
@@ -103,16 +108,25 @@ public class ParsePersistenceManager {
 		return lists;
 	}
 	
-	public static Collection<User> findAll(Context context) {
-		return findAllLike(context, null, false);
-	}
-
-	public static Collection<User> findAllLike(Context context, String substring) {
-		return findAllLike(context, substring, true);
+	public TodoList findTodoListByName(Context context, String listName) throws ParseException {
+		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
+		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
+		
+		List<TodoList> list = itemQuery.find();
+		
+		if(list.isEmpty()) {
+			return null;
+		} else { 
+			if(list.size() > 1) {
+				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
+			}
+			
+			return list.get(0);
+		}
 	}
 
 	// TODO Merge the implementation with findTodoListByName
-	public static TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException {
+	public TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException {
 		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
@@ -130,24 +144,7 @@ public class ParsePersistenceManager {
 		}
 	}
 
-	public static TodoList findTodoListByName(Context context, String listName) throws ParseException {
-		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
-		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
-		
-		List<TodoList> list = itemQuery.find();
-		
-		if(list.isEmpty()) {
-			return null;
-		} else { 
-			if(list.size() > 1) {
-				Log.w("warning", "Found " + list.size() + " lists with the same name: " + listName + ". Returning only the first one");
-			}
-			
-			return list.get(0);
-		}
-	}
-
-	public static TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException {
+	public TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException {
 		ParseQuery<TodoList> itemQuery = LocalParseQuery.getQuery(TodoList.class, context);
 		itemQuery.whereEqualTo("objectId", objectId);
 		
@@ -164,15 +161,23 @@ public class ParsePersistenceManager {
 		}
 	}
 	
-	public static int findExistingListIdxByObjectId(String objectId) {
-		for(int i=0;i< ParsePersistenceManager.getLists().size();i++) {
-			TodoList list = ParsePersistenceManager.getLists().get(i);
+	public int findExistingTodoListIdxByObjectId(String objectId) {
+		for(int i=0;i< getTodoLists().size();i++) {
+			TodoList list = getTodoLists().get(i);
 			if(list.getObjectId().equals(objectId)) {
 				return i;
 			}
 		}
 		
 		return -1;
+	}
+	
+	public Collection<User> findAllUsers(Context context) {
+		return findAllUsersLike(context, null, false);
+	}
+
+	public Collection<User> findAllUsersLike(Context context, String substring) {
+		return findAllUsersLike(context, substring, true);
 	}
 
 	/**
@@ -181,7 +186,7 @@ public class ParsePersistenceManager {
 	 * @param substring
 	 * @return
 	 */
-	public static Collection<User> findAllLike(Context context, String substring, boolean doFilter) {
+	public Collection<User> findAllUsersLike(Context context, String substring, boolean doFilter) {
 		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
 		
 		String generousPattern = substring;//"*" + pattern + "*";

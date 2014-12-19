@@ -22,7 +22,8 @@ import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.TodoList;
-import com.codepath.smartodo.persistence.ParsePersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.etsy.android.grid.StaggeredGridView;
 import com.parse.ParseException;
@@ -36,6 +37,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	private String editedObjectId;
 	private int currentListIndex = -1;
 	private SwipeRefreshLayout swipeContainer;
+	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		// }
 
 		adapter = new TodoListAdapter(getBaseContext(),
-				ParsePersistenceManager.getLists());
+				persistenceManager.getTodoLists());
 
 		staggeredGridView.setAdapter(adapter);
 	}
@@ -299,7 +301,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected Object doInBackground(Object... params) {
 				try {
-					ParsePersistenceManager.refreshFromUser(ListsViewerActivity.this, ModelManagerService.getUser());
+					persistenceManager.refreshTodoListsForUser(ListsViewerActivity.this, ModelManagerService.getUser());
 				} catch (ParseException e) {
 					Log.e("error", e.getMessage(), e);
 				}
@@ -309,7 +311,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected void onPostExecute(Object result) {
 				adapter.clear();
-				adapter.addAll(ParsePersistenceManager.getLists());
+				adapter.addAll(persistenceManager.getTodoLists());
 				adapter.notifyDataSetChanged();
 				swipeContainer.setRefreshing(false);
 			}

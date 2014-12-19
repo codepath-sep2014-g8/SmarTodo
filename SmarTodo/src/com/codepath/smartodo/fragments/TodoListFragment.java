@@ -13,14 +13,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -49,7 +45,8 @@ import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
-import com.codepath.smartodo.persistence.ParsePersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -113,6 +110,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private GridView gvViewSharedWith;
 
 	public SharedWithAdapter sharedWithListAdapter;
+	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 	
 	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
     {
@@ -241,7 +239,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			todoList = ParsePersistenceManager.findTodoListByObjectId(getActivity(), listObjectId);
+			todoList = persistenceManager.findTodoListByObjectId(getActivity(), listObjectId);
 			todoItemsList = todoList.getAllItems();
 		} catch (ParseException e1) {
 			
@@ -478,7 +476,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		listWithoutDummy.addAll(todoItemsList.subList(0, todoItemsList.size() - 1));
 		todoList.setItems(listWithoutDummy);
 		
-		String objectId = ParsePersistenceManager.saveList(todoList, new SaveCallback() {
+		String objectId = persistenceManager.saveTodoList(todoList, new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
@@ -508,7 +506,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			if(mode == TodoListDisplayMode.CREATE && ParsePersistenceManager.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
+			if(mode == TodoListDisplayMode.CREATE && persistenceManager.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
 				return "The list name is not unique!";
 			}
 		} catch (ParseException e) {

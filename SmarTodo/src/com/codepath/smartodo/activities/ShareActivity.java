@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
@@ -30,7 +27,8 @@ import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
-import com.codepath.smartodo.persistence.ParsePersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
@@ -50,6 +48,7 @@ public class ShareActivity extends Activity {
 	private ImageView ivBack;
 	
 	private int colorId = R.color.todo_list_backcolor;
+	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class ShareActivity extends Activity {
 		
 		listName = getIntent().getExtras().getString(AppConstants.OBJECTID_EXTRA);
 		try {
-			todoList = ParsePersistenceManager.findTodoListByObjectId(this, listName);
+			todoList = persistenceManager.findTodoListByObjectId(this, listName);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,7 +70,7 @@ public class ShareActivity extends Activity {
 		
 		
 		lvUsers = (ListView)findViewById(R.id.lvPeopleForShare);
-		users = new ArrayList<ShareUser>(convertToSharedUsers(ParsePersistenceManager.findAll(this), true));
+		users = new ArrayList<ShareUser>(convertToSharedUsers(persistenceManager.findAllUsers(this), true));
 		shareListAdapter = new ShareListAdapter(this, users);
 		lvUsers.setAdapter(shareListAdapter);
 		
@@ -179,7 +178,7 @@ public class ShareActivity extends Activity {
 	
 	private void getMatchingUsers(String newText){
 		if(newText != null && !newText.isEmpty()){
-			List<User> users = new ArrayList<User>( ParsePersistenceManager.findAllLike(this, newText));
+			List<User> users = new ArrayList<User>( persistenceManager.findAllUsersLike(this, newText));
 			List<ShareUser> shareUsers = new ArrayList<ShareUser>();
 			for(User user : users){
 				if(user.equals(ModelManagerService.getUser())) {
@@ -198,7 +197,7 @@ public class ShareActivity extends Activity {
 			
 			todoList.setSharing(users); // add new
 			
-			ParsePersistenceManager.saveList(todoList, new SaveCallback() {
+			persistenceManager.saveTodoList(todoList, new SaveCallback() {
 				public void done(ParseException e) {
 					if(e != null) {
 						Log.e("error", e.getMessage(), e);

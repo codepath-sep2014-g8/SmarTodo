@@ -29,7 +29,8 @@ import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoList;
-import com.codepath.smartodo.persistence.ParsePersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.parse.ParseException;
 
 
@@ -78,6 +79,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private List<ReminderLocation> reminderLocations;
 
 	private TodoListFragment fragmentTodoList;
+	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		}
 		
 		try {
-			todoList = ParsePersistenceManager.findTodoListByObjectId(this, objectId);
+			todoList = persistenceManager.findTodoListByObjectId(this, objectId);
 		} catch (ParseException e1) {
 			
 			Log.d(TAG, "Excpetion while getting the todo list");
@@ -216,7 +218,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	private void refreshTodoList() {
 		try {
-			todoList = ParsePersistenceManager.findTodoListByObjectId(this, objectId);
+			todoList = persistenceManager.findTodoListByObjectId(this, objectId);
 			fragmentTodoList.sharedWithListAdapter.clear();
 			fragmentTodoList.sharedWithListAdapter.addAll(todoList.getSharing());
 		} catch (ParseException e) {

@@ -10,6 +10,7 @@ import java.util.Map;
 import android.content.Context;
 import android.util.Log;
 
+import com.codepath.smartodo.persistence.LocalParseQuery;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;

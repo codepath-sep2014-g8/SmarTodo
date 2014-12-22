@@ -10,7 +10,7 @@ package com.codepath.smartodo.persistence;
 public class PersistenceManagerFactory {
 	private static PersistenceManager instance = null;
 	
-	public static PersistenceManager getInstance() {
+	public static synchronized PersistenceManager getInstance() {
 		if (instance == null) {
 			instance = new ParsePersistenceManager();
 		}

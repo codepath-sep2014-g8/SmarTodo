@@ -20,13 +20,21 @@ public interface PersistenceManager {
 
 	//TODO: Add javadocs for the methods
 	
+	public enum ACCESS_LOCATION {
+	    CLOUD, 
+	    CLOUD_ELSE_LOCAL, 
+	    LOCAL 
+	}
+
 	public List<TodoList> getTodoLists();
 	
 	public String saveTodoList(final TodoList todoList, final SaveCallback callback) ;
 	
 	public void refreshTodoListsForUser(Context context, User user) throws ParseException;
 	
-	public List<TodoList> findAllTodoLists(Context context, User user) throws ParseException;
+	public void refreshTodoListsForUser(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException;
+	
+	public List<TodoList> findAllTodoLists(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException;
 	
 	public TodoList findTodoListByName(Context context, String listName) throws ParseException;
 	
@@ -47,5 +55,7 @@ public interface PersistenceManager {
 	 * @return
 	 */
 	public Collection<User> findAllUsersLike(Context context, String substring, boolean doFilter);
+
+	
 
 }

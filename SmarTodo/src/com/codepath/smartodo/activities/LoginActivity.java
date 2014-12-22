@@ -14,6 +14,7 @@ import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
 import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.google.android.gms.location.Geofence;
@@ -25,6 +26,7 @@ public class LoginActivity extends Activity {
 	public static int LOGIN_REQUEST = 0;
 	private ParseUser currentUser;
 	boolean loginInProgress = false;
+	boolean loginRequired = false;
 	
 	// Set it to true if we want email verifications to happen.
 	// Set  the following variable to false for testing with existing accounts
@@ -79,7 +81,11 @@ public class LoginActivity extends Activity {
 		// Populate the model with the logged in user's data
 		// TODO Display progress bar, run outside of UI thread
 		try {
-			persistenceManager.refreshTodoListsForUser(this, new User(currentUser));
+			ACCESS_LOCATION accessLocation = ACCESS_LOCATION.LOCAL; // By default, get the initial data from the local datastore
+			if (loginRequired) { // get the initial data from the cloud
+				accessLocation = ACCESS_LOCATION.CLOUD_ELSE_LOCAL;
+			}
+			persistenceManager.refreshTodoListsForUser(this, new User(currentUser), accessLocation);
 			ModelManagerService.registerInstallation();
 		} catch (ParseException e) {
 			// TODO Display in UI, add retry option
@@ -130,6 +136,7 @@ public class LoginActivity extends Activity {
 		if (loginInProgress) {
 			return;
 		}
+		loginRequired = true;
 		loginInProgress = true;
 		
 		ParseLoginBuilder loginBuilder = new ParseLoginBuilder(LoginActivity.this);

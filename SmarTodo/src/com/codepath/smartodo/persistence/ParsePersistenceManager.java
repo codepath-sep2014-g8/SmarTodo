@@ -79,6 +79,13 @@ public class ParsePersistenceManager implements PersistenceManager {
 		return todoList.getObjectId();  // This could be null if the TodoList is saved for the first time and the cloud operation has not yet finished.
 	}
 	
+	public void deleteObject(Object object) throws ParseException {
+		if (object instanceof ParseObject) {
+			((ParseObject) object).unpin();
+			((ParseObject) object).deleteEventually();
+		}		
+	}
+	
 	public void refreshTodoListsForUser(Context context, User user) throws ParseException {
 		refreshTodoListsForUser(context, user, ACCESS_LOCATION.CLOUD_ELSE_LOCAL);
 	}
@@ -214,19 +221,16 @@ public class ParsePersistenceManager implements PersistenceManager {
 			ParseQuery<ParseUser> itemQuery1 = ParseQueryFactory.getQuery(ParseUser.class, context, accessLocation);
 			if(doFilter) {
 				itemQuery1.whereContains(User.REALNAME_KEY, generousPattern);
-				itemQuery1.orderByAscending("objectId");
 			}
 	
 			ParseQuery<ParseUser> itemQuery2 = ParseQueryFactory.getQuery(ParseUser.class, context, accessLocation);
 			if(doFilter) {
 				itemQuery2.whereContains("email", generousPattern);
-				itemQuery2.orderByAscending("objectId");
 			}
 		
 			ParseQuery<ParseUser> itemQuery3 = ParseQueryFactory.getQuery(ParseUser.class, context, accessLocation);
 			if(doFilter) {
 				itemQuery3.whereContains("username", generousPattern);
-				itemQuery3.orderByAscending("objectId");
 			}
 			
 			List<ParseQuery<ParseUser>> itemQueries = new ArrayList<ParseQuery<ParseUser>>();
@@ -235,6 +239,7 @@ public class ParsePersistenceManager implements PersistenceManager {
 			itemQueries.add(itemQuery3);
 			
 			ParseQuery<ParseUser> itemQuery = ParseQuery.or(itemQueries);	
+			itemQuery.orderByAscending("objectId");
 			
 			parseUsers.addAll(itemQuery.find());			
 			

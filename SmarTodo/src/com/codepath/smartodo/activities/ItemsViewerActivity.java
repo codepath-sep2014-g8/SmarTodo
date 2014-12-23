@@ -294,7 +294,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			public void onClick(View v) {
 				
 				try {
-					todoList.deleteEventually();
+					persistenceManager.deleteObject(todoList);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -359,7 +359,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	private void deleteList(){
 
 		try {
-			todoList.deleteEventually();
+			persistenceManager.deleteObject(todoList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

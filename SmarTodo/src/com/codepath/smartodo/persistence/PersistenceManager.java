@@ -28,7 +28,9 @@ public interface PersistenceManager {
 
 	public List<TodoList> getTodoLists();
 	
-	public String saveTodoList(final TodoList todoList, final SaveCallback callback) ;
+	public String saveTodoList(final TodoList todoList, final SaveCallback callback);
+	
+	public void deleteObject(Object object) throws ParseException;
 	
 	public void refreshTodoListsForUser(Context context, User user) throws ParseException;
 	

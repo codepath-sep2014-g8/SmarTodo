@@ -5,6 +5,8 @@ import java.util.List;
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.model.TodoItem;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
@@ -33,6 +35,7 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 	private TodoListDisplayMode mode = TodoListDisplayMode.GRID;
 	private TodoItem dummyItem = new TodoItem();
 	int currentlyEditedItemIdx = -1;
+	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 
 	private class ViewHolder {
 		ImageView ivImage;
@@ -75,7 +78,12 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d(TAG, "Deleting item " + item.getText());
 				remove(item);
-				item.deleteEventually();
+				try {
+					persistenceManager.deleteObject(item);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 		}) 
@@ -225,7 +233,12 @@ public class TodoItemsAdapter extends ArrayAdapter<TodoItem> {
 					showDialog(item);
 //					Log.d(TAG, "Deleting item " + item.getText());
 //					remove(item);
-//					item.deleteEventually();
+//					try {
+//					    persistenceManager.deleteObject(item);
+//				    } catch (ParseException e) {
+//				    	// TODO Auto-generated catch block
+//					    e.printStackTrace();
+//				   }
 				}
 			});
 		}

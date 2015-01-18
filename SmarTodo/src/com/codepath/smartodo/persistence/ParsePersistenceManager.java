@@ -12,7 +12,6 @@ import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
-import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -26,12 +25,9 @@ import com.parse.SaveCallback;
  */
 public class ParsePersistenceManager implements PersistenceManager {
 	
-	public List<TodoList> getTodoLists() {
-		return ModelManagerService.lists;
-	}
-	
-	public String saveTodoList(final TodoList todoList, final SaveCallback callback) {
-		Log.i("info", "Saving list");
+	@Override
+	public String saveTodoList(final TodoList todoList, final PERSISTENCE_OPERATION operation, final PersistenceCallback callback) {
+		Log.i("info", "Saving list, operation=" + operation);
 	
 		// Batch save
 		final List<ParseObject> allObjects = new ArrayList<ParseObject>();
@@ -43,31 +39,33 @@ public class ParsePersistenceManager implements PersistenceManager {
 		ParseObject.saveAllInBackground(allObjects, new SaveCallback() {
 			@Override
 			public void done(ParseException ex) {
-				Log.i("info", "Cloud save complete");
-				
+						
 				if(ex != null) {
-					Log.e("error", "Save error: " + ex.getMessage(), ex);
-					// TODO: Save locally anyway?
+					Log.e("error", "Cloud save error: " + ex.getMessage(), ex);
+					performCallback(ex, todoList, operation, callback);
 				} else {
+					Log.i("info", "Cloud save ok");
 					try {
 						ParseObject.pinAll(allObjects); // save locally now as the objectIds would have been initialized.
 						Log.i("info", "Local save complete");
 					} catch (ParseException ex2) {
 						Log.e("error", "Pin error: " + ex2.getMessage(), ex2);
+						performCallback(ex2, todoList, operation, callback);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						performCallback(e, todoList, operation, callback);
 					}
 					
 					for(User sharedWith : todoList.getSharing()) {
+						// TODO: it will be good move the notifications out of PersistenceManager
 						Log.i("info", "Sending push message to " + sharedWith.getUsername());
 						NotificationsSender.shareTodoList(todoList, sharedWith.getParseUser());	
 					}
 					
 					try {
-						// TODO: The following callback can send the original todoList which can be updated on the screen "Saving..." -> "" 
-						callback.done(null);  
-					} catch(Throwable th) {
+						performCallback(null, todoList, operation, callback);						 
+					} catch (Throwable th) {
 						Log.e("error", "Error while executing callback", th);
 					}
 				}
@@ -79,6 +77,31 @@ public class ParsePersistenceManager implements PersistenceManager {
 		return todoList.getObjectId();  // This could be null if the TodoList is saved for the first time and the cloud operation has not yet finished.
 	}
 	
+	private void performCallback(Exception exception, TodoList todoList, PERSISTENCE_OPERATION operation, PersistenceCallback callback) {
+		if (callback == null) {
+			return;
+		}
+		if (operation == PERSISTENCE_OPERATION.ADD) {
+			callback.added(exception, todoList);
+		} else if (operation == PERSISTENCE_OPERATION.UPDATE) {
+			callback.updated(exception, todoList);
+		} else if (operation == PERSISTENCE_OPERATION.DELETE) {
+			callback.deleted(exception, todoList);
+		}
+	}
+	
+	@Override
+	public void deleteTodoList(TodoList todoList, PersistenceCallback callback) {
+		try {
+			deleteObject(todoList);
+			performCallback(null, todoList, PERSISTENCE_OPERATION.DELETE, callback);
+		} catch (ParseException ex) {
+			Log.e("error", "Delete error: " + ex.getMessage(), ex);
+			performCallback(ex, todoList, PERSISTENCE_OPERATION.DELETE, callback);
+		} 		
+	}
+	
+	@Override
 	public void deleteObject(Object object) throws ParseException {
 		if (object instanceof ParseObject) {
 			((ParseObject) object).unpin();
@@ -86,28 +109,15 @@ public class ParsePersistenceManager implements PersistenceManager {
 		}		
 	}
 	
-	public void refreshTodoListsForUser(Context context, User user) throws ParseException {
-		refreshTodoListsForUser(context, user, ACCESS_LOCATION.CLOUD_ELSE_LOCAL);
-	}
-	
-	public void refreshTodoListsForUser(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException {
+	@Override
+	public List<TodoList> refreshTodoListsForUser(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException {
 		Log.i("info", "Refreshing data for current user " + user.getUsername() + ", accessTarget=" + accessLocation);
-		ModelManagerService.user = user;
-		ModelManagerService.lists = findAllTodoLists(context, user, accessLocation);
-		Log.i("info", "DONE. Loaded " + ModelManagerService.lists.size() + " lists for user.");	
-		
-		if (accessLocation == PersistenceManager.ACCESS_LOCATION.CLOUD) {
-			for(TodoList list : ModelManagerService.lists) {
-				if(list == null) {
-					// TODO Why is the list null?!
-					Log.w("warning", "Encountered a null list. Skipping it.");
-					continue;
-				}
-				ModelManagerService.processListNotifications(list);
-			}		
-		}
+		List<TodoList> todoListsForUser = findAllTodoLists(context, user, accessLocation);
+		Log.i("info", "DONE. Loaded " + todoListsForUser.size() + " lists for user.");	
+		return todoListsForUser;
 	}
 	
+	@Override
 	public List<TodoList> findAllTodoLists(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException {
 		ParseQuery<TodoList> itemQuery1 = ParseQueryFactory.getQuery(TodoList.class, context, accessLocation);
 		itemQuery1.whereEqualTo(TodoList.OWNER_KEY, user.getParseUser());
@@ -130,8 +140,9 @@ public class ParsePersistenceManager implements PersistenceManager {
 		return todoLists;
 	}
 	
-	public TodoList findTodoListByName(Context context, String listName) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, ACCESS_LOCATION.LOCAL);
+	@Override
+	public TodoList findTodoListByName(Context context, String listName, ACCESS_LOCATION accessLocation) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, accessLocation);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		
 		List<TodoList> list = itemQuery.find();
@@ -148,8 +159,9 @@ public class ParsePersistenceManager implements PersistenceManager {
 	}
 
 	// TODO Merge the implementation with findTodoListByName
-	public TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, ACCESS_LOCATION.LOCAL);
+	@Override
+	public TodoList findTodoListByNameAndUser(Context context, String listName, User user, ACCESS_LOCATION accessLocation) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, accessLocation);
 		itemQuery.whereEqualTo(TodoList.NAME_KEY, listName);
 		itemQuery.whereNotEqualTo(TodoList.OWNER_KEY, user.getParseUser());
 		
@@ -166,8 +178,10 @@ public class ParsePersistenceManager implements PersistenceManager {
 		}
 	}
 
-	public TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException {
-		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, ACCESS_LOCATION.LOCAL);
+	
+	@Override
+	public TodoList findTodoListByObjectId(Context context, String objectId, ACCESS_LOCATION accessLocation) throws ParseException {
+		ParseQuery<TodoList> itemQuery = ParseQueryFactory.getQuery(TodoList.class, context, accessLocation);
 		itemQuery.whereEqualTo("objectId", objectId);
 		
 		List<TodoList> list = itemQuery.find();
@@ -181,17 +195,6 @@ public class ParsePersistenceManager implements PersistenceManager {
 			
 			return list.get(0);
 		}
-	}
-	
-	public int findExistingTodoListIdxByObjectId(String objectId) {
-		for(int i=0;i< getTodoLists().size();i++) {
-			TodoList list = getTodoLists().get(i);
-			if(list.getObjectId().equals(objectId)) {
-				return i;
-			}
-		}
-		
-		return -1;
 	}
 	
 	public Collection<User> findAllUsers(Context context) {
@@ -208,6 +211,7 @@ public class ParsePersistenceManager implements PersistenceManager {
 	 * @param substring
 	 * @return
 	 */
+	@Override
 	public Collection<User> findAllUsersLike(Context context, String substring, boolean doFilter) {
 		// TODO For some reason whereContains("*asdf*") does not work at all and returns 0 matches
 
@@ -265,5 +269,4 @@ public class ParsePersistenceManager implements PersistenceManager {
 		
 		return users;
 	}
-
 }

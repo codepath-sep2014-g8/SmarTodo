@@ -12,12 +12,7 @@ import android.widget.TimePicker;
 
 import com.codepath.smartodo.model.TodoList;
 
-public class TimePickerFragment extends DialogFragment implements
-		TimePickerDialog.OnTimeSetListener {	
-
-	/**
-	 * 
-	 */
+public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {	
 	private final TodoListFragment todoListFragment;
 	private TodoList todoList;
 	final Calendar c = Calendar.getInstance();

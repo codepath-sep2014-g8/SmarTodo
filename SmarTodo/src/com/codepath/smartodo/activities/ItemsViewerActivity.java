@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
+import com.codepath.smartodo.persistence.PersistenceManager.PERSISTENCE_OPERATION;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.parse.ParseException;
 
@@ -91,6 +94,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		setupListeners();
 	}
 
+	// TODO: Do we need similar code at both places - here and in TodoListFragment.java?
 	private void initialize(){
 		
 		initializeTodoList();
@@ -124,19 +128,20 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
        reminderLocations.add(new ReminderLocation(RIGHT_STUFF_LOCATION_NAME, RIGHT_STUFF_ADDR, RIGHT_STUFF_IMAGE_URL, R.drawable.ic_gym));		
 	}
 
+    // TODO: Do we need similar code at both places - here and in TodoListFragment.java?
     private void initializeTodoList(){
 		
 	    if (getIntent().hasExtra(AppConstants.OBJECTID_EXTRA)) {			
 		    objectId = (String) getIntent().getStringExtra(AppConstants.OBJECTID_EXTRA);
 	    }
 		
-		if(objectId == null || objectId.isEmpty()){	
+		if (Utils.isNullOrEmpty(objectId)) {	
 			todoList = new TodoList();
 			return;
 		}
 		
 		try {
-			todoList = persistenceManager.findTodoListByObjectId(this, objectId);
+			todoList = persistenceManager.findTodoListByObjectId(this, objectId, ACCESS_LOCATION.LOCAL);  // TODO: ACCESS_LOCATION.LOCAL ok?
 		} catch (ParseException e1) {
 			
 			Log.d(TAG, "Excpetion while getting the todo list");
@@ -145,7 +150,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			todoList = new TodoList();
 		}
 		
-		if(todoList == null){
+		if (todoList == null){
 			todoList = new TodoList();
 		}
 		
@@ -201,12 +206,33 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	@Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
-        setResult(RESULT_OK, intent);
-        super.onBackPressed();
-        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+		exitAfterSave();
     }
+	
+	private void exitAfterDelete() {
+		onBackPressed(todoList.getName(), PERSISTENCE_OPERATION.DELETE);		
+	}
+	
+	private void exitAfterSave() {
+		TodoList savedTodoList = fragmentTodoList.saveTodoList();
+		if (savedTodoList != null) { 
+		    onBackPressed(savedTodoList.getName(), PERSISTENCE_OPERATION.UPDATE);
+		} else { // TODO: what to do? 
+			setResult(RESULT_CANCELED);
+			super.onBackPressed();
+			finish();
+		}
+	}
+	
+	private void onBackPressed(String name, PERSISTENCE_OPERATION operation) {
+		Intent intent = new Intent();
+		intent.putExtra(TodoList.NAME_KEY, name);
+		intent.putExtra(TodoList.OPERATION_KEY, operation.ordinal());
+		setResult(RESULT_OK, intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_from_left);	
+        finish();
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -218,7 +244,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 	
 	private void refreshTodoList() {
 		try {
-			todoList = persistenceManager.findTodoListByObjectId(this, objectId);
+			todoList = persistenceManager.findTodoListByObjectId(this, objectId, ACCESS_LOCATION.CLOUD_ELSE_LOCAL); // TODO: ACCESS_LOCATION.CLOUD_ELSE_LOCAL ok?
 			fragmentTodoList.sharedWithListAdapter.clear();
 			fragmentTodoList.sharedWithListAdapter.addAll(todoList.getSharing());
 		} catch (ParseException e) {
@@ -248,6 +274,10 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 					@Override
 					public boolean onMenuItemClick(MenuItem item) {
 						if(item.getItemId() == R.id.deleteMenu){
+							if (Utils.isNullOrEmpty(objectId)) {
+								Toast.makeText(ItemsViewerActivity.this, "Cannot delete an unsaved TodoList", Toast.LENGTH_LONG).show();
+								return true;
+							}
 							//deleteList();
 							showDeleteConfirmationDialog();
 						}
@@ -292,15 +322,7 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			
 			@Override
 			public void onClick(View v) {
-				
-				try {
-					persistenceManager.deleteObject(todoList);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				finally{
-					onBackPressed();
-				}
+				showDeleteConfirmationDialog();
 			}
 		});
 		
@@ -327,14 +349,11 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 		});
 	}
 	
-	private void showDeleteConfirmationDialog(){
+	private void showDeleteConfirmationDialog() {
 		new AlertDialog.Builder(this)
         .setTitle(getResources().getString(R.string.confirm_title_todo_list_remove))
-        .setMessage(
-        		getResources().getString(R.string.confirm_todo_list_remove))
-        .setIcon(
-        		getResources().getDrawable(
-                        android.R.drawable.ic_dialog_alert))
+        .setMessage(getResources().getString(R.string.confirm_todo_list_remove))
+        .setIcon(getResources().getDrawable(android.R.drawable.ic_dialog_alert))
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -353,18 +372,16 @@ public class ItemsViewerActivity extends FragmentActivity implements TouchAction
 			}
 		})
 		.show();
-		
 	}
 	
-	private void deleteList(){
-
+	private void deleteList() {
 		try {
-			persistenceManager.deleteObject(todoList);
+			persistenceManager.deleteTodoList(todoList, ListsViewerActivity.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		finally{
-			onBackPressed();
+		finally {
+		    exitAfterDelete();
 		}
 	}
 

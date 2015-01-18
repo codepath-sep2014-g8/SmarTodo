@@ -11,6 +11,7 @@ import android.util.Log;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.persistence.PersistenceManager;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 
@@ -47,9 +48,9 @@ public class NotificationsReciever extends BroadcastReceiver {
 					ModelManagerService.getInstance().displayNotification("List " + todoListName + " was shared with you", "by " + sharedByUserName);
 					
 					try {
-						TodoList sharedTodoList = persistenceManager.findTodoListByName(context, todoListName);
+						TodoList sharedTodoList = persistenceManager.findTodoListByName(context, todoListName, ACCESS_LOCATION.LOCAL); // TODO: ACCESS_LOCATION.LOCAL ok?
 						ModelManagerService.processListNotifications(sharedTodoList);
-						persistenceManager.getTodoLists().add(sharedTodoList);
+						ModelManagerService.addToCachedTodoLists(sharedTodoList);
 					} catch (ParseException e) {
 						Log.e("error", e.getMessage(), e);
 					}

@@ -1,5 +1,7 @@
 package com.codepath.smartodo.model;
 
+import java.io.Serializable;
+
 import android.util.Log;
 
 import com.parse.ParseClassName;
@@ -9,7 +11,11 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("Address")
-public class Address extends ParseObject {
+public class Address extends ParseObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6278687147454468357L;
 	private static final String USER_KEY = "user";
 	public static final String NAME_KEY = "name";
 	public static final String STREET_ADDRESS_KEY = "street_address";

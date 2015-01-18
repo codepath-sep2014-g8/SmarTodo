@@ -1,11 +1,13 @@
 package com.codepath.smartodo.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,9 +18,13 @@ import android.util.Log;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.activities.ListsViewerActivity;
+import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.notifications.NotificationsSender;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
+import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -32,11 +38,13 @@ public class ModelManagerService extends Service {
 	private static final int NOTIFICATION_ID = 1;
 	
 	public static User user;
-	public static List<TodoList> lists;
+	public static List<TodoList> cachedTodoLists;
+	private static boolean cacheRefreshed = false; 
 	private static Handler handler;
 
 	public ModelManagerService() {
 		INSTANCE = this;
+		cachedTodoLists = new ArrayList<TodoList>();
 		handler = new ListMessageHandler(this);
 	}
 	
@@ -93,7 +101,7 @@ public class ModelManagerService extends Service {
 			@Override
 			public void done(ParseException ex) {
 				if(ex == null) {
-					Log.i("info", "Parse installation set up corectly");
+					Log.i("info", "Parse installation set up correctly");
 					// For testing
 //					sendTestTodoList();
 				} else {
@@ -176,6 +184,10 @@ public class ModelManagerService extends Service {
 	public static User getUser() {
 		return user;
 	}
+	
+	public static void setUser(User user) {
+		ModelManagerService.user = user;
+	}
 
 	public void displayNotification(String title, String text) {
 		// Create a notification area notification so the user 
@@ -196,5 +208,117 @@ public class ModelManagerService extends Service {
 		// readily be killed by the system  
 		startForeground(NOTIFICATION_ID, notification);
 	}
+	
+	// Refreshes the cache of TodoLists only if it has never been refreshed before in this session.
+	// Otherwise, the cache should contain most up-to-date information anyway.
+	public static void softRefreshCachedTodoLists(ACCESS_LOCATION accessLocation) throws ParseException {
+		Log.i("info", "In softRefreshCachedTodoLists, cacheRefreshed=" + cacheRefreshed);
+		if (cacheRefreshed) {
+			return;
+		}
+		refreshCachedTodoLists(accessLocation);
+	}
+	
+	public static void refreshCachedTodoLists(ACCESS_LOCATION accessLocation) throws ParseException {
+		List<TodoList> refreshedTodoLists = null;
+		try {
+			refreshedTodoLists = PersistenceManagerFactory.getInstance().refreshTodoListsForUser(INSTANCE, getUser(), accessLocation);
+			setCachedTodoLists(refreshedTodoLists);
+			cacheRefreshed = true;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			setCachedTodoLists(null);
+			throw e;
+		}
+		
+		if (accessLocation == ACCESS_LOCATION.CLOUD || (accessLocation == ACCESS_LOCATION.CLOUD_ELSE_LOCAL && Utils.isNetworkAvailable(INSTANCE))) {
+			processListsNotifications();	
+		}		
+	}
+	
+	private static void processListsNotifications() {
+		for(TodoList todoList : cachedTodoLists) {
+			if(todoList == null) {
+				// TODO Why is the list null?!
+				Log.w("warning", "Encountered a null list. Skipping it.");
+				continue;
+			}
+			processListNotifications(todoList);
+		}			
+	}	
+
+	public static List<TodoList> getCachedTodoLists() {
+		return cachedTodoLists;
+	}
+
+	public static void setCachedTodoLists(List<TodoList> todoLists) {
+		cachedTodoLists = todoLists;
+		if (cachedTodoLists == null) {
+			cachedTodoLists = new ArrayList<TodoList>();
+		}
+	}
+	
+	public static void setCachedTodoList(int location, TodoList todoList) {
+		if (cachedTodoLists == null) {
+			return;
+		}
+		cachedTodoLists.set(location, todoList);
+	}
+	
+	public static void addToCachedTodoLists(TodoList todoList) {		
+		if (cachedTodoLists == null) {
+			cachedTodoLists = new ArrayList<TodoList>();
+		}
+		cachedTodoLists.add(todoList);
+	}
+	
+	public static TodoList findCachedTodoListByObjectId(String objectId) {
+		if (cachedTodoLists == null) {
+			return null;
+		}
+		for(int i = 0; i < cachedTodoLists.size(); i++) {
+			TodoList todoList = cachedTodoLists.get(i);
+			if(todoList.getObjectId().equals(objectId)) {
+				return todoList;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static int findCachedIndexForATodoListByObjectId(String objectId) {
+		if (cachedTodoLists == null) {
+			return -1;
+		}
+		for(int i = 0; i < cachedTodoLists.size(); i++) {
+			TodoList todoList = cachedTodoLists.get(i);
+			if (todoList.getObjectId().equals(objectId)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	public synchronized static void removeFromCachedTodoLists(TodoList todoList) {
+		if (cachedTodoLists == null) {
+			return;
+		}
+		cachedTodoLists.remove(todoList);
+	}
+	
+	public synchronized static void removeFromCachedTodoLists(String todoListId) {
+		if (cachedTodoLists == null) {
+			return;
+		}
+		for (int i = 0; i < cachedTodoLists.size(); i++) {
+			TodoList todoList = cachedTodoLists.get(i);
+			if (todoList.getObjectId().equals(todoListId)) {
+				removeFromCachedTodoLists(todoList);
+				return;
+			}
+		}
+	}	
+	
 
 }

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.smartodo.R;
 import com.codepath.smartodo.adapters.TodoListAdapter;
@@ -22,27 +23,34 @@ import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.helpers.Utils;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.TodoList;
+import com.codepath.smartodo.persistence.PersistenceCallback;
 import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
+import com.codepath.smartodo.persistence.PersistenceManager.PERSISTENCE_OPERATION;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.etsy.android.grid.StaggeredGridView;
 import com.parse.ParseException;
 
-public class ListsViewerActivity extends FragmentActivity implements TouchActionsListener{
+public class ListsViewerActivity extends FragmentActivity implements TouchActionsListener, PersistenceCallback {
 	public static final int REQUEST_CODE_NEW_LIST = 333;
 	protected static final int REQUEST_CODE_EDIT_LIST = 334;
 	private StaggeredGridView staggeredGridView;
 	private TodoListAdapter adapter;
-
-	private String editedObjectId;
 	private int currentListIndex = -1;
 	private SwipeRefreshLayout swipeContainer;
 	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
+	private static ListsViewerActivity instance;
+	
+	public static ListsViewerActivity getInstance() {
+		return instance;		
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lists_viewer);
+		instance = this;
 
 		initialize();
 		setupListeners();
@@ -67,15 +75,8 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
                 android.R.color.holo_red_light);
 		
 		staggeredGridView = (StaggeredGridView) findViewById(R.id.grid_view);
-		// list = new ArrayList<TodoList>();
-		// populateTestData();
-		// list = ModelManagerService.getLists();
-		// if(list == null){
-		// list = new ArrayList<TodoList>();
-		// }
 
-		adapter = new TodoListAdapter(getBaseContext(),
-				persistenceManager.getTodoLists());
+		adapter = new TodoListAdapter(getBaseContext(), ModelManagerService.getCachedTodoLists());
 
 		staggeredGridView.setAdapter(adapter);
 	}
@@ -109,15 +110,8 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				TodoList todoList = adapter.getItem(position);
-//				editedObjectId = todoList.getObjectId();
-//
-//				Intent i = new Intent(ListsViewerActivity.this,
-//						ItemsViewerActivity.class);
-//				i.putExtra(AppConstants.OBJECTID_EXTRA, todoList.getObjectId());
-//				startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
-				
-				
-				showTodoListDialog(todoList.getObjectId(), 
+				// Toast.makeText(ListsViewerActivity.this, "In setOnItemClickListener, position=" + position + ", list name=" + todoList.getName() + ", list id=" + todoList.getObjectId(), Toast.LENGTH_LONG).show();			
+				showTodoListDialog(todoList.getObjectId(), REQUEST_CODE_EDIT_LIST,
 						(position % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
 							com.codepath.smartodo.helpers.Utils.getColor(position % 6)	);
 			}
@@ -131,24 +125,15 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	}
 
 	private void showCreateListActivity() {
-//		Intent intent = new Intent(ListsViewerActivity.this,
-//				ItemsViewerActivity.class);
-//
-//		editedObjectId = null;
-//		startActivityForResult(intent, REQUEST_CODE_NEW_LIST);
-		
-		showTodoListDialog(null, R.style.DialogFromBottomAnimation, R.color.todo_list_backcolor);
-		
-		
+		showTodoListDialog(null, REQUEST_CODE_NEW_LIST, R.style.DialogFromBottomAnimation, R.color.todo_list_backcolor);		
 	}
 	
-	private void showTodoListDialog(String objectID, int animationStyle, int colorId){
-		Intent i = new Intent(ListsViewerActivity.this,
-				ItemsViewerActivity.class);
+	private void showTodoListDialog(String objectID, int requestCode, int animationStyle, int colorId) {
+		Intent i = new Intent(ListsViewerActivity.this, ItemsViewerActivity.class);
 		i.putExtra(AppConstants.OBJECTID_EXTRA, objectID);
 		i.putExtra(AppConstants.KEY_ANIMATION_STYLE, animationStyle);
 		i.putExtra(AppConstants.KEY_COLOR_ID, colorId);
-		startActivityForResult(i, REQUEST_CODE_EDIT_LIST);
+		startActivityForResult(i, requestCode);
 	
 		overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_from_left);
 		
@@ -178,7 +163,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		return super.onOptionsItemSelected(item);
 	}
 
-	private class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
+/*	private class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
 		private Runnable runnable;
 
 		public MyAsyncTask(Runnable runnable) {
@@ -206,10 +191,40 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	         // with access to the result of the long running task
 	    	 runnable.run();
 	     }
-	}
+	}*/
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+		if (resultCode != RESULT_OK) {
+			return;
+		}
+		
+		// The callback method called form the PersistenceManager would handle the subsequent action.
+		if (requestCode == REQUEST_CODE_EDIT_LIST) { // An existing TodoList has been modified
+			if (data != null) {
+				String todoListName = data.getStringExtra(TodoList.NAME_KEY);
+				int operation = data.getIntExtra(TodoList.OPERATION_KEY, PERSISTENCE_OPERATION.UPDATE.ordinal());
+				if (operation == PERSISTENCE_OPERATION.UPDATE.ordinal()) {
+					Toast.makeText(ListsViewerActivity.this, "Updating the TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();				
+				} else if (operation == PERSISTENCE_OPERATION.DELETE.ordinal()) {
+					Toast.makeText(ListsViewerActivity.this, "Deleting the TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();
+				}
+			} 
+		} else if (requestCode == REQUEST_CODE_NEW_LIST) { // A new list has been added
+			if (data != null) {
+				String todoListName = data.getStringExtra(TodoList.NAME_KEY);
+				if (todoListName != null) {
+					Toast.makeText(ListsViewerActivity.this, "Adding a new TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();
+				}
+			}
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}
+	
+/*	
+	//@Override
+	protected void onActivityResultOld(int requestCode, int resultCode, final Intent data) {
 		switch (requestCode) {
 		case REQUEST_CODE_EDIT_LIST:
 		case REQUEST_CODE_NEW_LIST:
@@ -256,40 +271,50 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		default:
 			super.onActivityResult(requestCode, resultCode, data);
 		}
-	}
+	}*/
 
 	@Override
 	public void onPreviousListRequested() {
 		System.out.println("onPreviousListRequested: " + currentListIndex);
-		if(currentListIndex == -1 || currentListIndex == 0){
+		if (adapter.getCount() == 0) { // nothing to show
+			return;
+		}
+		
+		if(currentListIndex == -1 || currentListIndex == 0) {
 			currentListIndex = adapter.getCount() - 1;
 		}
-		else{
+		else {
 			currentListIndex --;
 		}
-		TodoList todoList = adapter.getItem(currentListIndex);
-		showTodoListDialog(todoList.getObjectId(), 
-				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
-					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
-		
+		if (currentListIndex >= 0) { // to be on the safe side
+			TodoList todoList = adapter.getItem(currentListIndex);
+			showTodoListDialog(todoList.getObjectId(), REQUEST_CODE_EDIT_LIST,
+					(currentListIndex % 2 == 0) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+					Utils.getColor(currentListIndex % 6));
+		}
 	}
 
 	@Override
 	public void onNextListRequested() {
 		
 		System.out.println("onNextListRequested: " + currentListIndex);
+		if (adapter.getCount() == 0) { // nothing to show
+			return;
+		}
 		
-		if(currentListIndex == adapter.getCount() -1 || currentListIndex == -1){
+		if(currentListIndex == (adapter.getCount() -1) || currentListIndex == -1) {
 			currentListIndex = 0;
 		}
 		else{
 			currentListIndex ++;
 		}
 		
-		TodoList todoList = adapter.getItem(currentListIndex);
-		showTodoListDialog(todoList.getObjectId(), 
-				(currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
-					com.codepath.smartodo.helpers.Utils.getColor(currentListIndex % 6)	);
+		if (currentListIndex >= 0) { // to be on the safe side
+		    TodoList todoList = adapter.getItem(currentListIndex);
+		    showTodoListDialog(todoList.getObjectId(), REQUEST_CODE_EDIT_LIST,
+				    (currentListIndex % 2 == 0 ) ? R.style.DialogFromLeftAnimation : R.style.DialogFromRightAnimation,
+					Utils.getColor(currentListIndex % 6)	);
+		    }
 	}
 
 	public void doRefresh() {
@@ -301,7 +326,9 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected Object doInBackground(Object... params) {
 				try {
-					persistenceManager.refreshTodoListsForUser(ListsViewerActivity.this, ModelManagerService.getUser());
+					Log.i("info", "Refreshing local cache");
+					ModelManagerService.refreshCachedTodoLists(ACCESS_LOCATION.CLOUD_ELSE_LOCAL); // TODO: ACCESS_LOCATION.CLOUD_ELSE_LOCAL ok?
+					// persistenceManager.refreshTodoListsForUser(ListsViewerActivity.this, ModelManagerService.getUser(), ACCESS_LOCATION.CLOUD_ELSE_LOCAL);
 				} catch (ParseException e) {
 					Log.e("error", e.getMessage(), e);
 				}
@@ -311,7 +338,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 			@Override
 			protected void onPostExecute(Object result) {
 				adapter.clear();
-				adapter.addAll(persistenceManager.getTodoLists());
+				adapter.addAll(ModelManagerService.getCachedTodoLists());
 				adapter.notifyDataSetChanged();
 				swipeContainer.setRefreshing(false);
 			}
@@ -319,6 +346,45 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 		
 		task.execute();
 	}
-	
-	
+
+	@Override
+	public void added(Exception exception, TodoList todoList) {
+		if (exception == null) {
+			// Toast.makeText(ListsViewerActivity.this, "In callback added, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+		    adapter.add(todoList);  // Will it also add the todoList to the ModelManagerService.cachedTodoLists?
+		    adapter.notifyDataSetChanged();
+		} else {
+			Log.e("Add error", exception.getMessage(), exception);
+		}	
+	}
+
+	@Override
+	public void updated(Exception exception, TodoList todoList) {
+		if (exception == null) {
+			// Toast.makeText(ListsViewerActivity.this, "In callback updated, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+			int existingListIdx = ModelManagerService.findCachedIndexForATodoListByObjectId(todoList.getObjectId());
+			if (existingListIdx == -1) {
+				Log.e("Update error", "In callback updated, no existing TodoList " + todoList.getName());
+			} else {
+			    ModelManagerService.setCachedTodoList(existingListIdx, todoList);
+			}
+			adapter.notifyDataSetChanged();
+		} else {
+			Log.e("Update error", exception.getMessage(), exception);
+		}
+	}
+
+	@Override
+	public void deleted(Exception exception, TodoList todoList) {		
+		if (exception == null) {
+			// Toast.makeText(ListsViewerActivity.this, "In callback deleted, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+			TodoList cachedTodoList = ModelManagerService.findCachedTodoListByObjectId(todoList.getObjectId());
+			adapter.remove(cachedTodoList);
+			ModelManagerService.removeFromCachedTodoLists(cachedTodoList);  // necessary?
+			adapter.notifyDataSetChanged();			
+		} else {
+			Log.e("Delete error", exception.getMessage(), exception);
+		}
+	}
+		
 }

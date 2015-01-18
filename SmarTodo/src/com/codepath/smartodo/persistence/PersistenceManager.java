@@ -25,26 +25,28 @@ public interface PersistenceManager {
 	    CLOUD_ELSE_LOCAL, 
 	    LOCAL 
 	}
-
-	public List<TodoList> getTodoLists();
 	
-	public String saveTodoList(final TodoList todoList, final SaveCallback callback);
+	public enum PERSISTENCE_OPERATION {
+	    ADD, 
+	    UPDATE, 
+	    DELETE 
+	}
+	
+	public String saveTodoList(final TodoList todoList, final PERSISTENCE_OPERATION operation, final PersistenceCallback callback);
+	
+	public void deleteTodoList(final TodoList todoList, final PersistenceCallback callback);
 	
 	public void deleteObject(Object object) throws ParseException;
 	
-	public void refreshTodoListsForUser(Context context, User user) throws ParseException;
-	
-	public void refreshTodoListsForUser(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException;
+	public List<TodoList> refreshTodoListsForUser(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException;
 	
 	public List<TodoList> findAllTodoLists(Context context, User user, ACCESS_LOCATION accessLocation) throws ParseException;
 	
-	public TodoList findTodoListByName(Context context, String listName) throws ParseException;
+	public TodoList findTodoListByName(Context context, String listName, ACCESS_LOCATION accessLocation) throws ParseException;
 	
-	public TodoList findTodoListByNameAndUser(Context context, String listName, User user) throws ParseException;
+	public TodoList findTodoListByNameAndUser(Context context, String listName, User user, ACCESS_LOCATION accessLocation) throws ParseException;
 
-	public TodoList findTodoListByObjectId(Context context, String objectId) throws ParseException;
-	
-	public int findExistingTodoListIdxByObjectId(String objectId);
+	public TodoList findTodoListByObjectId(Context context, String objectId, ACCESS_LOCATION accessLocation) throws ParseException;
 	
 	public Collection<User> findAllUsers(Context context);
 

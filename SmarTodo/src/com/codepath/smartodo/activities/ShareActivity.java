@@ -28,6 +28,8 @@ import com.codepath.smartodo.model.ShareUser;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
+import com.codepath.smartodo.persistence.PersistenceManager.PERSISTENCE_OPERATION;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
@@ -62,7 +64,7 @@ public class ShareActivity extends Activity {
 		
 		listName = getIntent().getExtras().getString(AppConstants.OBJECTID_EXTRA);
 		try {
-			todoList = persistenceManager.findTodoListByObjectId(this, listName);
+			todoList = persistenceManager.findTodoListByObjectId(this, listName, ACCESS_LOCATION.LOCAL);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -197,7 +199,15 @@ public class ShareActivity extends Activity {
 			
 			todoList.setSharing(users); // add new
 			
-			persistenceManager.saveTodoList(todoList, new SaveCallback() {
+			 /** New code **/
+			persistenceManager.saveTodoList(todoList, PERSISTENCE_OPERATION.UPDATE, null); 
+			setResult(RESULT_OK);
+	        finish();
+	        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
+	        /** End new code **/
+	        
+	        /** Old code **/			
+/*			persistenceManager.saveTodoList(todoList, new SaveCallback() {
 				public void done(ParseException e) {
 					if(e != null) {
 						Log.e("error", e.getMessage(), e);
@@ -213,7 +223,8 @@ public class ShareActivity extends Activity {
 			        overridePendingTransition (R.anim.slide_in_from_right, R.anim.slide_out_from_left);
 						
 					}
-			});
+			});*/
+	        /** End old code **/ // TODO: Should be checked by Robert
 		} catch (Throwable th) {
 			Log.e("error", th.getMessage(), th);
 			Toast.makeText(this, "Error sharing. Please retry.", Toast.LENGTH_SHORT).show();

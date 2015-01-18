@@ -1,5 +1,6 @@
 package com.codepath.smartodo.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import android.util.Log;
@@ -9,7 +10,11 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 
 @ParseClassName("TodoItem")
-public class TodoItem extends ParseObject {
+public class TodoItem extends ParseObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5781748661690629699L;
 	public static final String TEXT_KEY = "text";
 	private static final String COMPLETED_KEY = "completed";
 	private static final String ADDRESS_KEY = "address";

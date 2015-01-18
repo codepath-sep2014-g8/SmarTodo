@@ -10,6 +10,7 @@ import android.util.Log;
 import com.codepath.smartodo.persistence.ParsePersistenceManager;
 import com.codepath.smartodo.persistence.PersistenceManager;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -88,7 +89,7 @@ public class ParseDbTest {
 	protected static void testSharingRead(final TodoList list, final Address a) {
 		PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 		try {
-			TodoList readList = persistenceManager.findTodoListByName(null, list.getName());
+			TodoList readList = persistenceManager.findTodoListByName(null, list.getName(), ACCESS_LOCATION.LOCAL); // TODO: ACCESS_LOCATION.LOCAL ok?
 			
 			softAssertEquals(list, readList);
 			

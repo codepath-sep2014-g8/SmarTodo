@@ -1,5 +1,6 @@
 package com.codepath.smartodo.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,8 +13,14 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("TodoList")
-public class TodoList extends ParseObject {
+public class TodoList extends ParseObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7768423733381722921L;
+	public static final String TODOLIST_KEY = "todolist";
 	public static final String NAME_KEY = "name";
+	public static final String OPERATION_KEY = "operation";
 	private static final String COMPLETED_KEY = "completed";
 	private static final String ADDRESS_KEY = "address";
 	private static final String NOTIFICATIONTIME_KEY = "notificationtime";

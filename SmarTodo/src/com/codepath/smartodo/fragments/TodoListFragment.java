@@ -2,8 +2,6 @@ package com.codepath.smartodo.fragments;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,7 +21,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -34,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.smartodo.R;
+import com.codepath.smartodo.activities.ListsViewerActivity;
 import com.codepath.smartodo.adapters.SharedWithAdapter;
 import com.codepath.smartodo.adapters.TodoItemsAdapter;
 import com.codepath.smartodo.dialogs.ColorPickerDialog;
@@ -41,47 +38,21 @@ import com.codepath.smartodo.enums.TodoListDisplayMode;
 import com.codepath.smartodo.helpers.AppConstants;
 import com.codepath.smartodo.interfaces.TouchActionsListener;
 import com.codepath.smartodo.model.Address;
-import com.codepath.smartodo.model.ReminderLocation;
 import com.codepath.smartodo.model.TodoItem;
 import com.codepath.smartodo.model.TodoList;
 import com.codepath.smartodo.model.User;
 import com.codepath.smartodo.persistence.PersistenceManager;
+import com.codepath.smartodo.persistence.PersistenceManager.ACCESS_LOCATION;
+import com.codepath.smartodo.persistence.PersistenceManager.PERSISTENCE_OPERATION;
 import com.codepath.smartodo.persistence.PersistenceManagerFactory;
 import com.codepath.smartodo.services.ModelManagerService;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.squareup.picasso.Picasso;
 
 public class TodoListFragment extends DialogFragment implements OnTouchListener {
 
 	static final String TAG = TodoListFragment.class.getSimpleName();
 
-	// Some dummy addresses for demo. Todo: They should eventually come from some Settings/Preferences
-	private static final String HOME_LOCATION_NAME = "Home";
-	private static final String HOME_ADDR = "1274 Colleen Way, Campbell, CA 95008";
-	private static final String HOME_IMAGE_URL = "someUrl";
-	
-	private static final String BOFA_MTNVIEW_LOCATION_NAME = "Bank of America, Mtn View";
-	private static final String BOFA_MTNVIEW_ADDR = " 444 Castro St, Mountain View, CA 94041";
-	private static final String BOFA_MTNVIEW_IMAGE_URL = "someUrl";
-	
-	private static final String YAHOO_BUILDING_E_LOCATION_NAME = "Yahoo Building E";
-	private static final String YAHOO_BUILDING_E_ADDR = "700 First Ave, Sunnyvale, CA 94089";
-	private static final String YAHOO_BUILDING_E_IMAGE_URL = "someUrl";
-	
-	private static final String YAHOO_BUILDING_F_LOCATION_NAME = "Yahoo Building F";
-	private static final String YAHOO_BUILDING_F_ADDR = "1350 North Mathilda Avenue, Sunnyvale, CA 94089";
-	private static final String YAHOO_BUILDING_F_IMAGE_URL = "someUrl";
-	
-	private static final String SAFEWAY_STEVENSCREEK_LOCATION_NAME = "Safeway Stevens Creek";
-	private static final String SAFEWAY_STEVENSCREEK_ADDR = "5146 Stevens Creek Blvd, San Jose, CA";
-	private static final String SAFEWAY_STEVENSCREEK_IMAGE_URL = "someUrl";
-	
-	private static final String RIGHT_STUFF_LOCATION_NAME = "Gym";
-	private static final String RIGHT_STUFF_ADDR = "1730 W Campbell Ave, Campbell, CA 95008";
-	private static final String RIGHT_STUFF_IMAGE_URL = "someUrl";
-	
 	//UI elements
 	private EditText etTitle;
 	private ListView lvItems;
@@ -104,20 +75,18 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	private TodoListDisplayMode mode = TodoListDisplayMode.UPDATE;
 	
 	private TouchActionsListener listener = null;
-	// private HashMap<String, String> locationsMap;
-	private List<ReminderLocation> reminderLocations;
 
 	private GridView gvViewSharedWith;
 
 	public SharedWithAdapter sharedWithListAdapter;
 	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 	
-	public static TodoListFragment newInstance(String todoListName, int animationStyle, int colorId)
+	public static TodoListFragment newInstance(String todoListId, int animationStyle, int colorId)
     {
 		TodoListFragment fragment = new TodoListFragment();
 
         Bundle arguments = new Bundle();
-        arguments.putString(AppConstants.OBJECTID_EXTRA, todoListName);
+        arguments.putString(AppConstants.OBJECTID_EXTRA, todoListId);
         arguments.putInt(AppConstants.KEY_ANIMATION_STYLE, animationStyle);
         arguments.putInt(AppConstants.KEY_COLOR_ID, colorId);
         fragment.setArguments(arguments);      
@@ -208,8 +177,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		Dialog dialog = super.onCreateDialog(savedInstanceState);
 		
 //		dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		getDialog().getWindow()
-	    .getAttributes().windowAnimations = animationStyle;
+		getDialog().getWindow().getAttributes().windowAnimations = animationStyle;
 		
 		return dialog;
 	}
@@ -239,8 +207,10 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		}
 		
 		try {
-			todoList = persistenceManager.findTodoListByObjectId(getActivity(), listObjectId);
-			todoItemsList = todoList.getAllItems();
+			todoList = persistenceManager.findTodoListByObjectId(getActivity(), listObjectId, ACCESS_LOCATION.CLOUD_ELSE_LOCAL); // TODO: ACCESS_LOCATION.CLOUD_ELSE_LOCAL ok?
+			if (todoList != null) {
+			    todoItemsList = todoList.getAllItems();
+			}
 		} catch (ParseException e1) {
 			
 			Log.d(TAG, "Excpetion while getting the todo list");
@@ -284,7 +254,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	
 	private void populateData(){
 		
-		if(mode == TodoListDisplayMode.CREATE){
+		if(mode == TodoListDisplayMode.CREATE) {
 			return;
 		}
 		
@@ -293,23 +263,6 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		tvSharedWithList.setText("Shared with: " + getDisplaySharedWithList());
 		
 		tvReminder.setText(getReminderDisplay());
-        
-        reminderLocations = new ArrayList<ReminderLocation>();
-        reminderLocations.add(new ReminderLocation(HOME_LOCATION_NAME, HOME_ADDR, HOME_IMAGE_URL, R.drawable.ic_home));
-        reminderLocations.add(new ReminderLocation(BOFA_MTNVIEW_LOCATION_NAME, BOFA_MTNVIEW_ADDR, BOFA_MTNVIEW_IMAGE_URL, R.drawable.ic_dollar));
-        reminderLocations.add(new ReminderLocation(YAHOO_BUILDING_E_LOCATION_NAME, YAHOO_BUILDING_E_ADDR, YAHOO_BUILDING_E_IMAGE_URL, R.drawable.ic_yahoo_logo));
-        reminderLocations.add(new ReminderLocation(YAHOO_BUILDING_F_LOCATION_NAME, YAHOO_BUILDING_F_ADDR, YAHOO_BUILDING_F_IMAGE_URL, R.drawable.ic_yahoo_logo));
-        reminderLocations.add(new ReminderLocation(SAFEWAY_STEVENSCREEK_LOCATION_NAME, SAFEWAY_STEVENSCREEK_ADDR, SAFEWAY_STEVENSCREEK_IMAGE_URL, R.drawable.ic_shopping_cart));
-        reminderLocations.add(new ReminderLocation(RIGHT_STUFF_LOCATION_NAME, RIGHT_STUFF_ADDR, RIGHT_STUFF_IMAGE_URL, R.drawable.ic_gym));
-        
-		// Sort on location names
-		Collections.sort(reminderLocations, new Comparator<ReminderLocation>() {
-			public int compare(ReminderLocation o1, ReminderLocation o2) {
-				if (o1.getName() == null || o2.getName() == null)
-					return 0;
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
 	}
 	
 	String getReminderDisplay(){
@@ -367,7 +320,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 			return sb.toString();
 		}
 		
-		for(int i=0;i<users.size();i++){
+		for(int i=0; i < users.size(); i++){
 			User user = users.get(i);
 			try {
 				String realName = user.getRealName();
@@ -381,7 +334,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 				sb.append(user.getUsername());
 			}
 			
-			if(i<users.size() - 1) {
+			if (i < users.size() - 1) {
 				sb.append(", "); // Don't end the string with a comma
 			}
 		}
@@ -389,7 +342,7 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		return sb.toString();
 	}
 	
-	private void setupListeners(){
+	private void setupListeners() {
 		
 		ivColorPicker.setOnClickListener(new View.OnClickListener() {
 			
@@ -434,40 +387,40 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 	
 	@Override
 	public void onStop() {
-		saveTodoList();
+		// saveTodoList();
 		super.onStop();
 	}
 	
-	private void saveTodoList(){
-		String objectId = updateTodoList();
-		
+	public TodoList saveTodoList() {
+		return updateTodoList();
+
+/*		// Is the following needed? For a new TodoList, objectId will be null anyway.
 		if(objectId != null) {
 			Intent i = new Intent();
+			Log.i("info", "In TodoListFragment:saveTodoList, putting TodoList " + todoList.getName());
+			i.putExtra(TodoList.TODOLIST_KEY, todoList);
 			i.putExtra(AppConstants.OBJECTID_EXTRA, objectId);
 			TodoListFragment.this.getActivity().setResult(Activity.RESULT_OK, i);
-		}
+		}*/
 	}
-	
-	
+		
 	/*
 	 * Populate the TodoList object
 	 */
-	private String updateTodoList(){
-		String validationString = validateInput();
-		if(validateInput() != null){
-			//Show toast and dont update
-			Toast.makeText(getActivity(), validationString, Toast.LENGTH_LONG).show();
+	private TodoList updateTodoList() {
+		if (!validateInput()) {
 			return null;
 		}
-		//Create todoList if new list being created
-		if(todoList == null){
-			todoList = new TodoList();
+		
+		PERSISTENCE_OPERATION operation = PERSISTENCE_OPERATION.UPDATE;
+		if (mode == TodoListDisplayMode.CREATE) {
+			operation = PERSISTENCE_OPERATION.ADD;
 		}
 		
-		//Should be used when creating new list
-		//ModelManagerService.saveList(etTitle.getText().toString(), ModelManagerService.getUser(), todoItemsList);
-		
-		Log.i("info", "Saving TODO List " + listObjectId);
+		// Create todoList if new list being created
+		if(todoList == null) {
+			todoList = new TodoList();			
+		}
 		
 		todoList.setName(etTitle.getText().toString());
 		todoList.setOwner(ModelManagerService.getUser());
@@ -476,96 +429,46 @@ public class TodoListFragment extends DialogFragment implements OnTouchListener 
 		listWithoutDummy.addAll(todoItemsList.subList(0, todoItemsList.size() - 1));
 		todoList.setItems(listWithoutDummy);
 		
-		String objectId = persistenceManager.saveTodoList(todoList, new SaveCallback() {
-			
-			@Override
-			public void done(ParseException e) {
-//				if(e == null) {
-//					Toast.makeText(getActivity(), "List saved", Toast.LENGTH_SHORT).show();
-//				} else {
-//					Log.e("error", e.getMessage(), e);
-//					Toast.makeText(getActivity(), "Error saving list. Try again.", Toast.LENGTH_SHORT).show();
-//				}
-				
-			}
-		});
+		Log.i("info", "Calling PeristenceManager to save the TodoList " + todoList.getName());
+		String objectId = persistenceManager.saveTodoList(todoList, operation, ListsViewerActivity.getInstance()); 
 		
-		return objectId;
+		return todoList;
 	}
 	
-	private String validateInput(){
+	private boolean validateInput() {
 		String title = etTitle.getText().toString();
 		
-		if(title == null || title.isEmpty()){
-			return "Please specify a non-empty name";
+		if(title == null || title.isEmpty()) {
+			Toast.makeText(getActivity(), "Please specify a non-empty name", Toast.LENGTH_LONG).show();
+			return false;
 		}
 		
-		//Validate items
+		// TODO: Validate items
 		for(int i = 0; i < adapter.getCount(); i++){
 			
 		}
 		
 		try {
-			if(mode == TodoListDisplayMode.CREATE && persistenceManager.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser()) != null) {
-				return "The list name is not unique!";
+			if (mode == TodoListDisplayMode.CREATE && 
+					persistenceManager.findTodoListByNameAndUser(this.getActivity(), title, ModelManagerService.getUser(), ACCESS_LOCATION.LOCAL) != null) { // TODO: ACCESS_LOCATION.LOCAL ok?
+				Toast.makeText(getActivity(), "The list name is not unique!", Toast.LENGTH_LONG).show();
+				return false;
 			}
 		} catch (ParseException e) {
 			Log.e("error", e.getMessage(), e);
-			return e.getMessage();
+			Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+			return false;
 		}
 		
-		return null;
+		return true;
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		if(requestCode == AppConstants.REQUEST_CODE_SHARE_ACTIVITY && resultCode == Activity.RESULT_OK){
+		if (requestCode == AppConstants.REQUEST_CODE_SHARE_ACTIVITY && resultCode == Activity.RESULT_OK) {			
 			
-			
 		}
-	}
-	
-	class ReminderLocationsAdapter extends ArrayAdapter<ReminderLocation> {
-
-		public ReminderLocationsAdapter(Context context, List<ReminderLocation> reminderLocations) {
-			super(context, R.layout.todo_location, reminderLocations);
-			// TODO Auto-generated constructor stub
-		}
-		
-		// View lookup cache
-		private class ViewHolder {
-			ImageView ivLocationImage;
-			TextView tvLocName;		
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// Get the data item for this position
-			ReminderLocation reminderLocation = getItem(position);
-			// Check if an existing view is being reused, otherwise inflate the view
-			ViewHolder viewHolder; // view lookup cache stored in tag
-			if (convertView == null) {
-				viewHolder = new ViewHolder();
-				LayoutInflater inflater = LayoutInflater.from(getContext());
-				convertView = inflater.inflate(R.layout.todo_location, parent, false);
-				viewHolder.ivLocationImage = (ImageView) convertView.findViewById(R.id.ivLocationImage);
-				viewHolder.tvLocName = (TextView) convertView.findViewById(R.id.tvLocName);
-				convertView.setTag(viewHolder);
-			} else {
-				viewHolder = (ViewHolder) convertView.getTag();
-				// reset the image from the recycled view
-				viewHolder.ivLocationImage.setImageResource(0);
-				viewHolder.tvLocName.setText("");
-			}
-			// Remotely download the image data in the background (with Picasso)
-			Picasso.with(getContext()).load(reminderLocation.getImageResourceId()).placeholder(R.drawable.ic_launcher).into(viewHolder.ivLocationImage);
-			viewHolder.tvLocName.setText(reminderLocation.getName());
-			
-			// Return the completed view to be displayed
-			return convertView;
-		}
-	}
-	
+	}	
 	
 }

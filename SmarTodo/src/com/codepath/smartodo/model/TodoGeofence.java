@@ -27,7 +27,7 @@ public class TodoGeofence implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7701677148718056829L;
 	private static final int DEFAULT_LOITERING_DELAY_MS = 120000;  // 2 minutes
 	// Instance variables
 	private String geofenceId;

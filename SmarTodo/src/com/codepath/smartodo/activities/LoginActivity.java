@@ -80,17 +80,25 @@ public class LoginActivity extends Activity {
 	private void lauchMainApp() {	
 		// Populate the model with the logged in user's data
 		// TODO Display progress bar, run outside of UI thread
+		User thisUser = new User(currentUser);
+		ModelManagerService.setUser(thisUser);
 		try {
+			// Initialize the cache of TodoLists
 			ACCESS_LOCATION accessLocation = ACCESS_LOCATION.LOCAL; // By default, get the initial data from the local datastore
 			if (loginRequired) { // get the initial data from the cloud
 				accessLocation = ACCESS_LOCATION.CLOUD_ELSE_LOCAL;
+				ModelManagerService.refreshCachedTodoLists(accessLocation);
+			} else {
+				ModelManagerService.softRefreshCachedTodoLists(accessLocation);
 			}
-			persistenceManager.refreshTodoListsForUser(this, new User(currentUser), accessLocation);
+			
 			ModelManagerService.registerInstallation();
 		} catch (ParseException e) {
 			// TODO Display in UI, add retry option
 			Log.e("error", e.getMessage(), e);
 		}
+		
+		Toast.makeText(this, "Done with cache initialization", Toast.LENGTH_LONG).show();
 		
 		// For testing
 		someTestCode();

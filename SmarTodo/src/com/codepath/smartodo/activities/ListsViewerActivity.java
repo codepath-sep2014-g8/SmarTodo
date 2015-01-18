@@ -39,7 +39,6 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	private TodoListAdapter adapter;
 	private int currentListIndex = -1;
 	private SwipeRefreshLayout swipeContainer;
-	private PersistenceManager persistenceManager = PersistenceManagerFactory.getInstance();
 	private static ListsViewerActivity instance;
 	
 	public static ListsViewerActivity getInstance() {
@@ -205,16 +204,16 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 				String todoListName = data.getStringExtra(TodoList.NAME_KEY);
 				int operation = data.getIntExtra(TodoList.OPERATION_KEY, PERSISTENCE_OPERATION.UPDATE.ordinal());
 				if (operation == PERSISTENCE_OPERATION.UPDATE.ordinal()) {
-					Toast.makeText(ListsViewerActivity.this, "Updating the TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();				
+					Toast.makeText(ListsViewerActivity.this, "Updating the Todo list " + todoListName + "...", Toast.LENGTH_SHORT).show();				
 				} else if (operation == PERSISTENCE_OPERATION.DELETE.ordinal()) {
-					Toast.makeText(ListsViewerActivity.this, "Deleting the TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();
+					Toast.makeText(ListsViewerActivity.this, "Deleting the Todo list " + todoListName + "...", Toast.LENGTH_SHORT).show();
 				}
 			} 
 		} else if (requestCode == REQUEST_CODE_NEW_LIST) { // A new list has been added
 			if (data != null) {
 				String todoListName = data.getStringExtra(TodoList.NAME_KEY);
 				if (todoListName != null) {
-					Toast.makeText(ListsViewerActivity.this, "Adding a new TodoList " + todoListName + "...", Toast.LENGTH_SHORT).show();
+					Toast.makeText(ListsViewerActivity.this, "Adding a new Todo list " + todoListName + "...", Toast.LENGTH_SHORT).show();
 				}
 			}
 		} else {
@@ -350,7 +349,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	@Override
 	public void added(Exception exception, TodoList todoList) {
 		if (exception == null) {
-			// Toast.makeText(ListsViewerActivity.this, "In callback added, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+			// Toast.makeText(ListsViewerActivity.this, "Added the Todo list " + todoList.getName(), Toast.LENGTH_LONG).show();
 		    adapter.add(todoList);  // Will it also add the todoList to the ModelManagerService.cachedTodoLists?
 		    adapter.notifyDataSetChanged();
 		} else {
@@ -361,7 +360,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	@Override
 	public void updated(Exception exception, TodoList todoList) {
 		if (exception == null) {
-			// Toast.makeText(ListsViewerActivity.this, "In callback updated, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+			// Toast.makeText(ListsViewerActivity.this, "Updated the Todo list " + todoList.getName(), Toast.LENGTH_LONG).show();
 			int existingListIdx = ModelManagerService.findCachedIndexForATodoListByObjectId(todoList.getObjectId());
 			if (existingListIdx == -1) {
 				Log.e("Update error", "In callback updated, no existing TodoList " + todoList.getName());
@@ -377,7 +376,7 @@ public class ListsViewerActivity extends FragmentActivity implements TouchAction
 	@Override
 	public void deleted(Exception exception, TodoList todoList) {		
 		if (exception == null) {
-			// Toast.makeText(ListsViewerActivity.this, "In callback deleted, for todoList " + todoList.getName(), Toast.LENGTH_LONG).show();
+			// Toast.makeText(ListsViewerActivity.this, "Deleted the Todo list " + todoList.getName(), Toast.LENGTH_LONG).show();
 			TodoList cachedTodoList = ModelManagerService.findCachedTodoListByObjectId(todoList.getObjectId());
 			adapter.remove(cachedTodoList);
 			ModelManagerService.removeFromCachedTodoLists(cachedTodoList);  // necessary?
